@@ -1,0 +1,36 @@
+# Agents Configs
+.claude/
+.gemini/
+CLAUDE.local.md
+GEMINI.md
+.mcp.json
+
+# Python build and test artifacts
+.venv
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+.pytest_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+
+# IDE
+.idea/
+.vscode/
+
+# pre-commit cache, kept in-tree by PRE_COMMIT_HOME
+.pre-commit
+
+# What this project must never keep on disk. The agent token, the Reality
+# server key, issued client profiles and the panel database are all secrets or
+# state that belong to a host, not to the repository.
+.env
+agent.env
+*.key
+*.pem
+*.sqlite*
+*.db
+/profiles/
