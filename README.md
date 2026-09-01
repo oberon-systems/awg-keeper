@@ -7,13 +7,18 @@ sysctls itself.
 
 Two parts. The **Panel** runs in a container, owns the desired state and serves
 the web UI. The **Agent** runs on the host as a systemd unit, holds
-`CAP_NET_ADMIN` and is a stateless executor: every write is a full, idempotent
-`PUT` of an interface's peer set, so recovery after any failure is just a
-re-push. AmneziaWG private keys are generated in the browser and never reach
-the server.
+`CAP_NET_ADMIN` and keeps no state of its own: it adds, removes and reports
+single peers and Xray users, and `GET /v1/state` tells the Panel what the host
+actually has. AmneziaWG private keys are generated in the browser and never
+reach the server.
 
 See [DESIGN.md](DESIGN.md) for the architecture, the data model, the threat
-model and the milestones.
+model and the milestones, and [ROADMAP.md](ROADMAP.md) for what is built.
+
+- [Development](#development)
+- [Agent](#agent)
+- [Packaging](#packaging)
+- [Commits](#commits)
 
 ## Development
 
@@ -22,8 +27,86 @@ make init   # create .venv, install the tooling, install the git hooks
 make lint   # run the pre-commit hooks over every file
 ```
 
-`make init` installs the `pre-commit`, `commit-msg` and `pre-push` hooks. The
+`make init` installs the `pre-commit`, `commit-msg` and `pre-push` hooks, and
+the agent's runtime and test dependencies into the same virtualenv. The
 `pre-commit` cache lives in `.pre-commit/` when `PRE_COMMIT_HOME` points there.
+
+The Agent lives in `agent/` and is self-contained: its own `pyproject.toml`,
+its own test suite, its own packaging. The suite needs neither root nor a real
+tunnel - `agent/tests/conftest.py` puts a fake `awg` and a fake `xray` on
+`PATH` and asserts the exact argv each was handed.
+
+```bash
+make test
+```
+
+Nothing in CI runs the suite, so the `pre-push` hook does: a push that touches
+`agent/` runs it first and is refused if it fails. `make init` installs that
+hook along with the others.
+
+## Agent
+
+The Agent reads its configuration from the environment only, with the
+`AWG_KEEPER_` prefix; `agent/packaging/agent.env.example` lists every variable.
+The token is the one secret among them, which is why the systemd unit reads
+them from `/etc/awg-keeper/agent.env` at mode 0600.
+
+Run it in the foreground against a host that already has `awg`:
+
+```bash
+export AWG_KEEPER_TOKEN=$(openssl rand -hex 24)
+export AWG_KEEPER_ALLOWED_SUBNETS=127.0.0.0/8
+export AWG_KEEPER_INTERFACES=awg-mgmt
+make -C agent run
+```
+
+Every route but `/v1/health` needs both the token and a source address inside
+`AWG_KEEPER_ALLOWED_SUBNETS`:
+
+```bash
+curl -s -H "Authorization: Bearer $AWG_KEEPER_TOKEN" \
+    http://127.0.0.1:8081/v1/awg/awg-mgmt/peers
+```
+
+## Packaging
+
+The Agent ships as an `rpm` for EL10 and a `deb` for Debian 13, built from one
+[nfpm](https://nfpm.goreleaser.com/) description. The payload is a
+[shiv](https://shiv.readthedocs.io/) zipapp rather than a venv, so the package
+depends on the distribution's own `python3`. `pydantic-core` is a compiled
+wheel, so each zipapp is built in a container of its target distribution:
+
+```bash
+make -C agent package
+```
+
+The artifacts land in `agent/dist/`. The version comes from the sub-project
+tag - `awg-keeper-agent-v1.2.3` builds `1.2.3` - and an untagged tree builds
+`0.0.0`.
+
+Pushing that tag is what publishes a release: `.github/workflows/agent-release.yml`
+runs the test suite, builds one zipapp per distribution with a Buildx cache of
+its own, packages both through the same `make` targets used here, and attaches
+the `rpm` and the `deb` to a GitHub release named after the tag.
+
+```bash
+git tag awg-keeper-agent-v0.1.0
+git push origin awg-keeper-agent-v0.1.0
+```
+
+A `workflow_dispatch` run builds the same artifacts and publishes nothing,
+which is how a packaging change is tested without spending a version.
+
+Both packages create the `awgkeeper` system user, `/etc/awg-keeper`,
+`/var/lib/awg-keeper` and the `awg-keeper-agent` systemd unit. On a first
+install the postinstall script generates a token into
+`/etc/awg-keeper/agent.env`; an upgrade never rewrites it. Read that token and
+hand it to the Panel:
+
+```bash
+sudo systemctl enable --now awg-keeper-agent
+sudo grep AWG_KEEPER_TOKEN /etc/awg-keeper/agent.env
+```
 
 ## Commits
 

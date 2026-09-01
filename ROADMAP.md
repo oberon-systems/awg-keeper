@@ -1,0 +1,48 @@
+# Project Roadmap
+
+## Agent
+
+sub-project tag: awg-keeper-agent-v0.0.0
+
+- [x] code basics
+  - FastAPI (HTTP)
+  - configs via Pydantic2
+  - Auth by pre-set token (PSK)
+  - Auth by pre-set SRC IPs (subnets)
+  - awg
+    - add profile
+    - delete profile
+    - show profile
+    - list profiles
+  - xray/reality users (add, delete, show, list)
+  - health, state, structured JSON logs with a request id
+
+- [x] build
+  - build in docker
+  - one binary for agent (shiv zipapp on the distro python)
+  - pack as rpm
+  - pack as deb
+  - deb/rpm create directories, configs, users and systemd unit
+
+- [x] ci/cd
+  - github action for build both rpm and deb by changing sub-project tag (uwe cache)
+  - packages attached to a github release named after the tag
+
+## web / panel
+
+sub-project tag: awg-keeper-web-v0.0.0
+
+- [ ] code basics
+  - FastAPI (HTTP)
+  - configs via Pydantic2
+  - SPA for web ui
+  - base auth with pre-set creds
+  - base auth with src ips (subnets)
+  - store state in sqlite (SQLModel)
+  - docker/docker-compose ready
+
+- [ ] build
+  - docker image
+
+- [ ] ci/cd
+  - github action for build both rpm and deb by changing sub-project tag (uwe cache)
