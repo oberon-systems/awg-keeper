@@ -1,0 +1,29 @@
+target-version = "py311"
+line-length = 88
+# The agent lives under a component src root, so isort is told where the
+# first-party `awg_agent` package is. Setting this replaces the default
+# [".", "src"].
+src = [".", "agent/src"]
+
+[lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # import ordering
+    "B",   # bugbear
+    "UP",  # pyupgrade
+    "ANN", # explicit annotations
+    "D",   # docstrings
+]
+ignore = [
+    "D203", # incompatible with D211
+    "D213", # incompatible with D212
+]
+
+[lint.pydocstyle]
+convention = "pep257"
+
+[lint.per-file-ignores]
+# A test function's name is the sentence its docstring would repeat.
+"**/tests/**" = ["D103"]

@@ -4,10 +4,17 @@
 # here. This file REPLACES the default selection rather than adding
 # to it, so deleting a line removes that file type from the graph.
 
-# Markdown (1 file)
+# Markdown
 *.md
+
+# The agent: sources, tests, packaging and the tooling that gates them.
+*.py
+*.sh
+*.toml
+*.yaml
+*.yml
 
 # Supported but absent from this tree: .bash, .c, .cc, .cjs, .cpp, .cs, .cxx,
 #   .dockerfile, .epp, .erb, .go, .h, .hcl, .hpp, .htm, .html, .java, .js,
-#   .json, .jsx, .kt, .markdown, .mjs, .mk, .php, .phtml, .pp, .py, .rb, .rs,
-#   .scala, .sh, .sql, .tf, .tfvars, .toml, .ts, .tsx, .yaml, .yml
+#   .json, .jsx, .kt, .markdown, .mjs, .mk, .php, .phtml, .pp, .rb, .rs,
+#   .scala, .sql, .tf, .tfvars, .ts, .tsx
