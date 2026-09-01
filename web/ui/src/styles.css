@@ -1,0 +1,117 @@
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, sans-serif;
+  --line: rgba(128, 128, 128, 0.35);
+}
+
+body {
+  margin: 0;
+}
+
+header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+header h1 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.who {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+main {
+  padding: 1.5rem;
+}
+
+main.centre {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  min-width: 20rem;
+}
+
+.card.wide {
+  max-width: 40rem;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.row {
+  flex-direction: row;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+}
+
+input,
+select,
+button {
+  font: inherit;
+  padding: 0.4rem 0.6rem;
+}
+
+table {
+  width: 100%;
+  margin-top: 1.5rem;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+td.key {
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+}
+
+pre {
+  overflow-x: auto;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.problem {
+  color: #b00020;
+}
+
+.warning {
+  font-size: 0.9rem;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+}
