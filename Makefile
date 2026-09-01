@@ -19,13 +19,15 @@ init:  ## Create the virtualenv, install the tooling and wire up the hooks
 	$(PIP) install --upgrade pip
 	$(PIP) install -r requirements.txt
 	$(PIP) install -r agent/requirements.txt -r agent/requirements-dev.txt
+	$(PIP) install -r web/requirements.txt -r web/requirements-dev.txt
 	$(VENV)/bin/pre-commit install
 
 lint:  ## Run the pre-commit hooks over every file
 	$(VENV)/bin/pre-commit run --all-files
 
-test:  ## Run the agent test suite
+test:  ## Run both test suites
 	$(MAKE) -C agent test
+	$(MAKE) -C web test
 
 clean:  ## Remove the virtualenv and the hook environments
 	rm -rf $(VENV) .pre-commit

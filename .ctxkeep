@@ -7,14 +7,22 @@
 # Markdown
 *.md
 
-# The agent: sources, tests, packaging and the tooling that gates them.
+# The agent and the panel: sources, tests, packaging and the tooling that
+# gates them.
 *.py
 *.sh
 *.toml
 *.yaml
 *.yml
 
+# The panel interface.
+*.html
+*.js
+*.json
+*.mjs
+*.ts
+*.tsx
+
 # Supported but absent from this tree: .bash, .c, .cc, .cjs, .cpp, .cs, .cxx,
-#   .dockerfile, .epp, .erb, .go, .h, .hcl, .hpp, .htm, .html, .java, .js,
-#   .json, .jsx, .kt, .markdown, .mjs, .mk, .php, .phtml, .pp, .rb, .rs,
-#   .scala, .sql, .tf, .tfvars, .ts, .tsx
+#   .dockerfile, .epp, .erb, .go, .h, .hcl, .hpp, .htm, .java, .jsx, .kt,
+#   .markdown, .mk, .php, .phtml, .pp, .rb, .rs, .scala, .sql, .tf, .tfvars
