@@ -1,0 +1,8 @@
+# The build context is the agent component. Only pyproject.toml,
+# requirements.txt and src/ are copied, and nothing else needs sending.
+dist/
+tests/
+packaging/
+.pytest_cache/
+__pycache__/
+*.pyc

@@ -1,0 +1,68 @@
+# One description, two packagers. VERSION, ARCH and BINARY come from the
+# Makefile, which builds one zipapp per distribution: pydantic-core is a
+# compiled wheel, so an EL10 build does not run on Debian 13.
+name: awg-keeper-agent
+arch: ${ARCH}
+version: ${VERSION}
+release: "1"
+section: net
+priority: optional
+maintainer: zombig <me@zombig.name>
+description: |
+  Host-side executor for awg-keeper.
+  Manages AmneziaWG peers and Xray users on a host that is already
+  provisioned. Listens on an internal address only, authenticated by a
+  pre-set token and a source-subnet allowlist.
+vendor: oberon-systems
+homepage: https://github.com/oberon-systems/awg-keeper
+license: MIT
+
+depends:
+  - python3
+
+contents:
+  - src: ${BINARY}
+    dst: /usr/bin/awg-keeper-agent
+    file_info:
+      mode: 0755
+
+  - src: packaging/systemd/awg-keeper-agent.service
+    dst: /usr/lib/systemd/system/awg-keeper-agent.service
+
+  - src: packaging/sysusers/awg-keeper.conf
+    dst: /usr/lib/sysusers.d/awg-keeper.conf
+
+  # The example is a package file and is replaced on upgrade. agent.env is
+  # written by the postinstall script and belongs to the host, so it is not
+  # listed here at all: nothing owns it, nothing overwrites it.
+  - src: packaging/agent.env.example
+    dst: /etc/awg-keeper/agent.env.example
+    file_info:
+      mode: 0640
+      owner: root
+      group: awgkeeper
+
+  - dst: /etc/awg-keeper
+    type: dir
+    file_info:
+      mode: 0750
+      owner: root
+      group: awgkeeper
+
+  - dst: /var/lib/awg-keeper
+    type: dir
+    file_info:
+      mode: 0750
+      owner: awgkeeper
+      group: awgkeeper
+
+scripts:
+  postinstall: packaging/scripts/postinstall.sh
+  preremove: packaging/scripts/preremove.sh
+  postremove: packaging/scripts/postremove.sh
+
+rpm:
+  group: Applications/System
+deb:
+  fields:
+    Bugs: https://github.com/oberon-systems/awg-keeper/issues

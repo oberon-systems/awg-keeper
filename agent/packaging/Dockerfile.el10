@@ -1,0 +1,23 @@
+# Builds the zipapp against the Python that EL10 ships. pydantic-core is a
+# compiled wheel, so the ABI of the build image is the ABI of the target.
+FROM rockylinux:10 AS build
+
+# hadolint ignore=DL3041
+RUN dnf install -y --setopt=install_weak_deps=False python3 python3-pip \
+    && dnf clean all
+
+WORKDIR /src
+COPY pyproject.toml requirements.txt ./
+COPY src ./src
+
+RUN python3 -m pip install --no-cache-dir --root-user-action=ignore --break-system-packages shiv==1.0.8 \
+    && python3 -m shiv \
+        --console-script awg-keeper-agent \
+        --python "/usr/bin/env python3" \
+        --compressed \
+        --output-file /awg-keeper-agent.pyz \
+        --requirement requirements.txt \
+        .
+
+FROM scratch AS export
+COPY --from=build /awg-keeper-agent.pyz /
