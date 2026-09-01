@@ -32,7 +32,7 @@ sub-project tag: awg-keeper-agent-v0.0.0
 
 sub-project tag: awg-keeper-web-v0.0.0
 
-- [ ] code basics
+- [x] code basics
   - FastAPI (HTTP)
   - configs via Pydantic2
   - SPA for web ui
@@ -40,9 +40,12 @@ sub-project tag: awg-keeper-web-v0.0.0
   - base auth with src ips (subnets)
   - store state in sqlite (SQLModel)
   - docker/docker-compose ready
+  - alembic migrations from the first commit
+  - client to the agent: a profile pushes its peer to the node
+  - keys generated in the browser, config and QR rendered there
 
-- [ ] build
+- [x] build
   - docker image
 
-- [ ] ci/cd
-  - github action for build both rpm and deb by changing sub-project tag (uwe cache)
+- [x] ci/cd
+  - github action for build and push the image by changing sub-project tag (uwe cache)

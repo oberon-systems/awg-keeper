@@ -17,6 +17,7 @@ model and the milestones, and [ROADMAP.md](ROADMAP.md) for what is built.
 
 - [Development](#development)
 - [Agent](#agent)
+- [Panel](#panel)
 - [Packaging](#packaging)
 - [Commits](#commits)
 
@@ -28,21 +29,24 @@ make lint   # run the pre-commit hooks over every file
 ```
 
 `make init` installs the `pre-commit`, `commit-msg` and `pre-push` hooks, and
-the agent's runtime and test dependencies into the same virtualenv. The
+both components' runtime and test dependencies into the same virtualenv. The
 `pre-commit` cache lives in `.pre-commit/` when `PRE_COMMIT_HOME` points there.
 
-The Agent lives in `agent/` and is self-contained: its own `pyproject.toml`,
-its own test suite, its own packaging. The suite needs neither root nor a real
-tunnel - `agent/tests/conftest.py` puts a fake `awg` and a fake `xray` on
-`PATH` and asserts the exact argv each was handed.
+Each component is self-contained: `agent/` and `web/` carry their own
+`pyproject.toml`, their own suite, their own packaging and their own version.
+Neither suite needs root, a tunnel, a node or a container: `agent/tests` puts a
+fake `awg` and a fake `xray` on `PATH` and asserts the exact argv each was
+handed, and `web/tests` runs against a temporary database and a stub agent.
 
 ```bash
-make test
+make test              # both suites
+make -C web test       # one of them
 ```
 
-Nothing in CI runs the suite, so the `pre-push` hook does: a push that touches
-`agent/` runs it first and is refused if it fails. `make init` installs that
-hook along with the others.
+Nothing in CI runs the suites, so the `pre-push` hooks do: a push that touches
+`agent/` or `web/` runs the matching one first and is refused if it fails. The
+interface is checked there too, by `eslint` and `tsc`, and that hook stands
+aside on a machine with no node installed.
 
 ## Agent
 
@@ -67,6 +71,47 @@ Every route but `/v1/health` needs both the token and a source address inside
 curl -s -H "Authorization: Bearer $AWG_KEEPER_TOKEN" \
     http://127.0.0.1:8081/v1/awg/awg-mgmt/peers
 ```
+
+## Panel
+
+The Panel is the container half: FastAPI serves the JSON API and the built
+interface, SQLite on a volume holds the desired state, and alembic runs on
+every start. Its settings are environment only, with the `AWG_PANEL_` prefix;
+`web/.env.example` lists them and `docker compose` passes them through.
+
+Both secrets are generated rather than typed. The session key signs the
+cookie, and the password is stored only as an argon2id hash:
+
+```bash
+openssl rand -hex 32
+PYTHONPATH=web/src .venv/bin/python -c \
+    "from awg_panel.auth import hash_password; print(hash_password('...'))"
+```
+
+```bash
+cp web/.env.example web/.env
+docker compose -f web/docker-compose.yaml up -d
+```
+
+The compose file puts the Panel on a network of its own and publishes it on
+loopback: a reverse proxy in front of it terminates TLS, and the Agent binds
+that network's gateway on the host rather than `docker0`. The session cookie is
+`Secure`, so a plain-http run needs `AWG_PANEL_COOKIE_SECURE=false` - only ever
+for local development.
+
+### Key custody
+
+A profile's private key is generated in the browser with
+[@noble/curves](https://github.com/paulmillr/noble-curves) and never sent. The
+Panel is told the public half, allocates an address, pushes the peer to the
+Agent and returns a config template with the private key left as a
+placeholder; the interface fills it in locally and renders the `.conf` and the
+QR code. That is the only moment the configuration exists, and the interface
+says so - afterwards the only option is to issue the profile again.
+
+Released addresses are quarantined for a week before they are handed out
+again, so a config still sitting in someone's pocket cannot start pointing at a
+different profile.
 
 ## Packaging
 
@@ -111,6 +156,17 @@ git push origin awg-keeper-agent-v0.1.0
 
 A `workflow_dispatch` run builds the same artifacts and publishes nothing,
 which is how a packaging change is tested without spending a version.
+
+The Panel ships as a container image instead, built the same way and released
+by its own sub-project tag. `make -C web bump` moves `web/pyproject.toml`, the
+`__version__`, `web/ui/package.json` and the tag in `ROADMAP.md`; pushing the
+tag makes `.github/workflows/web-release.yml` build the image and push it to
+`ghcr.io` as that version and as `latest`.
+
+```bash
+make -C web image     # locally
+git push origin awg-keeper-web-v0.1.0
+```
 
 Both packages create the `awgkeeper` system user, `/etc/awg-keeper`,
 `/var/lib/awg-keeper` and the `awg-keeper-agent` systemd unit. On a first
