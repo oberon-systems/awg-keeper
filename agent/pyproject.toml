@@ -1,0 +1,43 @@
+[project]
+name = "awg-keeper-agent"
+version = "0.0.0"
+description = "Host-side executor for awg-keeper: AmneziaWG peers and Xray users"
+requires-python = ">=3.11"
+authors = [
+    { name = "zombig", email = "me@zombig.name" }
+]
+dependencies = [
+    "fastapi>=0.141",
+    "pydantic>=2.13",
+    "pydantic-settings>=2.15",
+    "uvicorn>=0.52",
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: No Input/Output (Daemon)",
+    "Framework :: FastAPI",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: System :: Networking",
+]
+
+[project.scripts]
+awg-keeper-agent = "awg_agent.__main__:main"
+
+[project.urls]
+Repository = "https://github.com/oberon-systems/awg-keeper"
+Issues = "https://github.com/oberon-systems/awg-keeper/issues"
+
+[dependency-groups]
+dev = ["httpx>=0.28", "pytest>=9"]
+
+[build-system]
+requires = ["uv_build>=0.8.13,<0.9.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "awg_agent"
