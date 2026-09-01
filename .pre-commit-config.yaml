@@ -93,8 +93,6 @@ repos:
         additional_dependencies: [wyld-cz==0.2.2]
         stages: [pre-push]
 
-  # The SPA hooks -- prettier, eslint, tsc -- belong here once web/ exists.
-
   - repo: meta
     hooks:
       - id: check-useless-excludes
@@ -129,13 +127,34 @@ repos:
         language: script
         stages: [commit-msg]
 
-      # The suite is the local release gate: nothing in CI runs it, so it runs
-      # here. At pre-push rather than pre-commit, and only when agent/ moved.
+      # The suites are the local release gate: nothing in CI runs them, so they
+      # run here. At pre-push rather than pre-commit, and only when the
+      # component they cover actually moved.
       - id: agent-tests
         name: Run the agent test suite
         entry: make -C agent test
         language: system
         types: [file]
         files: ^agent/
+        pass_filenames: false
+        stages: [pre-push]
+
+      - id: panel-tests
+        name: Run the panel test suite
+        entry: make -C web test
+        language: system
+        types: [file]
+        files: ^web/
+        pass_filenames: false
+        stages: [pre-push]
+
+      # Skips itself where node is not installed: the image builds the
+      # interface in a stage of its own, so node is not required to work here.
+      - id: ui-checks
+        name: Run eslint and tsc over the interface
+        entry: web/scripts/ui-check.sh
+        language: script
+        types: [file]
+        files: ^web/ui/
         pass_filenames: false
         stages: [pre-push]
