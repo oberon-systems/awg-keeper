@@ -84,6 +84,21 @@ The artifacts land in `agent/dist/`. The version comes from the sub-project
 tag - `awg-keeper-agent-v1.2.3` builds `1.2.3` - and an untagged tree builds
 `0.0.0`.
 
+The tag is written by commitizen, not by hand. `agent/.cz.yaml` gives the agent
+a version of its own, so a bump moves `agent/pyproject.toml`, the `__version__`
+the health endpoint reports and the sub-project tag in `ROADMAP.md`, then tags
+the result:
+
+```bash
+make -C agent bump
+```
+
+The bump is the agent's alone. commitizen cannot filter commits by path, so
+`agent/scripts/bump.sh` derives the increment from the commits that touched
+`agent/` and hands it over: `feat` moves the minor, `fix` and `refactor` the
+patch, `build` and `docs` move nothing. A commit against another sub-project
+never moves the agent.
+
 Pushing that tag is what publishes a release: `.github/workflows/agent-release.yml`
 runs the test suite, builds one zipapp per distribution with a Buildx cache of
 its own, packages both through the same `make` targets used here, and attaches

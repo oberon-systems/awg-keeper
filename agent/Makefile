@@ -22,7 +22,7 @@ NFPM_RUN = $(DOCKER) run --rm -u $(shell id -u):$(shell id -g) \
 
 .DEFAULT_GOAL := help
 
-.PHONY: help lint test run binaries rpm deb package clean
+.PHONY: help lint test run bump binaries rpm deb package clean
 
 help:  ## Show the available targets
 	@echo "awg-keeper agent"
@@ -45,6 +45,15 @@ test:  ## Run the unit tests against the fake awg and xray binaries
 		$(VENV)/bin/pytest -q; \
 	else \
 		$(PYTHON) -m pytest -q; \
+	fi
+
+# scripts/bump.sh reads only the commits that touched agent/ and reads
+# agent/.cz.yaml, so the version and the tag it writes are the agent's alone.
+bump:  ## Bump the agent version from the agent commits and tag it
+	@if [ -x $(VENV)/bin/cz ]; then \
+		CZ=$(VENV)/bin/cz scripts/bump.sh; \
+	else \
+		CZ="$(PYTHON) -m commitizen" scripts/bump.sh; \
 	fi
 
 run:  ## Run the agent in the foreground, reading AWG_KEEPER_* from the environment
