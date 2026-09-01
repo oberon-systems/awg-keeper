@@ -1,0 +1,31 @@
+# The panel carries a version of its own, the same way the agent does. Running
+# cz from this directory picks this file up instead of the one at the root.
+#
+# Reach it through `make -C web bump`: commitizen cannot filter commits by
+# path, so scripts/bump.sh derives the increment from the panel's commits alone
+# and passes it in.
+commitizen:
+  name: wyld_cz
+
+  # pep621 reads and writes [project] version in web/pyproject.toml, which is
+  # the one place the version is edited. The files below follow it.
+  version_provider: pep621
+  version_files:
+    - src/awg_panel/__init__.py:__version__
+    - ui/package.json:"version"
+    - ../ROADMAP.md:awg-keeper-web-v
+
+  tag_format: awg-keeper-web-v$version
+  # The plugin's own default is "bump: version X -> Y", which the commit-msg
+  # hook rejects: it enforces the [type][scope] shape on every commit.
+  bump_message: "[build][panel]: bump the panel to $new_version"
+  major_version_zero: true
+  update_changelog_on_bump: false
+
+  allowed_prefixes:
+    - Merge
+    - Revert
+    - Pull request
+    - fixup!
+    - squash!
+    - amend!

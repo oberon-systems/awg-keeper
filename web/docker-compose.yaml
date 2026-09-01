@@ -1,0 +1,29 @@
+# The panel on a network of its own. The agent binds this network's gateway on
+# the host, so the bridge is what carries the token - never docker0, which
+# every other container on the host can reach.
+services:
+  panel:
+    image: ghcr.io/oberon-systems/awg-keeper/panel:${PANEL_TAG:-latest}
+    build:
+      context: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      AWG_PANEL_AGENT_URL: http://${AGENT_GATEWAY:-172.30.0.1}:8081
+    volumes:
+      - panel-data:/var/lib/awg-keeper
+    networks:
+      - panel
+    ports:
+      # Bound to loopback: a reverse proxy in front of it terminates TLS, and
+      # the panel is never published to the network itself.
+      - "127.0.0.1:8000:8000"
+
+networks:
+  panel:
+    ipam:
+      config:
+        - subnet: ${PANEL_SUBNET:-172.30.0.0/24}
+
+volumes:
+  panel-data:

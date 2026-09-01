@@ -1,0 +1,9 @@
+# The build context is the panel component. The image builds the interface from
+# ui/ and installs the panel from src/, and needs nothing else.
+tests/
+scripts/
+ui/node_modules/
+ui/dist/
+.env
+__pycache__/
+*.pyc
