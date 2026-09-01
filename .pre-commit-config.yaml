@@ -128,3 +128,14 @@ repos:
         entry: hooks/check-commit-trailers.sh
         language: script
         stages: [commit-msg]
+
+      # The suite is the local release gate: nothing in CI runs it, so it runs
+      # here. At pre-push rather than pre-commit, and only when agent/ moved.
+      - id: agent-tests
+        name: Run the agent test suite
+        entry: make -C agent test
+        language: system
+        types: [file]
+        files: ^agent/
+        pass_filenames: false
+        stages: [pre-push]
