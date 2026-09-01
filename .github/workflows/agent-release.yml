@@ -1,0 +1,96 @@
+name: Release the agent
+
+# The sub-project tag is the release trigger: awg-keeper-agent-v1.2.3 publishes
+# 1.2.3. A dispatch run builds the same artifacts and publishes nothing.
+on:
+  push:
+    tags:
+      - "awg-keeper-agent-v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Sub-project tag to build"
+        required: true
+        default: "awg-keeper-agent-v0.0.0"
+
+concurrency:
+  group: agent-release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+# The suite is a local gate, not a CI one: this workflow packages what is
+# already tested on the machine the tag was pushed from.
+jobs:
+  package:
+    name: Package for ${{ matrix.distro }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distro: el10
+            packager: rpm
+          - distro: deb13
+            packager: deb
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Derive the version from the tag
+        id: version
+        run: |
+          tag="${{ inputs.tag || github.ref_name }}"
+          echo "version=${tag#awg-keeper-agent-v}" >>"$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # One cache scope per distribution: the two images share no layers, and a
+      # shared scope would have them evict each other on every run.
+      - name: Build the zipapp
+        uses: docker/build-push-action@v5
+        with:
+          context: ./agent
+          file: ./agent/packaging/Dockerfile.${{ matrix.distro }}
+          target: export
+          outputs: type=local,dest=agent/dist/${{ matrix.distro }}
+          cache-from: type=gha,scope=${{ matrix.distro }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.distro }}
+
+      # The zipapp is already on disk, so this target only runs nfpm. Local and
+      # CI package through the same recipe.
+      - name: Build the package
+        run: make -C agent ${{ matrix.packager }} VERSION=${{ steps.version.outputs.version }}
+
+      - name: Upload the package
+        uses: actions/upload-artifact@v4
+        with:
+          name: awg-keeper-agent-${{ matrix.packager }}
+          path: agent/dist/*.${{ matrix.packager }}
+          if-no-files-found: error
+          retention-days: 7
+
+  release:
+    name: Publish the release
+    needs: package
+    if: startsWith(github.ref, 'refs/tags/awg-keeper-agent-v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download the packages
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Publish
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Agent ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true
+          files: |
+            dist/*.rpm
+            dist/*.deb
