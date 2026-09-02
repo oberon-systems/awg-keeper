@@ -10,7 +10,7 @@ from sqlmodel import Session, SQLModel, select
 from awg_panel import pool
 from awg_panel.config import Settings
 from awg_panel.db import build_engine
-from awg_panel.models import AwgPeer, Interface, ReleasedIp
+from awg_panel.models import AwgPeer, Interface, Profile, ReleasedIp
 
 
 @pytest.fixture
@@ -25,6 +25,14 @@ def _interface(session: Session) -> Interface:
     return session.exec(select(Interface)).one()
 
 
+def _profile(session: Session, name: str = "someone") -> int:
+    """Add the profile a peer has to belong to: the foreign keys are enforced."""
+    profile = Profile(name=name)
+    session.add(profile)
+    session.flush()
+    return int(profile.id or 0)
+
+
 def test_the_first_address_skips_the_server(session: Session) -> None:
     interface = _interface(session)
     assert pool.allocate(session, interface) == "10.8.0.2/32"
@@ -34,7 +42,7 @@ def test_a_taken_address_is_not_offered_again(session: Session) -> None:
     interface = _interface(session)
     session.add(
         AwgPeer(
-            profile_id=1,
+            profile_id=_profile(session),
             interface_id=int(interface.id or 0),
             public_key="a" * 43 + "=",
             assigned_ip="10.8.0.2/32",
@@ -72,7 +80,7 @@ def test_an_exhausted_pool_is_reported(session: Session) -> None:
     session.flush()
     session.add(
         AwgPeer(
-            profile_id=1,
+            profile_id=_profile(session),
             interface_id=int(interface.id or 0),
             public_key="b" * 43 + "=",
             assigned_ip="10.9.0.2/32",
