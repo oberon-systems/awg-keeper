@@ -34,7 +34,7 @@ A client/server toolset for managing user profiles for AmneziaWG and Xray + Real
 
 ## Architecture
 
-```
+```text
 browser ──TLS──> reverse proxy ──> Panel (docker)
                                      │  desired state, idempotent PUT
                                      │  HTTP + bearer token
@@ -67,7 +67,7 @@ closed in between.
 
 **Privileges.** A dedicated system user, not root:
 
-```
+```ini
 User=awgkeeper
 AmbientCapabilities=CAP_NET_ADMIN
 CapabilityBoundingSet=CAP_NET_ADMIN
