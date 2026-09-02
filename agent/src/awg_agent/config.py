@@ -8,11 +8,12 @@ unauthenticated.
 
 from __future__ import annotations
 
+import os
 from ipaddress import IPv4Network, IPv6Network, ip_network
 from pathlib import Path
 from typing import Annotated
 
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 TOKEN_MIN = 32
@@ -75,6 +76,24 @@ class Settings(BaseSettings):
             known = ", ".join(sorted(LOG_LEVELS))
             raise ValueError(f"unknown log level {value!r}; one of {known}")
         return level
+
+    @model_validator(mode="after")
+    def _no_unknown_variables(self) -> Settings:
+        """Refuse a misspelled variable rather than ignoring it.
+
+        pydantic-settings drops an environment variable that maps to no field,
+        so AWG_KEEPER_ALOWED_SUBNETS would leave the allowlist empty and say
+        nothing about it.
+        """
+        known = {f"AWG_KEEPER_{name}".upper() for name in type(self).model_fields}
+        unknown = sorted(
+            name
+            for name in os.environ
+            if name.upper().startswith("AWG_KEEPER_") and name.upper() not in known
+        )
+        if unknown:
+            raise ValueError(f"unknown settings: {', '.join(unknown)}")
+        return self
 
     def reachable_from(self) -> tuple[Network, ...]:
         """Which sources the API answers, with the empty case spelled out."""
