@@ -3,11 +3,11 @@
 FROM node:22-alpine AS ui
 
 WORKDIR /ui
-COPY ui/package.json ./
-# No lockfile is committed yet, so this resolves the ranges in package.json.
-# Commit ui/package-lock.json and switch this to `npm ci` for a reproducible
-# image.
-RUN npm install --no-audit --no-fund
+# From the lockfile, so the image is the same one twice. The interface is a
+# private package and carries no version of its own: the panel's version is the
+# component's, and a version here would only drift out of the lockfile.
+COPY ui/package.json ui/package-lock.json ./
+RUN npm ci --no-audit --no-fund
 
 COPY ui/ ./
 RUN npm run build

@@ -12,7 +12,6 @@ commitizen:
   version_provider: pep621
   version_files:
     - src/awg_panel/__init__.py:__version__
-    - ui/package.json:"version"
     - ../ROADMAP.md:awg-keeper-web-v
 
   tag_format: awg-keeper-web-v$version
