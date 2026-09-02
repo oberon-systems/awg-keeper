@@ -215,9 +215,9 @@ stored raw.
 
 - Agent: `rpm` for EL10, `deb` for Debian 13. A venv under `/opt/awg-keeper` is
   not portable across those two, so each is built in its own container
-  (`rockylinux:10`, `debian:13`); one `nfpm.yaml` emits both artifacts. Ships the
-  systemd unit, a sysusers entry, config in `/etc/awg-keeper`, state in
-  `/var/lib/awg-keeper`.
+  (`quay.io/rockylinux/rockylinux:10`, `debian:13`); one `nfpm.yaml` emits both
+  artifacts. Ships the systemd unit, a sysusers entry, config in
+  `/etc/awg-keeper`, state in `/var/lib/awg-keeper`.
 - Panel: container image; `docker compose` with the dedicated network, a volume
   for SQLite, and a reverse proxy terminating TLS.
 

@@ -21,7 +21,10 @@ depends:
   - python3
 
 contents:
+  # The only entry carrying a variable. nfpm expands the top-level fields
+  # unconditionally, but a content path only when the entry asks for it.
   - src: ${BINARY}
+    expand: true
     dst: /usr/bin/awg-keeper-agent
     file_info:
       mode: 0755
