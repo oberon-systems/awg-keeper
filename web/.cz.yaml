@@ -17,7 +17,7 @@ commitizen:
   tag_format: awg-keeper-web-v$version
   # The plugin's own default is "bump: version X -> Y", which the commit-msg
   # hook rejects: it enforces the [type][scope] shape on every commit.
-  bump_message: "[build][panel]: bump the panel to $new_version"
+  bump_message: "[build][web]: bump the web to $new_version"
   major_version_zero: true
   update_changelog_on_bump: false
 
