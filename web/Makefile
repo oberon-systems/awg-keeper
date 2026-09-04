@@ -15,7 +15,7 @@ VERSION := $(if $(VERSION),$(VERSION),0.0.0)
 
 .DEFAULT_GOAL := help
 
-.PHONY: help lint test run bump ui image clean
+.PHONY: help lint test run secrets bump ui image clean
 
 help:  ## Show the available targets
 	@echo "awg-keeper panel $(VERSION)"
@@ -59,6 +59,13 @@ run:  ## Run the panel in the foreground, reading AWG_PANEL_* from the environme
 		PYTHONPATH=src $(VENV)/bin/python -m awg_panel; \
 	else \
 		PYTHONPATH=src $(PYTHON) -m awg_panel; \
+	fi
+
+secrets:  ## Mint the panel's secrets - pass ARGS=--ask to type the password
+	@if [ -x $(VENV)/bin/python ]; then \
+		PYTHONPATH=src $(VENV)/bin/python -m awg_panel.provision $(ARGS); \
+	else \
+		PYTHONPATH=src $(PYTHON) -m awg_panel.provision $(ARGS); \
 	fi
 
 clean:  ## Remove the built interface

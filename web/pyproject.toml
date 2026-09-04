@@ -30,6 +30,7 @@ classifiers = [
 
 [project.scripts]
 awg-keeper-panel = "awg_panel.__main__:main"
+awg-panel-secrets = "awg_panel.provision:main"
 
 [project.urls]
 Repository = "https://github.com/oberon-systems/awg-keeper"

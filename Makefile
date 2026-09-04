@@ -5,7 +5,7 @@ PIP := $(VENV)/bin/pip
 
 .DEFAULT_GOAL := help
 
-.PHONY: help init lint test clean
+.PHONY: help init lint test secrets clean
 
 help:  ## Show the available targets
 	@echo "awg-keeper"
@@ -28,6 +28,9 @@ lint:  ## Run the pre-commit hooks over every file
 test:  ## Run both test suites
 	$(MAKE) -C agent test
 	$(MAKE) -C web test
+
+secrets:  ## Mint the panel's secrets for a new deployment
+	$(MAKE) -C web secrets
 
 clean:  ## Remove the virtualenv and the hook environments
 	rm -rf $(VENV) .pre-commit

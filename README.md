@@ -79,14 +79,17 @@ interface, SQLite on a volume holds the desired state, and alembic runs on
 every start. Its settings are environment only, with the `AWG_PANEL_` prefix;
 `web/.env.example` lists them and `docker compose` passes them through.
 
-Both secrets are generated rather than typed. The session key signs the
-cookie, and the password is stored only as an argon2id hash:
+The secrets are minted by one command. It writes the `.env` block to stdout
+and the generated admin password to stderr - once, because the panel keeps the
+argon2id hash and nothing can give the plaintext back:
 
 ```bash
-openssl rand -hex 32
-PYTHONPATH=web/src .venv/bin/python -c \
-    "from awg_panel.auth import hash_password; print(hash_password('...'))"
+make secrets
+make secrets ARGS=--ask > web/.env
 ```
+
+The session key signs the session cookie, the admin password is stored only as
+its hash, and the agent token is the one the Agent must be installed with.
 
 ```bash
 cp web/.env.example web/.env
