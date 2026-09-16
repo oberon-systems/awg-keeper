@@ -7,6 +7,10 @@
 commitizen:
   name: wyld_cz
 
+  changelog_file: CHANGELOG.md
+  changelog_paths:
+  - web
+
   # pep621 reads and writes [project] version in web/pyproject.toml, which is
   # the one place the version is edited. The files below follow it.
   version_provider: pep621
@@ -19,7 +23,7 @@ commitizen:
   # hook rejects: it enforces the [type][scope] shape on every commit.
   bump_message: "[build][web]: bump the web to $new_version"
   major_version_zero: true
-  update_changelog_on_bump: false
+  update_changelog_on_bump: true
 
   allowed_prefixes:
     - Merge
