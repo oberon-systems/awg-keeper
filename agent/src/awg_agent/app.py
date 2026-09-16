@@ -39,10 +39,25 @@ def _on_command(request: Request, exc: Exception) -> JSONResponse:
     return _problem(502, "the host tool failed; see the agent log")
 
 
+def _on_unexpected(request: Request, exc: Exception) -> JSONResponse:
+    LOG.exception("unhandled error on %s %s", request.method, request.url.path)
+    return _problem(500, "internal error; see the agent log")
+
+
 def create_app(settings: Settings | None = None) -> FastAPI:
     """Assemble the application around one Settings instance."""
     settings = settings or Settings()
     logs.configure(settings.log_level)
+    LOG.info(
+        "agent %s on %s:%d, interfaces %s, allowed from %s, awg %s, xray %s",
+        __version__,
+        settings.bind,
+        settings.port,
+        ",".join(settings.interfaces) or "(any)",
+        ",".join(str(net) for net in settings.reachable_from()),
+        settings.awg_bin,
+        settings.xray_bin,
+    )
 
     app = FastAPI(
         title="awg-keeper agent",
@@ -61,6 +76,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_exception_handler(LookupError, _on_missing)
     app.add_exception_handler(ValueError, _on_invalid)
     app.add_exception_handler(CommandError, _on_command)
+    app.add_exception_handler(Exception, _on_unexpected)
 
     app.include_router(api.public)
     app.include_router(api.private)

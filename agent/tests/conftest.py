@@ -56,6 +56,9 @@ if argv[:1] == ["--version"]:
     print("amneziawg-tools v1.0.20241018")
 elif argv[:2] == ["show", "interfaces"]:
     print(" ".join(state))
+elif len(argv) == 3 and argv[0] == "show" and argv[2] == "peers":
+    for key in state[argv[1]]["peers"]:
+        print(key)
 elif len(argv) == 3 and argv[0] == "show" and argv[2] == "dump":
     iface = state[argv[1]]
     print("\\t".join(["(none)", iface["public_key"], str(iface["listen_port"]), "off"]))

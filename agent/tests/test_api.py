@@ -6,9 +6,10 @@ import json
 from pathlib import Path
 
 import pytest
-from conftest import KEY_A, KEY_B, UUID_B, argv_log
+from conftest import KEY_A, KEY_B, SOURCE, TOKEN, UUID_B, argv_log
 from fastapi.testclient import TestClient
 
+from awg_agent.app import create_app
 from awg_agent.config import Settings
 
 
@@ -102,3 +103,43 @@ def test_an_unknown_inbound_is_404(client: TestClient) -> None:
 def test_the_request_id_is_echoed(client: TestClient) -> None:
     answer = client.get("/v1/health", headers={"X-Request-Id": "abc123"})
     assert answer.headers["X-Request-Id"] == "abc123"
+
+
+def test_status_reports_what_awg_shows(client: TestClient, host: Path) -> None:
+    body = client.get("/v1/status").json()
+    assert body["error"] is None
+    assert body["interfaces"] == [
+        {"name": "awg0", "present": True, "peers": 1, "error": None}
+    ]
+    assert not [line for line in argv_log(host) if "dump" in line]
+
+
+def test_status_names_an_interface_awg_does_not_list(settings: Settings) -> None:
+    wider = settings.model_copy(update={"interfaces": ["awg0", "awg9"]})
+    with TestClient(create_app(wider), client=SOURCE) as test_client:
+        body = test_client.get(
+            "/v1/status", headers={"Authorization": f"Bearer {TOKEN}"}
+        ).json()
+    assert body["interfaces"][1] == {
+        "name": "awg9",
+        "present": False,
+        "peers": 0,
+        "error": "not listed by awg",
+    }
+
+
+def test_status_carries_the_failure_instead_of_a_502(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("FAKE_AWG_FAIL", "1")
+    answer = client.get("/v1/status")
+    assert answer.status_code == 200
+    reason = "exited 1: awg: RTNETLINK answers: Operation not permitted"
+    assert answer.json()["error"] == reason
+    assert answer.json()["interfaces"][0]["error"] == reason
+
+
+def test_status_needs_the_token(client: TestClient) -> None:
+    del client.headers["Authorization"]
+    assert client.get("/v1/status").status_code == 401

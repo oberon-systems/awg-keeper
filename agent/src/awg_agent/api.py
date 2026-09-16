@@ -19,6 +19,7 @@ from awg_agent.models import (
     Peer,
     PeerCreate,
     State,
+    Status,
     XrayInbound,
     XrayUser,
     XrayUserCreate,
@@ -61,7 +62,27 @@ def state(request: Request) -> State:
         # A host with no Xray is a supported deployment, not a failed request.
         LOG.info("no xray state: %s", exc)
 
+    LOG.info(
+        "state: %d interfaces, %d peers, %d inbounds",
+        len(found),
+        sum(len(item.peers) for item in found),
+        len(inbounds),
+    )
     return State(interfaces=found, inbounds=inbounds)
+
+
+@private.get("/status")
+def status(request: Request) -> Status:
+    """Health, and what awg shows per interface; a failure is reported, not raised."""
+    settings = settings_of(request)
+    interfaces, error = awg.probe(settings)
+    return Status(
+        version=__version__,
+        awg=awg.version(settings),
+        xray=xray.version(settings),
+        interfaces=interfaces,
+        error=error,
+    )
 
 
 @private.get("/awg/{iface}/peers")

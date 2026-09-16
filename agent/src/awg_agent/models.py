@@ -95,3 +95,21 @@ class Health(BaseModel):
     version: str
     awg: str | None = None
     xray: str | None = None
+
+
+class InterfaceHealth(BaseModel):
+    """An interface as awg shows it, or the reason it could not."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    name: str
+    present: bool
+    peers: int = 0
+    error: str | None = None
+
+
+class Status(Health):
+    """Health, and what the host shows for the interfaces this agent drives."""
+
+    interfaces: list[InterfaceHealth] = []
+    error: str | None = None

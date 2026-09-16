@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import logging
 import sys
+import time
 import uuid
 from collections.abc import Awaitable, Callable
 from contextvars import ContextVar
@@ -13,6 +14,7 @@ from fastapi import Request, Response
 
 HEADER = "X-Request-Id"
 REQUEST_ID: ContextVar[str] = ContextVar("request_id", default="-")
+ACCESS = logging.getLogger("awg_agent.access")
 
 
 class JsonFormatter(logging.Formatter):
@@ -37,7 +39,9 @@ def configure(level: str) -> None:
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(JsonFormatter())
     root = logging.getLogger()
-    root.handlers = [handler]
+    # Replaces only an earlier JSON handler, so a test's capturing handler survives.
+    kept = [h for h in root.handlers if not isinstance(h.formatter, JsonFormatter)]
+    root.handlers = [*kept, handler]
     root.setLevel(level)
 
 
@@ -45,12 +49,23 @@ async def request_id(
     request: Request,
     call_next: Callable[[Request], Awaitable[Response]],
 ) -> Response:
-    """Adopt the Panel's request id, or mint one, and echo it back."""
+    """Adopt the Panel's request id, or mint one, echo it back, log the call."""
     current = request.headers.get(HEADER, "").strip() or uuid.uuid4().hex
     token = REQUEST_ID.set(current)
+    started = time.monotonic()
+    status = 500
     try:
         response = await call_next(request)
+        status = response.status_code
     finally:
+        ACCESS.info(
+            "%s %s %d %.1fms from %s",
+            request.method,
+            request.url.path,
+            status,
+            (time.monotonic() - started) * 1000,
+            request.client.host if request.client else "-",
+        )
         REQUEST_ID.reset(token)
 
     response.headers[HEADER] = current

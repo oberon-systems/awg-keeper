@@ -13,7 +13,7 @@ from pathlib import Path
 from awg_agent import validate
 from awg_agent.commands import CommandError, run
 from awg_agent.config import Settings
-from awg_agent.models import Interface, Peer
+from awg_agent.models import Interface, InterfaceHealth, Peer
 
 LOG = logging.getLogger(__name__)
 
@@ -65,7 +65,51 @@ def interfaces(settings: Settings) -> list[str]:
     present = names.split()
     if not settings.interfaces:
         return present
+    for name in settings.interfaces:
+        if name not in present:
+            LOG.warning("interface %s is configured but awg does not list it", name)
     return [name for name in settings.interfaces if name in present]
+
+
+def _reason(exc: CommandError) -> str:
+    lines = exc.stderr.splitlines()
+    detail = f"{exc.reason}: {lines[0]}" if lines else exc.reason
+    return detail[:200]
+
+
+def probe(settings: Settings) -> tuple[list[InterfaceHealth], str | None]:
+    """Report what awg shows for every configured interface, or why it cannot.
+
+    Only `show interfaces` and `show <iface> peers`: neither prints a private key.
+    """
+    try:
+        present = run(
+            [settings.awg_bin, "show", "interfaces"], settings.command_timeout
+        ).split()
+    except CommandError as exc:
+        reason = _reason(exc)
+        found = [
+            InterfaceHealth(name=name, present=False, error=reason)
+            for name in settings.interfaces
+        ]
+        return found, reason
+
+    found = []
+    for name in settings.interfaces or present:
+        if name not in present:
+            found.append(
+                InterfaceHealth(name=name, present=False, error="not listed by awg")
+            )
+            continue
+        try:
+            keys = run(
+                [settings.awg_bin, "show", name, "peers"], settings.command_timeout
+            ).split()
+        except CommandError as exc:
+            found.append(InterfaceHealth(name=name, present=True, error=_reason(exc)))
+            continue
+        found.append(InterfaceHealth(name=name, present=True, peers=len(keys)))
+    return found, None
 
 
 def show(settings: Settings, iface: str) -> Interface:

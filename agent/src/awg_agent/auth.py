@@ -29,12 +29,15 @@ def require_token(request: Request, authorization: str = Header(default="")) -> 
     Both sides are encoded first: compare_digest raises TypeError on a string
     holding non-ASCII, which would turn a bad header into a 500.
     """
+    source = request.client.host if request.client else "-"
     scheme, _, offered = authorization.partition(" ")
     if scheme.lower() != "bearer" or not offered:
+        LOG.warning("refused %s: missing bearer token", source)
         raise HTTPException(401, "missing bearer token", UNAUTHENTICATED)
 
     expected = settings_of(request).token
     if not secrets.compare_digest(offered.encode("utf-8"), expected.encode("utf-8")):
+        LOG.warning("refused %s: bad token", source)
         raise HTTPException(401, "bad token", UNAUTHENTICATED)
 
 
