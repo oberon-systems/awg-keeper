@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { api, type Interface, type Issued, type Profile } from "../api";
+import { api, type Interface, type Issued, type Node, type Profile } from "../api";
 import { IssuedConfig } from "./IssuedConfig";
 import { fillConfig, generateKeyPair } from "../keys";
 
 export function Profiles() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [interfaces, setInterfaces] = useState<Interface[]>([]);
+  const [nodes, setNodes] = useState<Node[]>([]);
+  const [node, setNode] = useState<number | null>(null);
   const [name, setName] = useState("");
   const [note, setNote] = useState("");
   const [chosen, setChosen] = useState<number | null>(null);
@@ -20,10 +22,20 @@ export function Profiles() {
     setProfiles(await api.profiles());
   }, []);
 
+  const offered = interfaces.filter((item) => item.node_id === node);
+
+  function pickNode(id: number) {
+    setNode(id);
+    setChosen(interfaces.find((item) => item.node_id === id)?.id ?? null);
+  }
+
   useEffect(() => {
-    void api.interfaces().then((found) => {
+    void Promise.all([api.nodes(), api.interfaces()]).then(([agents, found]) => {
+      const first = agents[0]?.id ?? null;
+      setNodes(agents);
       setInterfaces(found);
-      setChosen((current) => current ?? found[0]?.id ?? null);
+      setNode(first);
+      setChosen(found.find((item) => item.node_id === first)?.id ?? null);
     });
     void reload();
   }, [reload]);
@@ -31,7 +43,7 @@ export function Profiles() {
   async function create(event: React.FormEvent) {
     event.preventDefault();
     if (chosen === null) {
-      setProblem("there is no interface to issue against");
+      setProblem("this agent has no interface to issue against");
       return;
     }
 
@@ -83,23 +95,42 @@ export function Profiles() {
           <input value={note} onChange={(event) => setNote(event.target.value)} />
         </label>
         <label>
-          Interface
+          Agent
           <select
-            value={chosen ?? ""}
-            onChange={(event) => setChosen(Number(event.target.value))}
+            value={node ?? ""}
+            onChange={(event) => pickNode(Number(event.target.value))}
           >
-            {interfaces.map((item) => (
+            {nodes.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.name}
               </option>
             ))}
           </select>
         </label>
-        <button type="submit" disabled={busy || !name}>
+        <label>
+          Interface
+          <select
+            value={chosen ?? ""}
+            disabled={offered.length === 0}
+            onChange={(event) => setChosen(Number(event.target.value))}
+          >
+            {offered.map((item) => (              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button type="submit" disabled={busy || !name || chosen === null}>
           Add profile
         </button>
       </form>
 
+      {nodes.length === 0 ? (
+        <p className="warning">No agents: add a node to the database.</p>
+      ) : null}
+      {node !== null && offered.length === 0 ? (
+        <p className="warning">This agent has no interfaces: add them to the database.</p>
+      ) : null}
       {problem ? <p className="problem">{problem}</p> : null}
 
       <table>

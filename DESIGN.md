@@ -139,7 +139,8 @@ key, a `shortId`, the SNI and the fingerprint.
 
 ### Data model
 
-- `node` — id, name, endpoint, token ref, last_seen, status. v1: exactly one row.
+- `node` — id, name, endpoint, token ref, last_seen, status. One row per agent,
+  added by hand.
 - `interface` — node_id, name, listen_port, address CIDR, DNS, MTU, server public
   key, **obfuscation params**, peer pool CIDR.
 - `profile` — name, note, enabled, created_at, expires_at.

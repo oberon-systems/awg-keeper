@@ -51,3 +51,11 @@ def test_an_unknown_variable_is_a_typo(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("AWG_PANEL_ADMIN_USR", "root")
     with pytest.raises(ValidationError):
         Settings()
+
+
+def test_the_agent_url_is_no_longer_a_setting(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("AWG_PANEL_SECRET_KEY", SECRET)
+    monkeypatch.setenv("AWG_PANEL_ADMIN_PASSWORD_HASH", HASH)
+    monkeypatch.setenv("AWG_PANEL_AGENT_URL", "http://127.0.0.1:8081")
+    with pytest.raises(ValidationError, match="AWG_PANEL_AGENT_URL"):
+        Settings()

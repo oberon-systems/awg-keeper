@@ -87,7 +87,8 @@ td {
   border-bottom: 1px solid var(--line);
 }
 
-td.key {
+td.key,
+.key {
   font-family: ui-monospace, monospace;
   font-size: 0.8rem;
 }
@@ -114,4 +115,16 @@ pre {
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.5);
+}
+
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-right: auto;
+  margin-left: 1.5rem;
+}
+
+.tabs button.active {
+  font-weight: 600;
+  border-bottom: 2px solid currentColor;
 }

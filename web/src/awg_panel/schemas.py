@@ -103,6 +103,34 @@ class NodeRead(BaseModel):
     last_seen: datetime | None = None
 
 
+class AgentInterface(BaseModel):
+    """An interface as the agent's awg shows it, or why it could not."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    name: str
+    present: bool
+    peers: int = 0
+    error: str | None = None
+
+
+class AgentRead(BaseModel):
+    """A node, probed just now: where it is, what answered, what it sees."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: int
+    name: str
+    endpoint: str
+    status: str
+    last_seen: datetime | None = None
+    version: str | None = None
+    awg: str | None = None
+    xray: str | None = None
+    interfaces: list[AgentInterface] = []
+    error: str | None = None
+
+
 class Drift(BaseModel):
     """What the panel wants against what the node actually has."""
 

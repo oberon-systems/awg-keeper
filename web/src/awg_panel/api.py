@@ -16,6 +16,7 @@ from sqlmodel import Session, select
 from awg_panel import __version__, agent, auth, db, service
 from awg_panel.models import AwgPeer, Interface, Node
 from awg_panel.schemas import (
+    AgentRead,
     Drift,
     Identity,
     InterfaceRead,
@@ -80,15 +81,16 @@ def me(user: UserDep) -> Identity:
 
 
 @private.get("/health")
-def health(request: Request) -> dict[str, object]:
-    """Report the panel, and whatever the node last said about itself."""
-    settings = auth.settings_of(request)
-    node: dict[str, object] = {"reachable": False}
-    try:
-        node = {"reachable": True, **agent.health(settings)}
-    except agent.AgentError as exc:
-        node["detail"] = exc.reason
-    return {"status": "ok", "version": __version__, "node": node}
+def health(request: Request, session: SessionDep) -> dict[str, object]:
+    """Report the panel, and what every node says about itself right now."""
+    agents = service.probe_agents(session, auth.settings_of(request))
+    return {"status": "ok", "version": __version__, "nodes": agents}
+
+
+@private.get("/agents")
+def list_agents(request: Request, session: SessionDep) -> list[AgentRead]:
+    """Probe every node: where it is, what its health says, what awg shows."""
+    return service.probe_agents(session, auth.settings_of(request))
 
 
 @private.get("/profiles")
@@ -131,6 +133,8 @@ def remove_profile(
 def list_interfaces(session: SessionDep) -> list[InterfaceRead]:
     """List the interfaces a profile can be issued against."""
     rows = session.exec(select(Interface).order_by(Interface.name)).all()
+    if not rows:
+        LOG.warning("no interfaces in the database; add them by hand")
     return [
         InterfaceRead(
             id=int(row.id or 0),
@@ -171,9 +175,11 @@ def drift(
 ) -> Drift:
     """Compare what the panel wants against what the node has."""
     settings = auth.settings_of(request)
+    node = service.node_of(session, node_id)
     try:
-        actual = agent.state(settings)
+        actual = agent.state(settings, node)
     except agent.AgentError as exc:
+        LOG.warning("drift of %s: %s", node.name, exc.reason)
         return Drift(node_id=node_id, reachable=False, detail=exc.reason)
 
     on_node: set[str] = set()

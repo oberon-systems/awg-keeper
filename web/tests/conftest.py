@@ -38,10 +38,12 @@ class StubAgent:
         self.calls: list[tuple[Any, ...]] = []
         self.fail = False
         self.peers: list[str] = []
+        self.probed: list[str] = []
 
     def add_peer(
         self,
         settings: Settings,
+        node: Node,
         interface: str,
         public_key: str,
         allowed_ips: list[str],
@@ -50,24 +52,47 @@ class StubAgent:
         """Stand in for a POST to the agent."""
         if self.fail:
             raise agent.AgentError("the agent is unreachable")
-        self.calls.append(("add", interface, public_key, tuple(allowed_ips)))
+        self.calls.append(("add", node.name, interface, public_key, tuple(allowed_ips)))
         self.peers.append(public_key)
         return {"public_key": public_key, "allowed_ips": allowed_ips}
 
     def remove_peer(
         self,
         settings: Settings,
+        node: Node,
         interface: str,
         public_key: str,
     ) -> None:
         """Stand in for a DELETE to the agent."""
         if self.fail:
             raise agent.AgentError("the agent is unreachable")
-        self.calls.append(("remove", interface, public_key))
+        self.calls.append(("remove", node.name, interface, public_key))
         if public_key in self.peers:
             self.peers.remove(public_key)
 
-    def state(self, settings: Settings) -> dict[str, Any]:
+    def status(self, settings: Settings, node: Node) -> dict[str, Any]:
+        """Stand in for GET /v1/status."""
+        self.probed.append(node.endpoint)
+        if self.fail:
+            raise agent.AgentError(f"{node.name} is unreachable: ConnectError()")
+        return {
+            "status": "ok",
+            "version": "0.1.2",
+            "awg": "amneziawg-tools v1.0.20241018",
+            "xray": None,
+            "interfaces": [
+                {"name": "awg-mgmt", "present": True, "peers": len(self.peers)},
+                {
+                    "name": "awg-clients",
+                    "present": True,
+                    "peers": 0,
+                    "error": "exited 1: Unable to access interface: Permission denied",
+                },
+            ],
+            "error": None,
+        }
+
+    def state(self, settings: Settings, node: Node) -> dict[str, Any]:
         """Stand in for GET /v1/state."""
         if self.fail:
             raise agent.AgentError("the agent is unreachable")
@@ -138,6 +163,7 @@ def stub(monkeypatch: pytest.MonkeyPatch) -> StubAgent:
     monkeypatch.setattr(agent, "add_peer", stand_in.add_peer)
     monkeypatch.setattr(agent, "remove_peer", stand_in.remove_peer)
     monkeypatch.setattr(agent, "state", stand_in.state)
+    monkeypatch.setattr(agent, "status", stand_in.status)
     return stand_in
 
 

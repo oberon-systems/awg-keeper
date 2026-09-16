@@ -8,10 +8,14 @@ from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy import Engine, func
+from sqlalchemy.exc import SQLAlchemyError
+from sqlmodel import Session, select
 
 from awg_panel import __version__, api, db, logs
 from awg_panel.agent import AgentError
 from awg_panel.config import Settings
+from awg_panel.models import Interface, Node
 from awg_panel.pool import PoolExhausted
 from awg_panel.service import DuplicateProfile
 
@@ -41,6 +45,31 @@ def _on_exhausted(request: Request, exc: Exception) -> JSONResponse:
 def _on_agent(request: Request, exc: Exception) -> JSONResponse:
     LOG.error("agent call failed: %s", exc)
     return _problem(502, str(exc))
+
+
+def _on_unexpected(request: Request, exc: Exception) -> JSONResponse:
+    LOG.exception("unhandled error on %s %s", request.method, request.url.path)
+    return _problem(500, "internal error; see the panel log")
+
+
+def _log_start(settings: Settings, engine: Engine) -> None:
+    LOG.info(
+        "panel %s, database %s, ui %s",
+        __version__,
+        settings.database_path,
+        settings.static_dir,
+    )
+    try:
+        with Session(engine) as session:
+            nodes = session.exec(select(func.count()).select_from(Node)).one()
+            interfaces = session.exec(select(func.count()).select_from(Interface)).one()
+    except SQLAlchemyError as exc:
+        LOG.warning("could not count nodes and interfaces: %s", exc)
+        return
+
+    LOG.info("%d nodes, %d interfaces", nodes, interfaces)
+    if not nodes or not interfaces:
+        LOG.warning("no nodes or no interfaces: profiles cannot be issued until added")
 
 
 def _mount_spa(app: FastAPI, static: Path) -> None:
@@ -75,6 +104,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     app.state.settings = settings
     app.state.engine = db.build_engine(settings)
+    _log_start(settings, app.state.engine)
     app.middleware("http")(logs.request_id)
 
     # Registered narrowest first: DuplicateProfile is a ValueError, and the
@@ -84,6 +114,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_exception_handler(LookupError, _on_missing)
     app.add_exception_handler(ValueError, _on_invalid)
     app.add_exception_handler(AgentError, _on_agent)
+    app.add_exception_handler(Exception, _on_unexpected)
 
     app.include_router(api.ping)
     app.include_router(api.public)

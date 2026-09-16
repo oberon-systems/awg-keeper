@@ -102,6 +102,16 @@ that network's gateway on the host rather than `docker0`. The session cookie is
 `Secure`, so a plain-http run needs `AWG_PANEL_COOKIE_SECURE=false` - only ever
 for local development.
 
+### Agents
+
+Nodes and their interfaces are rows the operator adds to the database by hand:
+the Panel has no access to a host and never creates them. Every call goes to
+the `endpoint` of the interface's node, with the one `AWG_PANEL_AGENT_TOKEN`.
+The Agents tab asks each node's `/v1/status` - the versions, and what `awg`
+shows for every interface or the error it gave - and records `status` and
+`last_seen` on the row. Both halves log one line per request, healthchecks
+included, and a startup line; neither logs a token.
+
 ### Key custody
 
 A profile's private key is generated in the browser with

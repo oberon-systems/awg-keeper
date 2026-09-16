@@ -8,13 +8,21 @@ address goes back in the pool.
 from __future__ import annotations
 
 import logging
+from datetime import UTC, datetime
 
 from sqlmodel import Session, select
 
 from awg_panel import agent, clientconf, pool
 from awg_panel.config import Settings
-from awg_panel.models import AwgPeer, Interface, Profile
-from awg_panel.schemas import PeerRead, ProfileCreate, ProfileIssued, ProfileRead
+from awg_panel.models import AwgPeer, Interface, Node, Profile
+from awg_panel.schemas import (
+    AgentInterface,
+    AgentRead,
+    PeerRead,
+    ProfileCreate,
+    ProfileIssued,
+    ProfileRead,
+)
 
 LOG = logging.getLogger(__name__)
 
@@ -25,6 +33,10 @@ class UnknownProfile(LookupError):
 
 class UnknownInterface(LookupError):
     """No interface with that id."""
+
+
+class UnknownNode(LookupError):
+    """No node with that id."""
 
 
 class DuplicateProfile(ValueError):
@@ -54,6 +66,14 @@ def _peer_of(session: Session, profile: Profile) -> AwgPeer | None:
     return session.exec(select(AwgPeer).where(AwgPeer.profile_id == profile.id)).first()
 
 
+def node_of(session: Session, node_id: int) -> Node:
+    """One node, or UnknownNode."""
+    node = session.get(Node, node_id)
+    if node is None:
+        raise UnknownNode(str(node_id))
+    return node
+
+
 def list_profiles(session: Session) -> list[ProfileRead]:
     """Every profile, with its peer."""
     profiles = session.exec(select(Profile).order_by(Profile.name)).all()
@@ -77,6 +97,7 @@ def create_profile(
     interface = session.get(Interface, body.interface_id)
     if interface is None:
         raise UnknownInterface(str(body.interface_id))
+    node = node_of(session, interface.node_id)
 
     taken = session.exec(select(Profile).where(Profile.name == body.name)).first()
     if taken is not None:
@@ -106,6 +127,7 @@ def create_profile(
     try:
         agent.add_peer(
             settings,
+            node,
             interface.name,
             peer.public_key,
             [peer.assigned_ip],
@@ -134,9 +156,56 @@ def delete_profile(session: Session, settings: Settings, profile_id: int) -> Non
     if peer is not None:
         interface = session.get(Interface, peer.interface_id)
         if interface is not None:
-            agent.remove_peer(settings, interface.name, peer.public_key)
+            node = node_of(session, interface.node_id)
+            agent.remove_peer(settings, node, interface.name, peer.public_key)
         pool.release(session, peer)
         session.delete(peer)
 
     session.delete(profile)
     session.commit()
+
+
+def _probe(settings: Settings, node: Node) -> AgentRead:
+    read = AgentRead(
+        id=int(node.id or 0),
+        name=node.name,
+        endpoint=node.endpoint,
+        status="down",
+        last_seen=node.last_seen,
+    )
+    try:
+        answer = agent.status(settings, node)
+    except agent.AgentError as exc:
+        LOG.warning("agent %s is down: %s", node.name, exc.reason)
+        node.status = "down"
+        read.error = exc.reason
+        return read
+
+    node.status = "up"
+    node.last_seen = datetime.now(UTC)
+    read.status = "up"
+    read.last_seen = node.last_seen
+    read.version = answer.get("version")
+    read.awg = answer.get("awg")
+    read.xray = answer.get("xray")
+    read.error = answer.get("error")
+    read.interfaces = [
+        AgentInterface.model_validate(item) for item in answer.get("interfaces", [])
+    ]
+    for item in read.interfaces:
+        if item.error:
+            LOG.warning("agent %s: %s: %s", node.name, item.name, item.error)
+    return read
+
+
+def probe_agents(session: Session, settings: Settings) -> list[AgentRead]:
+    """Ask every node how it is, and remember the answer on its row."""
+    nodes = session.exec(select(Node).order_by(Node.name)).all()
+    if not nodes:
+        LOG.warning("no nodes in the database; add one by hand")
+    found = []
+    for node in nodes:
+        found.append(_probe(settings, node))
+        session.add(node)
+    session.commit()
+    return found

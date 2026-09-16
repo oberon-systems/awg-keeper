@@ -51,7 +51,6 @@ class Settings(BaseSettings):
     login_attempts: int = Field(default=5, gt=0)
     lockout_seconds: int = Field(default=300, gt=0)
 
-    agent_url: str = "http://127.0.0.1:8081"
     agent_token: str = ""
     agent_timeout: float = Field(default=10.0, gt=0)
 

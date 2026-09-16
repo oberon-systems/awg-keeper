@@ -34,6 +34,29 @@ export interface Interface {
   obfuscation: Record<string, unknown>;
 }
 
+export interface Node {
+  id: number;
+  name: string;
+  endpoint: string;
+  status: string;
+  last_seen: string | null;
+}
+
+export interface AgentInterface {
+  name: string;
+  present: boolean;
+  peers: number;
+  error: string | null;
+}
+
+export interface Agent extends Node {
+  version: string | null;
+  awg: string | null;
+  xray: string | null;
+  interfaces: AgentInterface[];
+  error: string | null;
+}
+
 export class ApiError extends Error {
   readonly status: number;
 
@@ -94,6 +117,8 @@ export const api = {
   logout: () => call<void>("POST", "/auth/logout"),
   me: () => call<{ user: string }>("GET", "/auth/me"),
   interfaces: () => call<Interface[]>("GET", "/interfaces"),
+  nodes: () => call<Node[]>("GET", "/nodes"),
+  agents: () => call<Agent[]>("GET", "/agents"),
   profiles: () => call<Profile[]>("GET", "/profiles"),
   createProfile: (name: string, note: string, interfaceId: number, key: string) =>
     call<Issued>("POST", "/profiles", {

@@ -1,4 +1,4 @@
-"""The client to the agent. The panel decides, the agent executes.
+"""The client to the agents. The panel decides, the agents execute.
 
 Synchronous on purpose: the handlers are plain `def` and run on a threadpool
 worker, so an async client here would buy nothing and cost a second style.
@@ -7,12 +7,14 @@ worker, so an async client here would buy nothing and cost a second style.
 from __future__ import annotations
 
 import logging
+import time
 from typing import Any
 
 import httpx
 
 from awg_panel.config import Settings
 from awg_panel.logs import HEADER, REQUEST_ID
+from awg_panel.models import Node
 
 LOG = logging.getLogger(__name__)
 
@@ -27,13 +29,24 @@ class AgentError(RuntimeError):
         self.status = status
 
 
+def _detail(answer: httpx.Response) -> str:
+    try:
+        body = answer.json()
+    except ValueError:
+        return answer.reason_phrase
+    detail = body.get("detail") if isinstance(body, dict) else None
+    return str(detail) if detail else answer.reason_phrase
+
+
 def _call(
     settings: Settings,
+    node: Node,
     method: str,
     path: str,
     payload: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     if not settings.agent_token:
+        LOG.error("no agent token; %s %s to %s refused", method, path, node.name)
         raise AgentError("no agent token is configured")
 
     headers = {
@@ -42,7 +55,8 @@ def _call(
         # followed across both services.
         HEADER: REQUEST_ID.get(),
     }
-    url = f"{settings.agent_url.rstrip('/')}{path}"
+    url = f"{node.endpoint.rstrip('/')}{path}"
+    started = time.monotonic()
     try:
         answer = httpx.request(
             method,
@@ -52,31 +66,56 @@ def _call(
             timeout=settings.agent_timeout,
         )
     except httpx.HTTPError as exc:
-        LOG.error("agent unreachable: %s", exc)
-        raise AgentError("the agent is unreachable") from exc
+        LOG.error("agent %s at %s unreachable: %r", node.name, node.endpoint, exc)
+        raise AgentError(f"{node.name} is unreachable: {exc!r}") from exc
+
+    elapsed = (time.monotonic() - started) * 1000
+    LOG.info(
+        "agent %s %s %s %d %.1fms",
+        node.name,
+        method,
+        path,
+        answer.status_code,
+        elapsed,
+    )
 
     if answer.status_code >= 400:
-        LOG.error("agent %s %s answered %d", method, path, answer.status_code)
-        raise AgentError("the agent refused the change", answer.status_code)
+        detail = _detail(answer)
+        LOG.error(
+            "agent %s %s %s answered %d: %s",
+            node.name,
+            method,
+            path,
+            answer.status_code,
+            detail,
+        )
+        raise AgentError(
+            f"{node.name} answered {answer.status_code}: {detail}", answer.status_code
+        )
 
     if answer.status_code == 204 or not answer.content:
         return None
-    parsed = answer.json()
+    try:
+        parsed = answer.json()
+    except ValueError as exc:
+        LOG.error("agent %s %s %s answered with no json", node.name, method, path)
+        raise AgentError(f"{node.name} answered with no json") from exc
     return parsed if isinstance(parsed, dict) else {"data": parsed}
 
 
-def state(settings: Settings) -> dict[str, Any]:
+def state(settings: Settings, node: Node) -> dict[str, Any]:
     """Actual state on the node, for the drift view."""
-    return _call(settings, "GET", "/v1/state") or {}
+    return _call(settings, node, "GET", "/v1/state") or {}
 
 
-def health(settings: Settings) -> dict[str, Any]:
-    """Liveness of the node, and the versions it runs."""
-    return _call(settings, "GET", "/v1/health") or {}
+def status(settings: Settings, node: Node) -> dict[str, Any]:
+    """Health of the node, and what awg shows for its interfaces."""
+    return _call(settings, node, "GET", "/v1/status") or {}
 
 
 def add_peer(
     settings: Settings,
+    node: Node,
     interface: str,
     public_key: str,
     allowed_ips: list[str],
@@ -88,13 +127,18 @@ def add_peer(
         "allowed_ips": allowed_ips,
         "persistent_keepalive": keepalive,
     }
-    return _call(settings, "POST", f"/v1/awg/{interface}/peers", payload) or {}
+    return _call(settings, node, "POST", f"/v1/awg/{interface}/peers", payload) or {}
 
 
-def remove_peer(settings: Settings, interface: str, public_key: str) -> None:
+def remove_peer(
+    settings: Settings,
+    node: Node,
+    interface: str,
+    public_key: str,
+) -> None:
     """Remove one peer from the node. An absent peer is not an error here."""
     try:
-        _call(settings, "DELETE", f"/v1/awg/{interface}/peers/{public_key}")
+        _call(settings, node, "DELETE", f"/v1/awg/{interface}/peers/{public_key}")
     except AgentError as exc:
         # The peer is gone either way, which is what the caller wanted.
         if exc.status != 404:
