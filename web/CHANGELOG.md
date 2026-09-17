@@ -1,3 +1,9 @@
+## awg-keeper-web-v0.3.0 (2026-09-17)
+
+### Features
+
+- **web**: status page, background healthchecks, agents from env
+
 ## awg-keeper-web-v0.2.0 (2026-09-16)
 
 ### Features

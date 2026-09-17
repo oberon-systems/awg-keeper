@@ -1,6 +1,6 @@
 [project]
 name = "awg-keeper-panel"
-version = "0.2.0"
+version = "0.3.0"
 description = "Panel for awg-keeper: the web UI, the database and the source of truth"
 requires-python = ">=3.11"
 authors = [
