@@ -1,3 +1,9 @@
+## awg-keeper-agent-v0.3.1 (2026-09-17)
+
+### Bug Fixes
+
+- **agent**: drop CAP_NET_ADMIN from the unit
+
 ## awg-keeper-agent-v0.3.0 (2026-09-17)
 
 ### Features
