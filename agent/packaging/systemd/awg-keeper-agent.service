@@ -17,9 +17,9 @@ RestartSec=5s
 # to unpack into.
 Environment=SHIV_ROOT=/var/lib/awg-keeper/.shiv
 
-# awg speaks netlink, which is the only privilege this service needs.
-AmbientCapabilities=CAP_NET_ADMIN
-CapabilityBoundingSet=CAP_NET_ADMIN
+# No capabilities: awg reaches amneziawg-go through its UAPI socket, which the
+# host opens to a group added with SupplementaryGroups= in a drop-in.
+CapabilityBoundingSet=
 NoNewPrivileges=yes
 ProtectSystem=strict
 ProtectHome=yes
