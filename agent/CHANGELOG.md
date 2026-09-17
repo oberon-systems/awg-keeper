@@ -1,3 +1,9 @@
+## awg-keeper-agent-v0.3.0 (2026-09-17)
+
+### Features
+
+- **agent**: check interfaces on start, report key, port and obfuscation
+
 ## awg-keeper-agent-v0.2.0 (2026-09-16)
 
 ### Features
