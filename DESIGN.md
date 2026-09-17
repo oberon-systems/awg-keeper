@@ -21,7 +21,7 @@ A client/server toolset for managing user profiles for AmneziaWG and Xray + Real
 
 | Term        | Meaning                                                          |
 |-------------|------------------------------------------------------------------|
-| **Agent**   | Host-side service. Holds `CAP_NET_ADMIN`, drives `awg` and Xray.  |
+| **Agent**   | Host-side service. No capabilities, drives `awg` and Xray.        |
 | **Panel**   | Container-side service. Web UI, database, source of truth.        |
 | **Node**    | One host running an Agent. v1 supports exactly one.               |
 | **Profile** | A person/device. Owns 0..1 AWG peer and 0..N Xray accounts.       |
@@ -69,8 +69,7 @@ closed in between.
 
 ```ini
 User=awgkeeper
-AmbientCapabilities=CAP_NET_ADMIN
-CapabilityBoundingSet=CAP_NET_ADMIN
+CapabilityBoundingSet=
 NoNewPrivileges=yes
 ProtectSystem=strict
 ProtectHome=yes
@@ -78,6 +77,14 @@ PrivateTmp=yes
 ReadWritePaths=/etc/amnezia /var/lib/awg-keeper
 RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
 ```
+
+**Socket access.** `awg` drives the userspace `amneziawg-go` through its UAPI
+socket, `/run/amneziawg/<iface>.sock`, which the daemon creates `root 0700`.
+Without access to it every call fails with `Unable to access interface:
+Permission denied`. The host deployment opens the socket of each interface the
+Agent manages to a group (`chgrp` and `chmod 0660` after the interface starts),
+and a drop-in adds that group to `SupplementaryGroups=`. Xray is reached over
+gRPC on loopback, so nothing the Agent does needs a capability.
 
 Restarting Xray needs a narrowly scoped sudoers entry (or a polkit rule) for that
 one unit — nothing broader.

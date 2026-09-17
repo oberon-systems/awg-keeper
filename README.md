@@ -7,7 +7,7 @@ sysctls itself.
 
 Two parts. The **Panel** runs in a container, owns the desired state and serves
 the web UI. The **Agent** runs on the host as a systemd unit, holds
-`CAP_NET_ADMIN` and keeps no state of its own: it adds, removes and reports
+no capabilities and keeps no state of its own: it adds, removes and reports
 single peers and Xray users, and `GET /v1/state` tells the Panel what the host
 actually has. AmneziaWG private keys are generated in the browser and never
 reach the server.
@@ -54,6 +54,11 @@ The Agent reads its configuration from the environment only, with the
 `AWG_KEEPER_` prefix; `agent/packaging/agent.env.example` lists every variable.
 The token is the one secret among them, which is why the systemd unit reads
 them from `/etc/awg-keeper/agent.env` at mode 0600.
+
+The Agent needs read and write access to the UAPI socket of every interface it
+manages, `/run/amneziawg/<iface>.sock`. `amneziawg-go` creates it `root 0700`:
+the host has to give the socket a group and add that group to the unit's
+`SupplementaryGroups=` in a drop-in, see [DESIGN.md](DESIGN.md#agent).
 
 Run it in the foreground against a host that already has `awg`:
 
