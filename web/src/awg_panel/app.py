@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager, suppress
 from pathlib import Path
 
 from fastapi import FastAPI, Request
@@ -10,12 +13,12 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import Engine, func
 from sqlalchemy.exc import SQLAlchemyError
-from sqlmodel import Session, select
+from sqlmodel import Session, col, select
 
-from awg_panel import __version__, api, db, logs
+from awg_panel import __version__, api, db, logs, service
 from awg_panel.agent import AgentError
 from awg_panel.config import Settings
-from awg_panel.models import Interface, Node
+from awg_panel.models import Interface
 from awg_panel.pool import PoolExhausted
 from awg_panel.service import DuplicateProfile
 
@@ -54,22 +57,47 @@ def _on_unexpected(request: Request, exc: Exception) -> JSONResponse:
 
 def _log_start(settings: Settings, engine: Engine) -> None:
     LOG.info(
-        "panel %s, database %s, ui %s",
+        "panel %s, database %s, ui %s, healthcheck %s",
         __version__,
         settings.database_path,
         settings.static_dir,
+        f"every {settings.probe_interval}s" if settings.probe_interval else "off",
     )
     try:
         with Session(engine) as session:
-            nodes = session.exec(select(func.count()).select_from(Node)).one()
-            interfaces = session.exec(select(func.count()).select_from(Interface)).one()
+            service.register_agents(session, settings)
+            enabled = session.exec(
+                select(func.count())
+                .select_from(Interface)
+                .where(col(Interface.enabled))
+            ).one()
     except SQLAlchemyError as exc:
-        LOG.warning("could not count nodes and interfaces: %s", exc)
+        LOG.error("could not read the database: %s", exc)
         return
 
-    LOG.info("%d nodes, %d interfaces", nodes, interfaces)
-    if not nodes or not interfaces:
-        LOG.warning("no nodes or no interfaces: profiles cannot be issued until added")
+    if not enabled:
+        LOG.warning("no enabled interface: profiles cannot be issued until one is")
+
+
+async def _probe_loop(app: FastAPI) -> None:
+    settings: Settings = app.state.settings
+    announce = True
+    while True:
+        await asyncio.to_thread(service.probe_all, app.state.engine, settings, announce)
+        announce = False
+        await asyncio.sleep(settings.probe_interval)
+
+
+@asynccontextmanager
+async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
+    task = None
+    if app.state.settings.probe_interval:
+        task = asyncio.create_task(_probe_loop(app))
+    yield
+    if task is not None:
+        task.cancel()
+        with suppress(asyncio.CancelledError):
+            await task
 
 
 def _mount_spa(app: FastAPI, static: Path) -> None:
@@ -101,6 +129,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         docs_url="/docs" if settings.docs else None,
         redoc_url=None,
         openapi_url="/openapi.json" if settings.docs else None,
+        lifespan=_lifespan,
     )
     app.state.settings = settings
     app.state.engine = db.build_engine(settings)

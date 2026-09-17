@@ -10,16 +10,18 @@ import logging
 from collections.abc import Iterator
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Request, Response
-from sqlmodel import Session, select
+from fastapi import APIRouter, Depends, Query, Request, Response
+from sqlmodel import Session, col, select
 
 from awg_panel import __version__, agent, auth, db, service
 from awg_panel.models import AwgPeer, Interface, Node
 from awg_panel.schemas import (
     AgentRead,
+    CheckRead,
     Drift,
     Identity,
     InterfaceRead,
+    InterfaceUpdate,
     LoginRequest,
     NodeRead,
     ProfileCreate,
@@ -82,15 +84,31 @@ def me(user: UserDep) -> Identity:
 
 @private.get("/health")
 def health(request: Request, session: SessionDep) -> dict[str, object]:
-    """Report the panel, and what every node says about itself right now."""
-    agents = service.probe_agents(session, auth.settings_of(request))
+    """Report the panel, and every node as its last healthcheck left it."""
+    agents = service.list_agents(session, auth.settings_of(request))
     return {"status": "ok", "version": __version__, "nodes": agents}
 
 
 @private.get("/agents")
 def list_agents(request: Request, session: SessionDep) -> list[AgentRead]:
-    """Probe every node: where it is, what its health says, what awg shows."""
+    """Every agent and its last healthcheck. Probes nothing."""
+    return service.list_agents(session, auth.settings_of(request))
+
+
+@private.post("/agents/probe")
+def probe_agents(request: Request, session: SessionDep) -> list[AgentRead]:
+    """Healthcheck every agent now, instead of waiting for the next round."""
     return service.probe_agents(session, auth.settings_of(request))
+
+
+@private.get("/agents/{node_id}/checks")
+def list_checks(
+    node_id: int,
+    session: SessionDep,
+    limit: Annotated[int, Query(ge=1, le=1000)] = 100,
+) -> list[CheckRead]:
+    """Return the healthcheck log of one agent, newest first."""
+    return service.list_checks(session, node_id, limit)
 
 
 @private.get("/profiles")
@@ -131,24 +149,38 @@ def remove_profile(
 
 @private.get("/interfaces")
 def list_interfaces(session: SessionDep) -> list[InterfaceRead]:
-    """List the interfaces a profile can be issued against."""
-    rows = session.exec(select(Interface).order_by(Interface.name)).all()
+    """List the enabled interfaces, the ones a profile can be issued against."""
+    query = select(Interface).where(col(Interface.enabled)).order_by(Interface.name)
+    rows = session.exec(query).all()
     if not rows:
-        LOG.warning("no interfaces in the database; add them by hand")
+        LOG.warning("no enabled interface; enable one on the status page")
     return [
         InterfaceRead(
             id=int(row.id or 0),
             node_id=row.node_id,
             name=row.name,
-            address=row.address,
-            pool=row.pool,
+            address=row.address or "",
+            pool=row.pool or "",
             listen_port=row.listen_port,
-            endpoint_host=row.endpoint_host,
+            endpoint_host=row.endpoint_host or "",
             client_allowed_ips=row.client_allowed_ips,
             obfuscation=row.obfuscation,
         )
         for row in rows
     ]
+
+
+@private.patch("/interfaces/{interface_id}")
+def update_interface(
+    request: Request,
+    interface_id: int,
+    body: InterfaceUpdate,
+    session: SessionDep,
+) -> AgentRead:
+    """Configure a discovered interface and enable or disable it."""
+    return service.update_interface(
+        session, auth.settings_of(request), interface_id, body
+    )
 
 
 @private.get("/nodes")

@@ -27,6 +27,8 @@ USER = "admin"
 PASSWORD = "correct horse battery staple"
 SOURCE = ("127.0.0.1", 40000)
 
+SERVER_KEY = "c" * 43 + "="
+AGENTS = {"gateway": "http://127.0.0.1:8081"}
 OBFUSCATION = {"Jc": 4, "Jmin": 50, "Jmax": 1000, "S1": 86, "S2": 574, "H1": 1077035230}
 
 
@@ -39,6 +41,7 @@ class StubAgent:
         self.fail = False
         self.peers: list[str] = []
         self.probed: list[str] = []
+        self.extra: list[dict[str, Any]] = []
 
     def add_peer(
         self,
@@ -81,13 +84,21 @@ class StubAgent:
             "awg": "amneziawg-tools v1.0.20241018",
             "xray": None,
             "interfaces": [
-                {"name": "awg-mgmt", "present": True, "peers": len(self.peers)},
+                {
+                    "name": "awg-mgmt",
+                    "present": True,
+                    "peers": len(self.peers),
+                    "public_key": SERVER_KEY,
+                    "listen_port": 51820,
+                    "obfuscation": {"jc": "4", "jmin": "50", "h1": "1077035230"},
+                },
                 {
                     "name": "awg-clients",
                     "present": True,
                     "peers": 0,
                     "error": "exited 1: Unable to access interface: Permission denied",
                 },
+                *self.extra,
             ],
             "error": None,
         }
@@ -123,7 +134,9 @@ def settings(tmp_path: Path) -> Settings:
         admin_user=USER,
         admin_password_hash=hash_password(PASSWORD),
         database_path=tmp_path / "panel.sqlite",
+        agents=AGENTS,
         agent_token="a-token",
+        probe_interval=0,
         static_dir=tmp_path / "absent-static",
     )
 
@@ -143,10 +156,11 @@ def node(settings: Settings) -> None:
             Interface(
                 node_id=int(row.id or 0),
                 name="awg-mgmt",
+                enabled=True,
                 listen_port=51820,
                 address="10.8.0.1/24",
                 pool="10.8.0.0/24",
-                server_public_key="c" * 43 + "=",
+                server_public_key=SERVER_KEY,
                 endpoint_host="vpn.example",
                 dns="10.8.0.1",
                 mtu=1280,

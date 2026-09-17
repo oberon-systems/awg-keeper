@@ -44,7 +44,10 @@ def _call(
     method: str,
     path: str,
     payload: dict[str, Any] | None = None,
+    quiet: bool = False,
 ) -> dict[str, Any] | None:
+    # A healthcheck logs its outcome on a change of state instead, in service.
+    failed = logging.DEBUG if quiet else logging.ERROR
     if not settings.agent_token:
         LOG.error("no agent token; %s %s to %s refused", method, path, node.name)
         raise AgentError("no agent token is configured")
@@ -66,11 +69,12 @@ def _call(
             timeout=settings.agent_timeout,
         )
     except httpx.HTTPError as exc:
-        LOG.error("agent %s at %s unreachable: %r", node.name, node.endpoint, exc)
+        LOG.log(failed, "agent %s at %s unreachable: %r", node.name, node.endpoint, exc)
         raise AgentError(f"{node.name} is unreachable: {exc!r}") from exc
 
     elapsed = (time.monotonic() - started) * 1000
-    LOG.info(
+    LOG.log(
+        logging.DEBUG if quiet else logging.INFO,
         "agent %s %s %s %d %.1fms",
         node.name,
         method,
@@ -81,7 +85,8 @@ def _call(
 
     if answer.status_code >= 400:
         detail = _detail(answer)
-        LOG.error(
+        LOG.log(
+            failed,
             "agent %s %s %s answered %d: %s",
             node.name,
             method,
@@ -98,7 +103,7 @@ def _call(
     try:
         parsed = answer.json()
     except ValueError as exc:
-        LOG.error("agent %s %s %s answered with no json", node.name, method, path)
+        LOG.log(failed, "agent %s %s %s answered with no json", node.name, method, path)
         raise AgentError(f"{node.name} answered with no json") from exc
     return parsed if isinstance(parsed, dict) else {"data": parsed}
 
@@ -110,7 +115,7 @@ def state(settings: Settings, node: Node) -> dict[str, Any]:
 
 def status(settings: Settings, node: Node) -> dict[str, Any]:
     """Health of the node, and what awg shows for its interfaces."""
-    return _call(settings, node, "GET", "/v1/status") or {}
+    return _call(settings, node, "GET", "/v1/status", quiet=True) or {}
 
 
 def add_peer(

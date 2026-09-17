@@ -51,8 +51,13 @@ class Settings(BaseSettings):
     login_attempts: int = Field(default=5, gt=0)
     lockout_seconds: int = Field(default=300, gt=0)
 
+    # name=http://host:port, comma separated: the agents the panel probes.
+    agents: Annotated[dict[str, str], NoDecode] = {}
     agent_token: str = ""
     agent_timeout: float = Field(default=10.0, gt=0)
+    # Seconds between background healthchecks; 0 turns the loop off.
+    probe_interval: int = Field(default=30, ge=0)
+    check_retention: int = Field(default=7, gt=0)
 
     static_dir: Path = Path("/app/static")
     log_level: str = "INFO"
@@ -68,6 +73,22 @@ class Settings(BaseSettings):
             except ValueError as exc:
                 raise ValueError(f"not a CIDR: {item!r}: {exc}") from exc
         return networks
+
+    @field_validator("agents", mode="before")
+    @classmethod
+    def _agents(cls, value: str | dict[str, str]) -> dict[str, str]:
+        if isinstance(value, dict):
+            return value
+        agents: dict[str, str] = {}
+        for item in _split(value):
+            name, _, url = item.partition("=")
+            name, url = name.strip(), url.strip().rstrip("/")
+            if not name or not url.startswith(("http://", "https://")):
+                raise ValueError(f"not name=http(s)://host:port: {item!r}")
+            if name in agents:
+                raise ValueError(f"agent {name!r} is listed twice")
+            agents[name] = url
+        return agents
 
     @field_validator("log_level", mode="before")
     @classmethod

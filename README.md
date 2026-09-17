@@ -104,13 +104,23 @@ for local development.
 
 ### Agents
 
-Nodes and their interfaces are rows the operator adds to the database by hand:
-the Panel has no access to a host and never creates them. Every call goes to
-the `endpoint` of the interface's node, with the one `AWG_PANEL_AGENT_TOKEN`.
-The Agents tab asks each node's `/v1/status` - the versions, and what `awg`
-shows for every interface or the error it gave - and records `status` and
-`last_seen` on the row. Both halves log one line per request, healthchecks
-included, and a startup line; neither logs a token.
+The agents are `AWG_PANEL_AGENTS`, `name=http://host:port` comma separated;
+the Panel registers each one on start and logs an error when the list is empty.
+Every `AWG_PANEL_PROBE_INTERVAL` seconds (30, `0` turns it off) it asks each
+agent's `/v1/status` in the background and records the answer - status,
+latency, versions, what `awg` shows per interface - in a healthcheck log kept
+for `AWG_PANEL_CHECK_RETENTION` days. The Panel log gets a line on start and
+whenever an agent changes state, not on every round.
+
+The Status tab shows every agent, its last healthcheck and that log. An
+interface the agent reports is added disabled, with its key, port and
+obfuscation taken from the device; setting the server address, the client
+pool and the endpoint host and enabling it is what makes it available to
+profiles.
+
+The Agent checks every interface on start and logs its port and public key, or
+an error naming what is wrong; after that it logs an interface only when its
+state changes. Neither half logs a token.
 
 ### Key custody
 

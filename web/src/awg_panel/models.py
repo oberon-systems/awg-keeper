@@ -34,12 +34,14 @@ class Interface(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     node_id: int = Field(foreign_key="node.id", index=True)
     name: str
+    # Discovered from the agent disabled; profiles are issued only once enabled.
+    enabled: bool = False
     listen_port: int
     # The server side of the tunnel, and the pool peers are allocated from.
-    address: str
-    pool: str
+    address: str | None = None
+    pool: str | None = None
     server_public_key: str
-    endpoint_host: str
+    endpoint_host: str | None = None
     dns: str | None = None
     mtu: int | None = None
     # What the client puts in AllowedIPs: full or split tunnel, per interface.
@@ -48,6 +50,25 @@ class Interface(SQLModel, table=True):
     # Jc, Jmin, Jmax, S1, S2, H1-H4. Identical on both ends or the handshake
     # never completes, which is the single most common failure.
     obfuscation: dict[str, Any] = Field(default_factory=dict, sa_column=Column(JSON))
+
+
+class AgentCheck(SQLModel, table=True):
+    """One healthcheck of one agent, kept for check_retention days."""
+
+    __tablename__ = "agent_check"
+
+    id: int | None = Field(default=None, primary_key=True)
+    node_id: int = Field(foreign_key="node.id", index=True)
+    checked_at: datetime = Field(default_factory=_now, index=True)
+    status: str
+    latency_ms: float | None = None
+    error: str | None = None
+    version: str | None = None
+    awg: str | None = None
+    xray: str | None = None
+    interfaces: list[dict[str, Any]] = Field(
+        default_factory=list, sa_column=Column(JSON)
+    )
 
 
 class Profile(SQLModel, table=True):

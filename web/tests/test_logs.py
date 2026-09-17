@@ -10,6 +10,7 @@ from fastapi import APIRouter
 from fastapi.testclient import TestClient
 from sqlmodel import SQLModel
 
+from awg_panel import service
 from awg_panel.app import create_app
 from awg_panel.config import Settings
 from awg_panel.db import build_engine
@@ -40,37 +41,68 @@ def test_signing_in_logs_no_secret(
     assert "a-token" not in caplog.text
 
 
-def test_the_start_counts_nodes_and_interfaces(
+def test_the_start_names_every_agent(
     settings: Settings,
     node: None,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     caplog.set_level(logging.INFO)
     create_app(settings)
-    assert "1 nodes, 1 interfaces" in _messages(caplog, "awg_panel.app")
+    assert "agent gateway at http://127.0.0.1:8081" in _messages(
+        caplog, "awg_panel.service"
+    )
 
 
-def test_the_start_warns_about_an_empty_database(
+def test_the_start_says_the_agent_list_is_empty(
     settings: Settings,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     SQLModel.metadata.create_all(build_engine(settings))
-    create_app(settings)
-    assert "no nodes or no interfaces: profiles cannot be issued until added" in (
+    create_app(settings.model_copy(update={"agents": {}}))
+    errors = [r.getMessage() for r in caplog.records if r.levelno == logging.ERROR]
+    assert "AWG_PANEL_AGENTS is empty: no agent will ever be probed" in errors
+    assert "no enabled interface: profiles cannot be issued until one is" in (
         _messages(caplog, "awg_panel.app")
     )
 
 
-def test_a_down_agent_is_logged(
+def test_a_healthcheck_is_logged_only_when_it_changes(
     signed_in: TestClient,
     stub: StubAgent,
     caplog: pytest.LogCaptureFixture,
 ) -> None:
+    caplog.set_level(logging.INFO)
+    caplog.clear()
+    signed_in.post("/api/v1/agents/probe")
+    signed_in.post("/api/v1/agents/probe")
+    lines = _messages(caplog, "awg_panel.service")
+    assert len(lines) == 1
+    assert lines[0].startswith("agent gateway degraded in ")
+    assert "awg-mgmt present, awg-clients failing: exited 1" in lines[0]
+
     stub.fail = True
-    signed_in.get("/api/v1/agents")
-    assert "agent gateway is down: gateway is unreachable: ConnectError()" in (
-        _messages(caplog, "awg_panel.service")
-    )
+    signed_in.post("/api/v1/agents/probe")
+    signed_in.post("/api/v1/agents/probe")
+    errors = [
+        r.getMessage()
+        for r in caplog.records
+        if r.name == "awg_panel.service" and r.levelno == logging.ERROR
+    ]
+    assert errors == ["agent gateway down: gateway is unreachable: ConnectError()"]
+
+
+def test_the_first_round_after_a_start_is_always_logged(
+    settings: Settings,
+    node: None,
+    stub: StubAgent,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    caplog.set_level(logging.INFO)
+    engine = build_engine(settings)
+    service.probe_all(engine, settings)
+    caplog.clear()
+    service.probe_all(engine, settings, announce=True)
+    assert len(_messages(caplog, "awg_panel.service")) == 1
 
 
 def test_an_unexpected_error_is_logged_with_its_traceback(

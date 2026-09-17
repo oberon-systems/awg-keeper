@@ -104,31 +104,78 @@ class NodeRead(BaseModel):
 
 
 class AgentInterface(BaseModel):
-    """An interface as the agent's awg shows it, or why it could not."""
+    """An interface: what the agent last reported, and what the operator set."""
 
     model_config = ConfigDict(extra="forbid")
 
+    id: int | None = None
     name: str
     present: bool
     peers: int = 0
+    public_key: str | None = None
+    listen_port: int = 0
     error: str | None = None
+    enabled: bool = False
+    address: str | None = None
+    pool: str | None = None
+    endpoint_host: str | None = None
+    dns: str | None = None
+    mtu: int | None = None
+    client_allowed_ips: str | None = None
+    keepalive: int | None = None
+    obfuscation: dict[str, Any] = {}
 
 
 class AgentRead(BaseModel):
-    """A node, probed just now: where it is, what answered, what it sees."""
+    """A node and its last healthcheck."""
 
     model_config = ConfigDict(extra="forbid")
 
     id: int
     name: str
     endpoint: str
+    # False for a node left in the database after leaving AWG_PANEL_AGENTS.
+    configured: bool = True
     status: str
     last_seen: datetime | None = None
+    checked_at: datetime | None = None
+    latency_ms: float | None = None
     version: str | None = None
     awg: str | None = None
     xray: str | None = None
     interfaces: list[AgentInterface] = []
     error: str | None = None
+
+
+class CheckRead(BaseModel):
+    """One entry of an agent's healthcheck log."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: int
+    checked_at: datetime
+    status: str
+    latency_ms: float | None = None
+    error: str | None = None
+    version: str | None = None
+    awg: str | None = None
+    xray: str | None = None
+    interfaces: list[dict[str, Any]] = []
+
+
+class InterfaceUpdate(BaseModel):
+    """What the operator sets on a discovered interface. Absent keys are kept."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool | None = None
+    address: str | None = None
+    pool: str | None = None
+    endpoint_host: str | None = None
+    dns: str | None = None
+    mtu: int | None = Field(default=None, ge=576, le=65535)
+    client_allowed_ips: str | None = None
+    keepalive: int | None = Field(default=None, ge=0, le=65535)
 
 
 class Drift(BaseModel):

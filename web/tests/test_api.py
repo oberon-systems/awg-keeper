@@ -2,14 +2,20 @@
 
 from __future__ import annotations
 
+import time
+from datetime import UTC, datetime, timedelta
+
 import httpx
 import pytest
-from conftest import StubAgent
+from conftest import SOURCE, StubAgent
 from fastapi.testclient import TestClient
+from sqlmodel import Session, SQLModel, select
 
 from awg_panel import agent
+from awg_panel.app import create_app
 from awg_panel.config import Settings
-from awg_panel.models import Node
+from awg_panel.db import build_engine
+from awg_panel.models import AgentCheck, Interface, Node
 
 KEY = "a" * 43 + "="
 OTHER = "b" * 43 + "="
@@ -119,20 +125,38 @@ def test_drift_of_an_unknown_node_is_404(signed_in: TestClient) -> None:
     assert signed_in.get("/api/v1/nodes/99/drift").status_code == 404
 
 
-def test_the_agents_are_probed_and_remembered(
+def test_listing_the_agents_probes_nothing(
     signed_in: TestClient,
     stub: StubAgent,
 ) -> None:
     found = signed_in.get("/api/v1/agents").json()
-    assert stub.probed == ["http://127.0.0.1:8081"]
+    assert stub.probed == []
     assert [item["name"] for item in found] == ["gateway"]
-    assert found[0]["status"] == "up"
+    assert found[0]["status"] == "unknown"
+    assert found[0]["checked_at"] is None
+    assert [item["name"] for item in found[0]["interfaces"]] == ["awg-mgmt"]
+
+
+def test_a_probe_is_recorded_and_remembered(
+    signed_in: TestClient,
+    stub: StubAgent,
+) -> None:
+    found = signed_in.post("/api/v1/agents/probe").json()
+    assert stub.probed == ["http://127.0.0.1:8081"]
+    assert found[0]["status"] == "degraded"
     assert found[0]["version"] == "0.1.2"
+    assert found[0]["checked_at"].endswith("Z") or "+00:00" in found[0]["checked_at"]
     assert found[0]["interfaces"][1]["error"].endswith("Permission denied")
 
+    again = signed_in.get("/api/v1/agents").json()
+    assert again == found
     nodes = signed_in.get("/api/v1/nodes").json()
-    assert nodes[0]["status"] == "up"
+    assert nodes[0]["status"] == "degraded"
     assert nodes[0]["last_seen"] is not None
+
+    checks = signed_in.get("/api/v1/agents/1/checks").json()
+    assert [check["status"] for check in checks] == ["degraded"]
+    assert checks[0]["interfaces"][0]["name"] == "awg-mgmt"
 
 
 def test_an_unreachable_agent_is_down_with_its_reason(
@@ -140,10 +164,133 @@ def test_an_unreachable_agent_is_down_with_its_reason(
     stub: StubAgent,
 ) -> None:
     stub.fail = True
-    found = signed_in.get("/api/v1/agents").json()
+    found = signed_in.post("/api/v1/agents/probe").json()
     assert found[0]["status"] == "down"
     assert found[0]["error"] == "gateway is unreachable: ConnectError()"
     assert signed_in.get("/api/v1/nodes").json()[0]["status"] == "down"
+    assert signed_in.get("/api/v1/agents/1/checks").json()[0]["status"] == "down"
+
+
+def test_the_checks_of_an_unknown_agent_are_404(signed_in: TestClient) -> None:
+    assert signed_in.get("/api/v1/agents/99/checks").status_code == 404
+
+
+def test_old_checks_are_pruned(
+    signed_in: TestClient,
+    settings: Settings,
+) -> None:
+    with Session(build_engine(settings)) as session:
+        session.add(
+            AgentCheck(
+                node_id=1,
+                status="up",
+                checked_at=datetime.now(UTC)
+                - timedelta(days=settings.check_retention + 1),
+            )
+        )
+        session.commit()
+    signed_in.post("/api/v1/agents/probe")
+    assert len(signed_in.get("/api/v1/agents/1/checks").json()) == 1
+
+
+def test_a_reported_interface_is_discovered_disabled(
+    signed_in: TestClient,
+    stub: StubAgent,
+) -> None:
+    stub.extra.append(
+        {
+            "name": "awg-new",
+            "present": True,
+            "peers": 0,
+            "public_key": KEY,
+            "listen_port": 51821,
+        }
+    )
+    found = signed_in.post("/api/v1/agents/probe").json()
+    new = next(item for item in found[0]["interfaces"] if item["name"] == "awg-new")
+    assert new["enabled"] is False
+    assert new["id"] is not None
+    assert [item["name"] for item in signed_in.get("/api/v1/interfaces").json()] == [
+        "awg-mgmt"
+    ]
+
+    refused = signed_in.patch(f"/api/v1/interfaces/{new['id']}", json={"enabled": True})
+    assert refused.status_code == 422
+    assert "address, pool, endpoint_host" in refused.json()["detail"]
+
+    outside = signed_in.patch(
+        f"/api/v1/interfaces/{new['id']}",
+        json={"address": "10.9.0.1/24", "pool": "10.10.0.0/24"},
+    )
+    assert outside.status_code == 422
+
+    enabled = signed_in.patch(
+        f"/api/v1/interfaces/{new['id']}",
+        json={
+            "enabled": True,
+            "address": "10.9.0.1/24",
+            "pool": "10.9.0.0/24",
+            "endpoint_host": "vpn.example",
+        },
+    )
+    assert enabled.status_code == 200
+    offered = signed_in.get("/api/v1/interfaces").json()
+    assert [item["name"] for item in offered] == ["awg-mgmt", "awg-new"]
+
+
+def test_discovery_keeps_what_the_operator_set(
+    signed_in: TestClient,
+    settings: Settings,
+) -> None:
+    signed_in.post("/api/v1/agents/probe")
+    with Session(build_engine(settings)) as session:
+        row = session.get(Interface, 1)
+        assert row is not None
+        assert row.address == "10.8.0.1/24"
+        assert row.enabled is True
+        assert row.obfuscation == {"Jc": 4, "Jmin": 50, "H1": 1077035230}
+
+
+def test_a_disabled_interface_issues_nothing(
+    signed_in: TestClient,
+    stub: StubAgent,
+) -> None:
+    assert (
+        signed_in.patch("/api/v1/interfaces/1", json={"enabled": False}).status_code
+        == 200
+    )
+    answer = signed_in.post(
+        "/api/v1/profiles",
+        json={"name": "laptop", "interface_id": 1, "public_key": KEY},
+    )
+    assert answer.status_code == 422
+    assert stub.calls == []
+
+
+def test_an_agent_from_the_environment_needs_no_sql(
+    settings: Settings,
+    stub: StubAgent,
+) -> None:
+    engine = build_engine(settings)
+    SQLModel.metadata.create_all(engine)
+    create_app(settings)
+    with Session(engine) as session:
+        assert [(row.name, row.endpoint) for row in session.exec(select(Node))] == [
+            ("gateway", "http://127.0.0.1:8081")
+        ]
+
+
+def test_the_background_healthcheck_runs_without_a_request(
+    settings: Settings,
+    node: None,
+    stub: StubAgent,
+) -> None:
+    looping = settings.model_copy(update={"probe_interval": 1})
+    with TestClient(create_app(looping), base_url="https://testserver", client=SOURCE):
+        deadline = time.monotonic() + 5
+        while not stub.probed and time.monotonic() < deadline:
+            time.sleep(0.05)
+    assert stub.probed[:1] == ["http://127.0.0.1:8081"]
 
 
 def test_a_call_goes_to_the_node_endpoint(

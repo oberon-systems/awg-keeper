@@ -59,3 +59,30 @@ def test_the_agent_url_is_no_longer_a_setting(monkeypatch: pytest.MonkeyPatch) -
     monkeypatch.setenv("AWG_PANEL_AGENT_URL", "http://127.0.0.1:8081")
     with pytest.raises(ValidationError, match="AWG_PANEL_AGENT_URL"):
         Settings()
+
+
+def test_the_agents_come_from_one_variable(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("AWG_PANEL_SECRET_KEY", SECRET)
+    monkeypatch.setenv("AWG_PANEL_ADMIN_PASSWORD_HASH", HASH)
+    monkeypatch.setenv(
+        "AWG_PANEL_AGENTS",
+        "gw-01=http://192.168.201.1:3000/, gw-02=https://10.0.0.2:3000",
+    )
+    assert Settings().agents == {
+        "gw-01": "http://192.168.201.1:3000",
+        "gw-02": "https://10.0.0.2:3000",
+    }
+
+
+@pytest.mark.parametrize(
+    "value", ["gw-01", "gw-01=192.168.201.1:3000", "a=http://x,a=http://y"]
+)
+def test_a_malformed_agent_list_is_refused(
+    monkeypatch: pytest.MonkeyPatch,
+    value: str,
+) -> None:
+    monkeypatch.setenv("AWG_PANEL_SECRET_KEY", SECRET)
+    monkeypatch.setenv("AWG_PANEL_ADMIN_PASSWORD_HASH", HASH)
+    monkeypatch.setenv("AWG_PANEL_AGENTS", value)
+    with pytest.raises(ValidationError):
+        Settings()

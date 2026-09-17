@@ -43,18 +43,64 @@ export interface Node {
 }
 
 export interface AgentInterface {
+  id: number | null;
   name: string;
   present: boolean;
   peers: number;
+  public_key: string | null;
+  listen_port: number;
   error: string | null;
+  enabled: boolean;
+  address: string | null;
+  pool: string | null;
+  endpoint_host: string | null;
+  dns: string | null;
+  mtu: number | null;
+  client_allowed_ips: string | null;
+  keepalive: number | null;
+  obfuscation: Record<string, unknown>;
 }
 
 export interface Agent extends Node {
+  configured: boolean;
+  checked_at: string | null;
+  latency_ms: number | null;
   version: string | null;
   awg: string | null;
   xray: string | null;
   interfaces: AgentInterface[];
   error: string | null;
+}
+
+export interface Check {
+  id: number;
+  checked_at: string;
+  status: string;
+  latency_ms: number | null;
+  error: string | null;
+  version: string | null;
+  awg: string | null;
+  xray: string | null;
+  interfaces: ReportedInterface[];
+}
+
+// An interface exactly as the agent reported it in one healthcheck.
+export interface ReportedInterface {
+  name: string;
+  present: boolean;
+  peers?: number;
+  error?: string | null;
+}
+
+export interface InterfaceUpdate {
+  enabled?: boolean;
+  address?: string | null;
+  pool?: string | null;
+  endpoint_host?: string | null;
+  dns?: string | null;
+  mtu?: number | null;
+  client_allowed_ips?: string | null;
+  keepalive?: number | null;
 }
 
 export class ApiError extends Error {
@@ -119,6 +165,11 @@ export const api = {
   interfaces: () => call<Interface[]>("GET", "/interfaces"),
   nodes: () => call<Node[]>("GET", "/nodes"),
   agents: () => call<Agent[]>("GET", "/agents"),
+  probe: () => call<Agent[]>("POST", "/agents/probe"),
+  checks: (nodeId: number, limit = 100) =>
+    call<Check[]>("GET", `/agents/${nodeId}/checks?limit=${limit}`),
+  updateInterface: (id: number, body: InterfaceUpdate) =>
+    call<Agent>("PATCH", `/interfaces/${id}`, body),
   profiles: () => call<Profile[]>("GET", "/profiles"),
   createProfile: (name: string, note: string, interfaceId: number, key: string) =>
     call<Issued>("POST", "/profiles", {

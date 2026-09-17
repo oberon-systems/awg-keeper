@@ -114,7 +114,8 @@ export function Profiles() {
             disabled={offered.length === 0}
             onChange={(event) => setChosen(Number(event.target.value))}
           >
-            {offered.map((item) => (              <option key={item.id} value={item.id}>
+            {offered.map((item) => (
+              <option key={item.id} value={item.id}>
                 {item.name}
               </option>
             ))}
@@ -126,10 +127,12 @@ export function Profiles() {
       </form>
 
       {nodes.length === 0 ? (
-        <p className="warning">No agents: add a node to the database.</p>
+        <p className="warning">No agents: set AWG_PANEL_AGENTS on the panel.</p>
       ) : null}
       {node !== null && offered.length === 0 ? (
-        <p className="warning">This agent has no interfaces: add them to the database.</p>
+        <p className="warning">
+          This agent has no enabled interface: configure and enable one on the Status page.
+        </p>
       ) : null}
       {problem ? <p className="problem">{problem}</p> : null}
 
