@@ -25,6 +25,8 @@ KEY_A = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa0="
 KEY_B = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb1="
 SERVER_KEY = "cccccccccccccccccccccccccccccccccccccccccc2="
 
+OBFUSCATION = {"jc": "4", "jmin": "50", "jmax": "1000", "h1": "1077035230"}
+
 UUID_A = "6f1f0b8e-0b1a-4c2e-9d3f-5a6b7c8d9e01"
 UUID_B = "7a2f1c9d-1c2b-4d3f-8e4a-6b7c8d9e0f12"
 
@@ -47,6 +49,12 @@ if os.environ.get("FAKE_AWG_FAIL"):
     sys.exit(1)
 
 
+FIELDS = {
+    "jc", "jmin", "jmax", "s1", "s2", "s3", "s4",
+    "h1", "h2", "h3", "h4", "i1", "i2", "i3", "i4", "i5",
+}
+
+
 def save():
     with open(path, "w", encoding="utf-8") as handle:
         json.dump(state, handle)
@@ -59,6 +67,15 @@ elif argv[:2] == ["show", "interfaces"]:
 elif len(argv) == 3 and argv[0] == "show" and argv[2] == "peers":
     for key in state[argv[1]]["peers"]:
         print(key)
+elif len(argv) == 3 and argv[0] == "show" and argv[2] == "public-key":
+    print(state[argv[1]]["public_key"])
+elif len(argv) == 3 and argv[0] == "show" and argv[2] == "listen-port":
+    print(state[argv[1]]["listen_port"])
+elif len(argv) == 3 and argv[0] == "show" and argv[2] in FIELDS:
+    default = {"h1": "1", "h2": "2", "h3": "3", "h4": "4"}.get(argv[2], "0")
+    if argv[2].startswith("i"):
+        default = "(null)"
+    print(state[argv[1]].get("obfuscation", {}).get(argv[2], default))
 elif len(argv) == 3 and argv[0] == "show" and argv[2] == "dump":
     iface = state[argv[1]]
     print("\\t".join(["(none)", iface["public_key"], str(iface["listen_port"]), "off"]))
@@ -157,6 +174,7 @@ def host(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
         "awg0": {
             "public_key": SERVER_KEY,
             "listen_port": 51820,
+            "obfuscation": OBFUSCATION,
             "peers": {KEY_A: {"allowed_ips": "10.8.0.2/32", "rx": 1024, "tx": 2048}},
         }
     }

@@ -6,7 +6,16 @@ import json
 from pathlib import Path
 
 import pytest
-from conftest import KEY_A, KEY_B, SOURCE, TOKEN, UUID_B, argv_log
+from conftest import (
+    KEY_A,
+    KEY_B,
+    OBFUSCATION,
+    SERVER_KEY,
+    SOURCE,
+    TOKEN,
+    UUID_B,
+    argv_log,
+)
 from fastapi.testclient import TestClient
 
 from awg_agent.app import create_app
@@ -109,9 +118,18 @@ def test_status_reports_what_awg_shows(client: TestClient, host: Path) -> None:
     body = client.get("/v1/status").json()
     assert body["error"] is None
     assert body["interfaces"] == [
-        {"name": "awg0", "present": True, "peers": 1, "error": None}
+        {
+            "name": "awg0",
+            "present": True,
+            "peers": 1,
+            "public_key": SERVER_KEY,
+            "listen_port": 51820,
+            "obfuscation": OBFUSCATION,
+            "error": None,
+        }
     ]
-    assert not [line for line in argv_log(host) if "dump" in line]
+    forbidden = {"dump", "showconf", "private-key"}
+    assert not [line for line in argv_log(host) if forbidden & set(line)]
 
 
 def test_status_names_an_interface_awg_does_not_list(settings: Settings) -> None:
@@ -124,6 +142,9 @@ def test_status_names_an_interface_awg_does_not_list(settings: Settings) -> None
         "name": "awg9",
         "present": False,
         "peers": 0,
+        "public_key": None,
+        "listen_port": 0,
+        "obfuscation": {},
         "error": "not listed by awg",
     }
 

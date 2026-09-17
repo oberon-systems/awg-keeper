@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import json
 import logging
+from pathlib import Path
 
 import pytest
-from conftest import SOURCE, TOKEN
+from conftest import SERVER_KEY, SOURCE, TOKEN, argv_log
 from fastapi import APIRouter
 from fastapi.testclient import TestClient
 
@@ -39,9 +41,71 @@ def test_the_start_is_logged_without_the_token(
     caplog.set_level(logging.INFO)
     create_app(settings)
     started = _messages(caplog, "awg_agent.app")
-    assert len(started) == 1
     assert "interfaces awg0" in started[0]
+    assert started[1] == "awg: amneziawg-tools v1.0.20241018"
+    assert started[2].startswith("xray: Xray 1.8.24")
     assert TOKEN not in caplog.text
+
+
+def test_the_start_checks_every_interface(
+    settings: Settings,
+    host: Path,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    caplog.set_level(logging.INFO)
+    create_app(settings)
+    assert _messages(caplog, "awg_agent.awg") == [
+        f"awg0: up, listen_port 51820, public_key {SERVER_KEY}, 1 peers"
+    ]
+    assert not [line for line in argv_log(host) if "private-key" in line]
+
+
+def test_the_start_names_an_absent_interface_as_an_error(
+    settings: Settings,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    wider = settings.model_copy(update={"interfaces": ["awg0", "awg9"]})
+    create_app(wider)
+    errors = [
+        r.getMessage()
+        for r in caplog.records
+        if r.name == "awg_agent.awg" and r.levelno == logging.ERROR
+    ]
+    assert errors == ["awg9: absent, not listed by awg"]
+
+
+def test_the_start_says_when_awg_is_unusable(
+    settings: Settings,
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    monkeypatch.setenv("FAKE_AWG_FAIL", "1")
+    create_app(settings)
+    errors = [r.getMessage() for r in caplog.records if r.levelno == logging.ERROR]
+    assert any(line.startswith("awg at ") for line in errors)
+    assert (
+        "awg failed: exited 1: awg: RTNETLINK answers: Operation not permitted"
+        in errors
+    )
+
+
+def test_status_logs_only_what_changed(
+    client: TestClient,
+    host: Path,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    caplog.set_level(logging.INFO)
+    caplog.clear()
+    client.get("/v1/status")
+    client.get("/v1/status")
+    assert _messages(caplog, "awg_agent.awg") == []
+
+    state = json.loads((host / "awg-state.json").read_text(encoding="utf-8"))
+    state["awg1"] = state.pop("awg0")
+    (host / "awg-state.json").write_text(json.dumps(state), encoding="utf-8")
+    client.get("/v1/status")
+    client.get("/v1/status")
+    assert _messages(caplog, "awg_agent.awg") == ["awg0: absent, not listed by awg"]
 
 
 def test_a_refused_token_is_logged(

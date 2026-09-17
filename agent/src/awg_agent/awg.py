@@ -20,6 +20,28 @@ LOG = logging.getLogger(__name__)
 NONE = "(none)"
 OFF = "off"
 
+OBFUSCATION_FIELDS = (
+    "jc",
+    "jmin",
+    "jmax",
+    "s1",
+    "s2",
+    "s3",
+    "s4",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "i1",
+    "i2",
+    "i3",
+    "i4",
+    "i5",
+)
+UNSET = frozenset({"", "0", "(null)", NONE})
+# What `awg show` reports for a header nobody set: plain WireGuard's message types.
+DEFAULT_HEADERS = {"h1": "1", "h2": "2", "h3": "3", "h4": "4"}
+
 
 class UnknownPeer(LookupError):
     """No peer with that public key on that interface."""
@@ -77,10 +99,30 @@ def _reason(exc: CommandError) -> str:
     return detail[:200]
 
 
+def _field(settings: Settings, name: str, field: str) -> str:
+    return run(
+        [settings.awg_bin, "show", name, field], settings.command_timeout
+    ).strip()
+
+
+def _obfuscation(settings: Settings, name: str) -> dict[str, str]:
+    found = {}
+    for field in OBFUSCATION_FIELDS:
+        try:
+            value = _field(settings, name, field)
+        except CommandError:
+            # An older awg does not know s3, s4 or i1-i5; the rest still counts.
+            continue
+        if value in UNSET or DEFAULT_HEADERS.get(field) == value:
+            continue
+        found[field] = value
+    return found
+
+
 def probe(settings: Settings) -> tuple[list[InterfaceHealth], str | None]:
     """Report what awg shows for every configured interface, or why it cannot.
 
-    Only `show interfaces` and `show <iface> peers`: neither prints a private key.
+    Every field is asked for by name; `private-key`, `dump` and `showconf` are not.
     """
     try:
         present = run(
@@ -105,11 +147,61 @@ def probe(settings: Settings) -> tuple[list[InterfaceHealth], str | None]:
             keys = run(
                 [settings.awg_bin, "show", name, "peers"], settings.command_timeout
             ).split()
+            public_key = _text(_field(settings, name, "public-key"))
+            listen_port = _number(_field(settings, name, "listen-port"))
         except CommandError as exc:
             found.append(InterfaceHealth(name=name, present=True, error=_reason(exc)))
             continue
-        found.append(InterfaceHealth(name=name, present=True, peers=len(keys)))
+        found.append(
+            InterfaceHealth(
+                name=name,
+                present=True,
+                peers=len(keys),
+                public_key=public_key,
+                listen_port=listen_port,
+                obfuscation=_obfuscation(settings, name),
+            )
+        )
     return found, None
+
+
+def _describe(item: InterfaceHealth) -> str:
+    if item.error:
+        state = "present" if item.present else "absent"
+        return f"{item.name}: {state}, {item.error}"
+    port = f"listen_port {item.listen_port}"
+    return f"{item.name}: up, {port}, public_key {item.public_key}"
+
+
+def log_probe(
+    found: list[InterfaceHealth],
+    error: str | None,
+    previous: dict[str, str] | None,
+) -> dict[str, str]:
+    """Log the probe: everything when previous is None, afterwards only what changed.
+
+    Returns what to pass as previous next time.
+    """
+    current = {item.name: _describe(item) for item in found}
+    if error:
+        current[""] = f"awg failed: {error}"
+    peers = {item.name: item.peers for item in found if item.present and not item.error}
+
+    for name, text in current.items():
+        if previous is not None and previous.get(name) == text:
+            continue
+        if name in peers:
+            LOG.info("%s, %d peers", text, peers[name])
+        else:
+            LOG.error("%s", text)
+
+    for name, text in (previous or {}).items():
+        if name not in current:
+            LOG.info("cleared: %s", text)
+
+    if previous is None and not found and not error:
+        LOG.error("no interfaces: none configured and awg lists none")
+    return current
 
 
 def show(settings: Settings, iface: str) -> Interface:

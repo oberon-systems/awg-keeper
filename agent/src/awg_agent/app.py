@@ -7,7 +7,7 @@ import logging
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from awg_agent import __version__, api, logs
+from awg_agent import __version__, api, awg, logs, xray
 from awg_agent.awg import DuplicatePeer
 from awg_agent.commands import CommandError
 from awg_agent.config import Settings
@@ -44,6 +44,27 @@ def _on_unexpected(request: Request, exc: Exception) -> JSONResponse:
     return _problem(500, "internal error; see the agent log")
 
 
+def _check_host(settings: Settings) -> dict[str, str]:
+    """Say at start up whether the tools answer and what the interfaces look like."""
+    found = awg.version(settings)
+    if found:
+        LOG.info("awg: %s", found)
+    else:
+        LOG.error(
+            "awg at %s is not usable: no interface can be managed", settings.awg_bin
+        )
+    found = xray.version(settings)
+    if found:
+        LOG.info("xray: %s", found)
+    else:
+        LOG.warning(
+            "xray at %s is not usable: no xray user can be managed", settings.xray_bin
+        )
+
+    interfaces, error = awg.probe(settings)
+    return awg.log_probe(interfaces, error, None)
+
+
 def create_app(settings: Settings | None = None) -> FastAPI:
     """Assemble the application around one Settings instance."""
     settings = settings or Settings()
@@ -67,6 +88,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         openapi_url="/openapi.json" if settings.docs else None,
     )
     app.state.settings = settings
+    app.state.interfaces_seen = _check_host(settings)
     app.middleware("http")(logs.request_id)
 
     # Registered narrowest first: DuplicatePeer is a ValueError, and the

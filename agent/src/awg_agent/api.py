@@ -76,6 +76,9 @@ def status(request: Request) -> Status:
     """Health, and what awg shows per interface; a failure is reported, not raised."""
     settings = settings_of(request)
     interfaces, error = awg.probe(settings)
+    request.app.state.interfaces_seen = awg.log_probe(
+        interfaces, error, request.app.state.interfaces_seen
+    )
     return Status(
         version=__version__,
         awg=awg.version(settings),

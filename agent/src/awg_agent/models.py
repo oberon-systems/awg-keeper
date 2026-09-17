@@ -105,6 +105,10 @@ class InterfaceHealth(BaseModel):
     name: str
     present: bool
     peers: int = 0
+    public_key: str | None = None
+    listen_port: int = 0
+    # awg field name to value, only the ones that differ from plain WireGuard.
+    obfuscation: dict[str, str] = {}
     error: str | None = None
 
 
