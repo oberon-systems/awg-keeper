@@ -1,6 +1,6 @@
 [project]
 name = "awg-keeper-agent"
-version = "0.3.3"
+version = "0.3.4"
 description = "Host-side executor for awg-keeper: AmneziaWG peers and Xray users"
 requires-python = ">=3.11"
 authors = [

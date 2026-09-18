@@ -1,3 +1,9 @@
+## awg-keeper-agent-v0.3.4 (2026-09-18)
+
+### Bug Fixes
+
+- **agent**: stop awg segfaults, survive a denied conf dir
+
 ## awg-keeper-agent-v0.3.3 (2026-09-18)
 
 ### Bug Fixes
