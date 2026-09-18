@@ -245,6 +245,12 @@ def _obfuscation(reported: dict[str, str]) -> dict[str, Any]:
     return found
 
 
+def _address(reported: list[str]) -> str | None:
+    found = [ip_interface(item) for item in reported]
+    ipv4 = [item for item in found if item.version == 4]
+    return str((ipv4 or found)[0]) if found else None
+
+
 def _discover(session: Session, node: Node, reported: list[dict[str, Any]]) -> None:
     rows = {
         row.name: row
@@ -278,6 +284,19 @@ def _discover(session: Session, node: Node, reported: list[dict[str, Any]]) -> N
         row.server_public_key = item["public_key"]
         row.listen_port = int(item.get("listen_port") or 0)
         row.obfuscation = _obfuscation(item.get("obfuscation") or {})
+        # An agent before 0.3.3 reports no address; what the operator typed stays.
+        address = _address(item.get("addresses") or [])
+        if address is not None:
+            if row.address and row.address != address:
+                LOG.warning(
+                    "agent %s: interface %s address %s is now %s",
+                    node.name,
+                    row.name,
+                    row.address,
+                    address,
+                )
+            row.address = address
+            row.pool = row.pool or str(ip_interface(address).network)
         session.add(row)
 
 
@@ -435,6 +454,12 @@ def _agent_interfaces(
                 client_allowed_ips=row.client_allowed_ips if row else None,
                 keepalive=row.keepalive if row else None,
                 obfuscation=row.obfuscation if row else {},
+                addresses=list((item or {}).get("addresses") or []),
+                missing=[
+                    field for field in REQUIRED_TO_ENABLE if not getattr(row, field)
+                ]
+                if row
+                else [],
             )
         )
     return found

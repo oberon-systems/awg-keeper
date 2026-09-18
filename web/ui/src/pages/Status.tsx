@@ -181,6 +181,11 @@ export function Status() {
                   <td>
                     {item.enabled ? (
                       <span className="badge status-up">enabled</span>
+                    ) : item.missing.length ? (
+                      <>
+                        <span className="badge status-unconfigured">not configured</span>
+                        <div className="muted">needs {item.missing.join(", ")}</div>
+                      </>
                     ) : (
                       <span className="badge status-unknown">disabled</span>
                     )}

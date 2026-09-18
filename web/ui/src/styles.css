@@ -186,3 +186,7 @@ tr.failed {
 .status-unknown {
   color: gray;
 }
+
+.status-unconfigured {
+  color: #b26a00;
+}

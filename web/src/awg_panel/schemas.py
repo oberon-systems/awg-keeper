@@ -124,6 +124,8 @@ class AgentInterface(BaseModel):
     client_allowed_ips: str | None = None
     keepalive: int | None = None
     obfuscation: dict[str, Any] = {}
+    addresses: list[str] = []
+    missing: list[str] = []
 
 
 class AgentRead(BaseModel):

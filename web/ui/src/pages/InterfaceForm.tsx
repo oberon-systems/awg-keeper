@@ -65,6 +65,8 @@ export function InterfaceForm({
           <input
             value={address}
             placeholder="100.127.252.1/24"
+            readOnly={item.addresses.length > 0}
+            title={item.addresses.length ? "reported by the agent" : undefined}
             onChange={(event) => setAddress(event.target.value)}
           />
         </label>

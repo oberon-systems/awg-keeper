@@ -210,6 +210,7 @@ def test_a_reported_interface_is_discovered_disabled(
     new = next(item for item in found[0]["interfaces"] if item["name"] == "awg-new")
     assert new["enabled"] is False
     assert new["id"] is not None
+    assert new["missing"] == ["address", "pool", "endpoint_host"]
     assert [item["name"] for item in signed_in.get("/api/v1/interfaces").json()] == [
         "awg-mgmt"
     ]
@@ -234,8 +235,39 @@ def test_a_reported_interface_is_discovered_disabled(
         },
     )
     assert enabled.status_code == 200
+    now = next(
+        item for item in enabled.json()["interfaces"] if item["name"] == "awg-new"
+    )
+    assert now["missing"] == []
     offered = signed_in.get("/api/v1/interfaces").json()
     assert [item["name"] for item in offered] == ["awg-mgmt", "awg-new"]
+
+
+def test_a_reported_address_sets_address_and_pool(
+    signed_in: TestClient,
+    stub: StubAgent,
+) -> None:
+    stub.extra.append(
+        {
+            "name": "awg-guests",
+            "present": True,
+            "peers": 0,
+            "public_key": KEY,
+            "listen_port": 51822,
+            "addresses": ["fd00::1/64", "10.20.0.1/24"],
+        }
+    )
+    found = signed_in.post("/api/v1/agents/probe").json()
+    new = next(item for item in found[0]["interfaces"] if item["name"] == "awg-guests")
+    assert new["address"] == "10.20.0.1/24"
+    assert new["pool"] == "10.20.0.0/24"
+    assert new["missing"] == ["endpoint_host"]
+
+    enabled = signed_in.patch(
+        f"/api/v1/interfaces/{new['id']}",
+        json={"enabled": True, "endpoint_host": "vpn.example"},
+    )
+    assert enabled.status_code == 200
 
 
 def test_discovery_keeps_what_the_operator_set(

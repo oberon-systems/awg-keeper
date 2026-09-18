@@ -1,13 +1,30 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { api, type Interface, type Issued, type Node, type Profile } from "../api";
+import {
+  api,
+  type Agent,
+  type AgentInterface,
+  type Interface,
+  type Issued,
+  type Profile,
+} from "../api";
 import { IssuedConfig } from "./IssuedConfig";
 import { fillConfig, generateKeyPair } from "../keys";
+
+function why(item: AgentInterface): string {
+  if (item.id === null) {
+    return `${item.name}: agent reports no key`;
+  }
+  if (item.missing.length) {
+    return `${item.name}: not configured (needs ${item.missing.join(", ")})`;
+  }
+  return `${item.name}: disabled`;
+}
 
 export function Profiles() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [interfaces, setInterfaces] = useState<Interface[]>([]);
-  const [nodes, setNodes] = useState<Node[]>([]);
+  const [nodes, setNodes] = useState<Agent[]>([]);
   const [node, setNode] = useState<number | null>(null);
   const [name, setName] = useState("");
   const [note, setNote] = useState("");
@@ -23,6 +40,9 @@ export function Profiles() {
   }, []);
 
   const offered = interfaces.filter((item) => item.node_id === node);
+  const idle = (nodes.find((item) => item.id === node)?.interfaces ?? []).filter(
+    (item) => !item.enabled,
+  );
 
   function pickNode(id: number) {
     setNode(id);
@@ -30,7 +50,7 @@ export function Profiles() {
   }
 
   useEffect(() => {
-    void Promise.all([api.nodes(), api.interfaces()]).then(([agents, found]) => {
+    void Promise.all([api.agents(), api.interfaces()]).then(([agents, found]) => {
       const first = agents[0]?.id ?? null;
       setNodes(agents);
       setInterfaces(found);
@@ -114,6 +134,7 @@ export function Profiles() {
             disabled={offered.length === 0}
             onChange={(event) => setChosen(Number(event.target.value))}
           >
+            {offered.length === 0 ? <option value="">none configured</option> : null}
             {offered.map((item) => (
               <option key={item.id} value={item.id}>
                 {item.name}
@@ -130,9 +151,16 @@ export function Profiles() {
         <p className="warning">No agents: set AWG_PANEL_AGENTS on the panel.</p>
       ) : null}
       {node !== null && offered.length === 0 ? (
-        <p className="warning">
-          This agent has no enabled interface: configure and enable one on the Status page.
-        </p>
+        <div className="warning">
+          {idle.map((item) => (
+            <p key={item.name}>{why(item)}</p>
+          ))}
+          <p>
+            {idle.length
+              ? "Configure it on the Status page."
+              : "This agent reports no interface: check AWG_KEEPER_INTERFACES and the agent log."}
+          </p>
+        </div>
       ) : null}
       {problem ? <p className="problem">{problem}</p> : null}
 

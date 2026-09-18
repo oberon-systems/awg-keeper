@@ -59,6 +59,8 @@ export interface AgentInterface {
   client_allowed_ips: string | null;
   keepalive: number | null;
   obfuscation: Record<string, unknown>;
+  addresses: string[];
+  missing: string[];
 }
 
 export interface Agent extends Node {
