@@ -1,3 +1,9 @@
+## awg-keeper-agent-v0.3.2 (2026-09-18)
+
+### Bug Fixes
+
+- **agent**: reach the UAPI socket through a root proxy
+
 ## awg-keeper-agent-v0.3.1 (2026-09-17)
 
 ### Bug Fixes
