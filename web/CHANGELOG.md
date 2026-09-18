@@ -1,3 +1,9 @@
+## awg-keeper-web-v0.4.0 (2026-09-18)
+
+### Features
+
+- **web**: take the interface address from the agent
+
 ## awg-keeper-web-v0.3.0 (2026-09-17)
 
 ### Features
