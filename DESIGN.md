@@ -104,8 +104,12 @@ chars, interface name, CIDR, port range. This is the primary injection boundary.
 **AmneziaWG.** Peers are applied incrementally with
 `awg set <iface> peer <pubkey> allowed-ips <ip/32>` and `… remove`; the interface
 is never recreated. `awg-quick down/up` drops every session and is not used.
-After a successful apply the Agent persists the interface config file so changes
-survive a reboot. Counters and handshakes come from `awg show <iface> dump`.
+After a successful apply the Agent rewrites the `[Peer]` blocks of the interface
+config file so changes survive a reboot; the `[Interface]` section awg-quick owns
+(Address, DNS, MTU, PostUp) is kept as it is. A failed write is logged, and the
+applied peer stays. The interface address the Panel issues from is read with
+`ip -j address show dev <iface>`. Counters and handshakes come from
+`awg show <iface> dump`.
 
 **Xray.** User add/remove goes through the gRPC API
 (`HandlerService.AddUser/RemoveUser`), which requires an `api` inbound. A config
