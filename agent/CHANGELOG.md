@@ -1,3 +1,9 @@
+## awg-keeper-agent-v0.3.3 (2026-09-18)
+
+### Bug Fixes
+
+- **agent**: report addresses, keep awg-quick settings on persist
+
 ## awg-keeper-agent-v0.3.2 (2026-09-18)
 
 ### Bug Fixes

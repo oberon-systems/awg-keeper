@@ -2,7 +2,7 @@
 
 ## Agent
 
-sub-project tag: awg-keeper-agent-v0.3.2
+sub-project tag: awg-keeper-agent-v0.3.3
 
 - [x] code basics
   - FastAPI (HTTP)
