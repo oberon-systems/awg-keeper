@@ -62,6 +62,36 @@ def test_add_peer_persists_the_interface(settings: Settings) -> None:
     assert KEY_B in written
 
 
+def test_persist_keeps_what_awg_quick_needs(settings: Settings) -> None:
+    target = settings.awg_conf_dir / "awg0.conf"
+    target.write_text(
+        "[Interface]\n"
+        "PrivateKey = kept\n"
+        "Address = 10.8.0.1/24\n"
+        "PostUp = iptables -t nat -A POSTROUTING -j MASQUERADE\n"
+        "\n"
+        "[Peer]\n"
+        "PublicKey = stale\n"
+        "AllowedIPs = 10.8.0.9/32\n",
+        encoding="utf-8",
+    )
+    awg.add_peer(settings, "awg0", KEY_B, ["10.8.0.5"])
+    written = target.read_text(encoding="utf-8")
+    assert "Address = 10.8.0.1/24\n" in written
+    assert "PostUp = iptables" in written
+    assert "PrivateKey = kept\n" in written
+    assert "stale" not in written
+    assert written.count("[Peer]") == 2
+    assert KEY_A in written
+    assert KEY_B in written
+
+
+def test_a_failed_persist_does_not_fail_the_apply(settings: Settings) -> None:
+    (settings.awg_conf_dir / "awg0.conf").mkdir()
+    peer = awg.add_peer(settings, "awg0", KEY_B, ["10.8.0.5"])
+    assert peer.public_key == KEY_B
+
+
 def test_a_duplicate_peer_is_refused(settings: Settings) -> None:
     with pytest.raises(awg.DuplicatePeer):
         awg.add_peer(settings, "awg0", KEY_A, ["10.8.0.2"])

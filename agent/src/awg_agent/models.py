@@ -109,6 +109,7 @@ class InterfaceHealth(BaseModel):
     listen_port: int = 0
     # awg field name to value, only the ones that differ from plain WireGuard.
     obfuscation: dict[str, str] = {}
+    addresses: list[str] = []
     error: str | None = None
 
 

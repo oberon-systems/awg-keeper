@@ -6,6 +6,7 @@ Peers are applied one at a time and the interface is never recreated.
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 from pathlib import Path
@@ -119,6 +120,24 @@ def _obfuscation(settings: Settings, name: str) -> dict[str, str]:
     return found
 
 
+def _addresses(settings: Settings, name: str) -> list[str]:
+    try:
+        answer = run(
+            [settings.ip_bin, "-j", "address", "show", "dev", name],
+            settings.command_timeout,
+        )
+        links = json.loads(answer or "[]")
+    except (CommandError, ValueError) as exc:
+        LOG.warning("addresses of %s unavailable: %s", name, exc)
+        return []
+    return [
+        f"{item['local']}/{item['prefixlen']}"
+        for link in links
+        for item in link.get("addr_info", [])
+        if item.get("family") in ("inet", "inet6") and item.get("scope") != "link"
+    ]
+
+
 def probe(settings: Settings) -> tuple[list[InterfaceHealth], str | None]:
     """Report what awg shows for every configured interface, or why it cannot.
 
@@ -160,6 +179,7 @@ def probe(settings: Settings) -> tuple[list[InterfaceHealth], str | None]:
                 public_key=public_key,
                 listen_port=listen_port,
                 obfuscation=_obfuscation(settings, name),
+                addresses=_addresses(settings, name),
             )
         )
     return found, None
@@ -278,20 +298,40 @@ def remove_peer(settings: Settings, iface: str, public_key: str) -> None:
     persist(settings, name)
 
 
+def _split(config: str) -> tuple[str, str]:
+    lines = config.splitlines(keepends=True)
+    for index, line in enumerate(lines):
+        if line.strip().lower() == "[peer]":
+            return "".join(lines[:index]), "".join(lines[index:])
+    return config, ""
+
+
 def persist(settings: Settings, iface: str) -> Path | None:
-    """Write `awg showconf` to disk, so the peer set survives a reboot."""
+    """Write the peers awg shows into the interface file, so they survive a reboot.
+
+    The file's own [Interface] section is kept: `awg showconf` knows nothing of
+    Address, DNS, MTU or PostUp, and awg-quick needs every one of them.
+    """
     name = validate.interface(iface, settings.interfaces)
     directory = settings.awg_conf_dir
     if not directory.is_dir():
         LOG.warning("not persisting %s: %s is not a directory", name, directory)
         return None
 
-    config = run([settings.awg_bin, "showconf", name], settings.command_timeout)
     target = directory / f"{name}.conf"
     # Through a temporary file in the same directory: a config truncated by an
     # interrupted write is an interface that does not come back up.
     staging = directory / f".{name}.conf.tmp"
-    staging.write_text(config, encoding="utf-8")
-    os.chmod(staging, 0o600)
-    os.replace(staging, target)
+    try:
+        shown = run([settings.awg_bin, "showconf", name], settings.command_timeout)
+        head, peers = _split(shown)
+        if target.exists():
+            head, _ = _split(target.read_text(encoding="utf-8"))
+        config = head.rstrip("\n") + "\n" + (f"\n{peers}" if peers else "")
+        staging.write_text(config, encoding="utf-8")
+        os.chmod(staging, 0o600)
+        os.replace(staging, target)
+    except (CommandError, OSError) as exc:
+        LOG.error("%s is applied but not persisted to %s: %s", name, target, exc)
+        return None
     return target

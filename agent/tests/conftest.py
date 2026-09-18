@@ -146,6 +146,32 @@ else:
 '''
 
 
+FAKE_IP = '''#!/usr/bin/env python3
+"""A stand-in for ip: answers `-j address show dev` out of the awg state."""
+import json
+import os
+import sys
+
+argv = sys.argv[1:]
+with open(os.environ["FAKE_AWG_STATE"], encoding="utf-8") as handle:
+    state = json.load(handle)
+
+if argv[:4] != ["-j", "address", "show", "dev"] or argv[4] not in state:
+    sys.stderr.write("Device does not exist.\\n")
+    sys.exit(1)
+
+info = []
+for item in state[argv[4]].get("addresses", []):
+    local, prefix = item.split("/")
+    family = "inet6" if ":" in local else "inet"
+    info.append(
+        {"family": family, "local": local, "prefixlen": int(prefix), "scope": "global"}
+    )
+info.append({"family": "inet6", "local": "fe80::1", "prefixlen": 64, "scope": "link"})
+print(json.dumps([{"ifname": argv[4], "addr_info": info}]))
+'''
+
+
 def _script(path: Path, body: str) -> Path:
     path.write_text(body, encoding="utf-8")
     path.chmod(0o755)
@@ -169,11 +195,13 @@ def host(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
 
     _script(root / "bin" / "awg", FAKE_AWG)
     _script(root / "bin" / "xray", FAKE_XRAY)
+    _script(root / "bin" / "ip", FAKE_IP)
 
     state = {
         "awg0": {
             "public_key": SERVER_KEY,
             "listen_port": 51820,
+            "addresses": ["10.8.0.1/24"],
             "obfuscation": OBFUSCATION,
             "peers": {KEY_A: {"allowed_ips": "10.8.0.2/32", "rx": 1024, "tx": 2048}},
         }
@@ -211,6 +239,7 @@ def settings(host: Path, tmp_path: Path) -> Settings:
         interfaces="awg0",
         awg_bin=str(host / "bin" / "awg"),
         awg_conf_dir=conf_dir,
+        ip_bin=str(host / "bin" / "ip"),
         xray_bin=str(host / "bin" / "xray"),
         xray_config=host / "etc" / "config.json",
     )

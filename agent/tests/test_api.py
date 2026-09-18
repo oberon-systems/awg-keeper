@@ -125,11 +125,22 @@ def test_status_reports_what_awg_shows(client: TestClient, host: Path) -> None:
             "public_key": SERVER_KEY,
             "listen_port": 51820,
             "obfuscation": OBFUSCATION,
+            "addresses": ["10.8.0.1/24"],
             "error": None,
         }
     ]
     forbidden = {"dump", "showconf", "private-key"}
     assert not [line for line in argv_log(host) if forbidden & set(line)]
+
+
+def test_status_without_ip_reports_no_addresses(settings: Settings) -> None:
+    blind = settings.model_copy(update={"ip_bin": "/nonexistent/ip"})
+    with TestClient(create_app(blind), client=SOURCE) as test_client:
+        body = test_client.get(
+            "/v1/status", headers={"Authorization": f"Bearer {TOKEN}"}
+        ).json()
+    assert body["error"] is None
+    assert body["interfaces"][0]["addresses"] == []
 
 
 def test_status_names_an_interface_awg_does_not_list(settings: Settings) -> None:
@@ -145,6 +156,7 @@ def test_status_names_an_interface_awg_does_not_list(settings: Settings) -> None
         "public_key": None,
         "listen_port": 0,
         "obfuscation": {},
+        "addresses": [],
         "error": "not listed by awg",
     }
 

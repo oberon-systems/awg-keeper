@@ -45,6 +45,7 @@ class Settings(BaseSettings):
     interfaces: Annotated[list[str], NoDecode] = []
     awg_bin: str = "awg"
     awg_conf_dir: Path = Path("/etc/amnezia/amneziawg")
+    ip_bin: str = "ip"
     xray_bin: str = "xray"
     xray_api: str = "127.0.0.1:10085"
     xray_config: Path = Path("/usr/local/etc/xray/config.json")
