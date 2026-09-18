@@ -107,14 +107,21 @@ def _field(settings: Settings, name: str, field: str) -> str:
 
 
 def _obfuscation(settings: Settings, name: str) -> dict[str, str]:
+    # Not `awg show <iface> <field>`: amneziawg-tools 3.x segfaults on an unset i1-i5.
+    try:
+        shown = run([settings.awg_bin, "show", name], settings.command_timeout)
+    except CommandError as exc:
+        LOG.warning("obfuscation of %s unavailable: %s", name, exc)
+        return {}
     found = {}
-    for field in OBFUSCATION_FIELDS:
-        try:
-            value = _field(settings, name, field)
-        except CommandError:
-            # An older awg does not know s3, s4 or i1-i5; the rest still counts.
+    for line in shown.splitlines():
+        field, _, value = line.strip().partition(": ")
+        if field == "peer":
+            break
+        value = value.strip()
+        if field not in OBFUSCATION_FIELDS or value in UNSET:
             continue
-        if value in UNSET or DEFAULT_HEADERS.get(field) == value:
+        if DEFAULT_HEADERS.get(field) == value:
             continue
         found[field] = value
     return found
@@ -141,7 +148,8 @@ def _addresses(settings: Settings, name: str) -> list[str]:
 def probe(settings: Settings) -> tuple[list[InterfaceHealth], str | None]:
     """Report what awg shows for every configured interface, or why it cannot.
 
-    Every field is asked for by name; `private-key`, `dump` and `showconf` are not.
+    Fields are asked for by name or read off `awg show <iface>`, which prints the
+    private key as `(hidden)`; `private-key`, `dump` and `showconf` are not used.
     """
     try:
         present = run(
@@ -233,14 +241,14 @@ def show(settings: Settings, iface: str) -> Interface:
     if not lines:
         return Interface(name=name)
 
-    # The first line is the interface itself: private key, public key, port,
-    # fwmark. The private key is read past and never carried anywhere.
+    # The first line is the interface itself: private key, public key, port, then
+    # (awg 3.x) obfuscation, fwmark last. The private key is never carried anywhere.
     head = lines[0].split("\t")
     return Interface(
         name=name,
         public_key=_text(head[1]) if len(head) > 1 else None,
         listen_port=_number(head[2]) if len(head) > 2 else 0,
-        fwmark=_text(head[3]) if len(head) > 3 else None,
+        fwmark=_text(head[-1]) if len(head) > 3 else None,
         peers=[_peer(line.split("\t")) for line in lines[1:]],
     )
 
@@ -314,15 +322,14 @@ def persist(settings: Settings, iface: str) -> Path | None:
     """
     name = validate.interface(iface, settings.interfaces)
     directory = settings.awg_conf_dir
-    if not directory.is_dir():
-        LOG.warning("not persisting %s: %s is not a directory", name, directory)
-        return None
-
     target = directory / f"{name}.conf"
     # Through a temporary file in the same directory: a config truncated by an
     # interrupted write is an interface that does not come back up.
     staging = directory / f".{name}.conf.tmp"
     try:
+        if not directory.is_dir():
+            LOG.warning("not persisting %s: %s is not a directory", name, directory)
+            return None
         shown = run([settings.awg_bin, "showconf", name], settings.command_timeout)
         head, peers = _split(shown)
         if target.exists():

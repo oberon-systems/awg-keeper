@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
-from conftest import KEY_A, KEY_B, SERVER_KEY, argv_log
+from conftest import KEY_A, KEY_B, OBFUSCATION, SERVER_KEY, argv_log
 
 from awg_agent import awg
 from awg_agent.commands import CommandError
@@ -20,6 +21,24 @@ def test_show_parses_the_dump(settings: Settings) -> None:
     assert interface.peers[0].allowed_ips == ["10.8.0.2/32"]
     assert interface.peers[0].transfer_rx == 1024
     assert interface.peers[0].transfer_tx == 2048
+
+
+def test_show_reads_the_fwmark_past_the_obfuscation(
+    settings: Settings, host: Path
+) -> None:
+    path = host / "awg-state.json"
+    state = json.loads(path.read_text(encoding="utf-8"))
+    state["awg0"]["fwmark"] = "0xca6c"
+    path.write_text(json.dumps(state), encoding="utf-8")
+    assert awg.show(settings, "awg0").fwmark == "0xca6c"
+
+
+def test_probe_reads_obfuscation_in_one_show(settings: Settings, host: Path) -> None:
+    found, error = awg.probe(settings)
+    assert error is None
+    assert found[0].obfuscation == OBFUSCATION
+    assert ["show", "awg0"] in argv_log(host)
+    assert not [line for line in argv_log(host) if line[2:] == ["i1"]]
 
 
 def test_interfaces_are_narrowed_to_the_managed_ones(settings: Settings) -> None:
@@ -90,6 +109,19 @@ def test_a_failed_persist_does_not_fail_the_apply(settings: Settings) -> None:
     (settings.awg_conf_dir / "awg0.conf").mkdir()
     peer = awg.add_peer(settings, "awg0", KEY_B, ["10.8.0.5"])
     assert peer.public_key == KEY_B
+
+
+def test_an_unreachable_conf_dir_does_not_fail_the_apply(
+    settings: Settings,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def denied(self: Path) -> bool:
+        raise PermissionError(13, "Permission denied", str(self))
+
+    monkeypatch.setattr(Path, "is_dir", denied)
+    peer = awg.add_peer(settings, "awg0", KEY_B, ["10.8.0.5"])
+    assert peer.public_key == KEY_B
+    assert awg.persist(settings, "awg0") is None
 
 
 def test_a_duplicate_peer_is_refused(settings: Settings) -> None:

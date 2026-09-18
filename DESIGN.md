@@ -74,9 +74,14 @@ NoNewPrivileges=yes
 ProtectSystem=strict
 ProtectHome=yes
 PrivateTmp=yes
-ReadWritePaths=/etc/amnezia /var/lib/awg-keeper
+ReadWritePaths=/etc/amnezia/amneziawg /var/lib/awg-keeper
 RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
 ```
+
+`ReadWritePaths=` only lifts the read-only mount; amneziawg-tools leaves
+`/etc/amnezia/amneziawg` and its configs root-only. The package's tmpfiles entry
+grants `awgkeeper` an ACL on the directory, its files and the files created
+later, and reapplies it at every boot.
 
 **Socket access.** `awg` drives the userspace `amneziawg-go` through its UAPI
 socket, `/run/amneziawg/<iface>.sock`, which the daemon creates `root 0700`.
@@ -109,7 +114,9 @@ config file so changes survive a reboot; the `[Interface]` section awg-quick own
 (Address, DNS, MTU, PostUp) is kept as it is. A failed write is logged, and the
 applied peer stays. The interface address the Panel issues from is read with
 `ip -j address show dev <iface>`. Counters and handshakes come from
-`awg show <iface> dump`.
+`awg show <iface> dump`. Obfuscation parameters are read off `awg show <iface>`,
+not field by field: `awg show <iface> i1` segfaults in amneziawg-tools 3.x when
+I1 is unset.
 
 **Xray.** User add/remove goes through the gRPC API
 (`HandlerService.AddUser/RemoveUser`), which requires an `api` inbound. A config

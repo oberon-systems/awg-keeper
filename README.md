@@ -58,7 +58,9 @@ them from `/etc/awg-keeper/agent.env` at mode 0600.
 The Agent needs read and write access to the UAPI socket of every interface it
 manages, `/run/amneziawg/<iface>.sock`. `amneziawg-go` creates it `root 0700`,
 so the package reaches it through a proxy socket per interface in
-`AWG_KEEPER_INTERFACES`, see [DESIGN.md](DESIGN.md#agent).
+`AWG_KEEPER_INTERFACES`, see [DESIGN.md](DESIGN.md#agent). It also needs write
+access to `/etc/amnezia/amneziawg` to persist peers; the package grants
+`awgkeeper` an ACL there through its tmpfiles entry.
 
 Run it in the foreground against a host that already has `awg`:
 

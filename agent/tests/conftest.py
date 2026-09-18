@@ -49,10 +49,10 @@ if os.environ.get("FAKE_AWG_FAIL"):
     sys.exit(1)
 
 
-FIELDS = {
+FIELDS = (
     "jc", "jmin", "jmax", "s1", "s2", "s3", "s4",
     "h1", "h2", "h3", "h4", "i1", "i2", "i3", "i4", "i5",
-}
+)
 
 
 def save():
@@ -71,14 +71,29 @@ elif len(argv) == 3 and argv[0] == "show" and argv[2] == "public-key":
     print(state[argv[1]]["public_key"])
 elif len(argv) == 3 and argv[0] == "show" and argv[2] == "listen-port":
     print(state[argv[1]]["listen_port"])
-elif len(argv) == 3 and argv[0] == "show" and argv[2] in FIELDS:
-    default = {"h1": "1", "h2": "2", "h3": "3", "h4": "4"}.get(argv[2], "0")
-    if argv[2].startswith("i"):
-        default = "(null)"
-    print(state[argv[1]].get("obfuscation", {}).get(argv[2], default))
+elif len(argv) == 2 and argv[0] == "show":
+    iface = state[argv[1]]
+    print("interface: %s" % argv[1])
+    print("  public key: %s" % iface["public_key"])
+    print("  private key: (hidden)")
+    print("  listening port: %d" % iface["listen_port"])
+    for name in FIELDS:
+        if name in iface.get("obfuscation", {}):
+            print("  %s: %s" % (name, iface["obfuscation"][name]))
+    for key, peer in iface["peers"].items():
+        print("")
+        print("peer: %s" % key)
+        print("  allowed ips: %s" % peer["allowed_ips"])
 elif len(argv) == 3 and argv[0] == "show" and argv[2] == "dump":
     iface = state[argv[1]]
-    print("\\t".join(["(none)", iface["public_key"], str(iface["listen_port"]), "off"]))
+    obfuscation = iface.get("obfuscation", {})
+    defaults = {"h1": "1", "h2": "2", "h3": "3", "h4": "4"}
+    columns = [
+        obfuscation.get(name, defaults.get(name, "(null)" if name[0] == "i" else "0"))
+        for name in FIELDS
+    ]
+    head = ["(none)", iface["public_key"], str(iface["listen_port"]), *columns]
+    print("\\t".join([*head, iface.get("fwmark", "off")]))
     for key, peer in iface["peers"].items():
         print("\\t".join([
             key,
