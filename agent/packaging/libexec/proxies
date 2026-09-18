@@ -1,0 +1,19 @@
+#!/bin/sh
+# Runs as ExecStartPre=+ of the agent: a proxy socket for every interface in
+# AWG_KEEPER_INTERFACES, and none for any other.
+set -eu
+
+wanted=" $(printf '%s' "${AWG_KEEPER_INTERFACES:-}" | tr ',' ' ') "
+
+for iface in $wanted; do
+    systemctl start "awg-keeper-proxy@${iface}.socket"
+done
+
+systemctl list-units --plain --no-legend 'awg-keeper-proxy@*.socket' | while read -r unit _; do
+    iface=${unit#awg-keeper-proxy@}
+    iface=${iface%.socket}
+    case "$wanted" in
+    *" $iface "*) ;;
+    *) systemctl stop "$unit" ;;
+    esac
+done

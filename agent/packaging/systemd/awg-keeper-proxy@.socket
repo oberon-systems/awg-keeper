@@ -1,0 +1,9 @@
+[Unit]
+Description=awg-keeper agent proxy socket for %i
+Documentation=https://github.com/oberon-systems/awg-keeper
+
+[Socket]
+ListenStream=/run/amneziawg-agent/%i.sock
+SocketUser=awgkeeper
+SocketMode=0600
+RemoveOnStop=yes

@@ -29,6 +29,10 @@ if [ ! -f "$CONFIG" ]; then
     echo "awg-keeper: a token was generated in $CONFIG; the Panel needs it."
 fi
 
+if command -v systemd-tmpfiles >/dev/null 2>&1; then
+    systemd-tmpfiles --create /usr/lib/tmpfiles.d/awg-keeper.conf || true
+fi
+
 if command -v systemctl >/dev/null 2>&1; then
     systemctl daemon-reload || true
     systemctl try-restart awg-keeper-agent.service || true

@@ -81,10 +81,18 @@ RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
 **Socket access.** `awg` drives the userspace `amneziawg-go` through its UAPI
 socket, `/run/amneziawg/<iface>.sock`, which the daemon creates `root 0700`.
 Without access to it every call fails with `Unable to access interface:
-Permission denied`. The host deployment opens the socket of each interface the
-Agent manages to a group (`chgrp` and `chmod 0660` after the interface starts),
-and a drop-in adds that group to `SupplementaryGroups=`. Xray is reached over
-gRPC on loopback, so nothing the Agent does needs a capability.
+Permission denied`. The socket cannot be opened up in place: the daemon forces
+umask 077 when it creates it and watches it with inotify, so a `chmod` or
+`chgrp` fires `IN_ATTRIB` and takes the interface down. The package therefore
+ships a proxy: `awg-keeper-proxy@<iface>.socket` listens on
+`/run/amneziawg-agent/<iface>.sock`, owned by `awgkeeper` 0600, and its service
+runs `systemd-socket-proxyd` as root against the real socket. The Agent's unit
+starts one per entry of `AWG_KEEPER_INTERFACES` from `ExecStartPre=+`, stops any
+other, and binds `/run/amneziawg-agent` over `/run/amneziawg`, so `awg` finds
+the proxy where it looks for the socket. A tmpfiles entry creates the directory
+at boot, because systemd refuses to start the Agent while the bind source is
+missing. Xray is reached over gRPC on loopback, so nothing the Agent does needs
+a capability.
 
 Restarting Xray needs a narrowly scoped sudoers entry (or a polkit rule) for that
 one unit — nothing broader.

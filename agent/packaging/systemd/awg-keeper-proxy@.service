@@ -1,0 +1,17 @@
+[Unit]
+Description=awg-keeper agent proxy to the %i UAPI socket
+Documentation=https://github.com/oberon-systems/awg-keeper
+Requires=awg-keeper-proxy@%i.socket
+After=awg-keeper-proxy@%i.socket
+
+[Service]
+# amneziawg-go creates its socket root 0700 and drops the interface on any
+# chmod of it, so only its owner can reach it: this proxy, as root.
+ExecStart=/usr/lib/systemd/systemd-socket-proxyd /run/amneziawg/%i.sock
+CapabilityBoundingSet=
+NoNewPrivileges=yes
+PrivateNetwork=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+RestrictAddressFamilies=AF_UNIX

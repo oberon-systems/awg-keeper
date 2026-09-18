@@ -9,4 +9,5 @@ esac
 
 if command -v systemctl >/dev/null 2>&1; then
     systemctl --no-reload disable --now awg-keeper-agent.service || true
+    systemctl stop 'awg-keeper-proxy@*.socket' 'awg-keeper-proxy@*.service' || true
 fi

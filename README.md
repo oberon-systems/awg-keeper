@@ -56,9 +56,9 @@ The token is the one secret among them, which is why the systemd unit reads
 them from `/etc/awg-keeper/agent.env` at mode 0600.
 
 The Agent needs read and write access to the UAPI socket of every interface it
-manages, `/run/amneziawg/<iface>.sock`. `amneziawg-go` creates it `root 0700`:
-the host has to give the socket a group and add that group to the unit's
-`SupplementaryGroups=` in a drop-in, see [DESIGN.md](DESIGN.md#agent).
+manages, `/run/amneziawg/<iface>.sock`. `amneziawg-go` creates it `root 0700`,
+so the package reaches it through a proxy socket per interface in
+`AWG_KEEPER_INTERFACES`, see [DESIGN.md](DESIGN.md#agent).
 
 Run it in the foreground against a host that already has `awg`:
 

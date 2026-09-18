@@ -9,6 +9,7 @@ Type=exec
 User=awgkeeper
 Group=awgkeeper
 EnvironmentFile=/etc/awg-keeper/agent.env
+ExecStartPre=+/usr/libexec/awg-keeper/proxies
 ExecStart=/usr/bin/awg-keeper-agent
 Restart=on-failure
 RestartSec=5s
@@ -17,8 +18,8 @@ RestartSec=5s
 # to unpack into.
 Environment=SHIV_ROOT=/var/lib/awg-keeper/.shiv
 
-# No capabilities: awg reaches amneziawg-go through its UAPI socket, which the
-# host opens to a group added with SupplementaryGroups= in a drop-in.
+# No capabilities: awg reaches amneziawg-go through the proxy sockets the agent's
+# user owns, bound over the real ones, which are root 0700.
 CapabilityBoundingSet=
 NoNewPrivileges=yes
 ProtectSystem=strict
@@ -31,6 +32,7 @@ RestrictSUIDSGID=yes
 RestrictNamespaces=yes
 LockPersonality=yes
 ReadWritePaths=/etc/amnezia/amneziawg /var/lib/awg-keeper
+BindPaths=/run/amneziawg-agent:/run/amneziawg
 RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
 
 [Install]

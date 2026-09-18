@@ -32,6 +32,20 @@ contents:
   - src: packaging/systemd/awg-keeper-agent.service
     dst: /usr/lib/systemd/system/awg-keeper-agent.service
 
+  - src: packaging/systemd/awg-keeper-proxy@.socket
+    dst: /usr/lib/systemd/system/awg-keeper-proxy@.socket
+
+  - src: packaging/systemd/awg-keeper-proxy@.service
+    dst: /usr/lib/systemd/system/awg-keeper-proxy@.service
+
+  - src: packaging/libexec/proxies
+    dst: /usr/libexec/awg-keeper/proxies
+    file_info:
+      mode: 0755
+
+  - src: packaging/tmpfiles/awg-keeper.conf
+    dst: /usr/lib/tmpfiles.d/awg-keeper.conf
+
   - src: packaging/sysusers/awg-keeper.conf
     dst: /usr/lib/sysusers.d/awg-keeper.conf
 
