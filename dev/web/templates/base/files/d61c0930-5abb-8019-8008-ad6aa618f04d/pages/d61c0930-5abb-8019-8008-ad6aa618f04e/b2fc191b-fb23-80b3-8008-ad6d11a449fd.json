@@ -3,36 +3,36 @@
   "name": "Value",
   "type": "text",
   "x": 556,
-  "y": 474,
+  "y": 478.5,
   "width": 94,
   "height": 17,
   "rotation": 0,
   "selrect": {
     "x": 556,
-    "y": 474,
+    "y": 478.5,
     "width": 94,
     "height": 17,
     "x1": 556,
-    "y1": 474,
+    "y1": 478.5,
     "x2": 650,
-    "y2": 491
+    "y2": 495.5
   },
   "points": [
     {
       "x": 556,
-      "y": 474
+      "y": 478.5
     },
     {
       "x": 650,
-      "y": 474
+      "y": 478.5
     },
     {
       "x": 650,
-      "y": 491
+      "y": 495.5
     },
     {
       "x": 556,
-      "y": 491
+      "y": 495.5
     }
   ],
   "transform": {
@@ -114,12 +114,13 @@
       }
     ]
   },
+  "pageId": "d61c0930-5abb-8019-8008-ad6aa618f04e",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
       "x": 556,
-      "y": 490.8000011444092,
+      "y": 495.3000011444092,
       "width": 93.6875,
       "height": 16.80000114440918,
       "x1": 0,
@@ -142,6 +143,5 @@
       "fontFamily": "\"Inter Tight\"",
       "text": "Enter password"
     }
-  ],
-  "pageId": "d61c0930-5abb-8019-8008-ad6aa618f04e"
+  ]
 }

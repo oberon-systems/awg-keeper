@@ -3,36 +3,36 @@
   "name": "Text",
   "type": "text",
   "x": 52,
-  "y": 491,
+  "y": 551,
   "width": 29,
   "height": 17,
   "rotation": 0,
   "selrect": {
     "x": 52,
-    "y": 491,
+    "y": 551,
     "width": 29,
     "height": 17,
     "x1": 52,
-    "y1": 491,
+    "y1": 551,
     "x2": 81,
-    "y2": 508
+    "y2": 568
   },
   "points": [
     {
       "x": 52,
-      "y": 491
+      "y": 551
     },
     {
       "x": 81,
-      "y": 491
+      "y": 551
     },
     {
       "x": 81,
-      "y": 508
+      "y": 568
     },
     {
       "x": 52,
-      "y": 508
+      "y": 568
     }
   ],
   "transform": {
@@ -114,12 +114,13 @@
       }
     ]
   },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
       "x": 52,
-      "y": 507.8000011444092,
+      "y": 567.8000011444092,
       "width": 28.61250114440918,
       "height": 16.80000114440918,
       "x1": 0,
@@ -142,6 +143,5 @@
       "fontFamily": "\"Inter Tight\"",
       "text": "fra-1"
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b"
+  ]
 }

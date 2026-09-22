@@ -3,36 +3,36 @@
   "name": "Label",
   "type": "text",
   "x": 2550,
-  "y": 566,
+  "y": 626,
   "width": 79,
   "height": 15,
   "rotation": 0,
   "selrect": {
     "x": 2550,
-    "y": 566,
+    "y": 626,
     "width": 79,
     "height": 15,
     "x1": 2550,
-    "y1": 566,
+    "y1": 626,
     "x2": 2629,
-    "y2": 581
+    "y2": 641
   },
   "points": [
     {
       "x": 2550,
-      "y": 566
+      "y": 626
     },
     {
       "x": 2629,
-      "y": 566
+      "y": 626
     },
     {
       "x": 2629,
-      "y": 581
+      "y": 641
     },
     {
       "x": 2550,
-      "y": 581
+      "y": 641
     }
   ],
   "transform": {
@@ -114,12 +114,13 @@
       }
     ]
   },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
       "x": 2550,
-      "y": 580.4000007510185,
+      "y": 640.4000007510185,
       "width": 78.9749984741211,
       "height": 15.200000762939453,
       "x1": 0,
@@ -142,6 +143,5 @@
       "fontFamily": "\"Inter Tight\"",
       "text": "not configured"
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b"
+  ]
 }

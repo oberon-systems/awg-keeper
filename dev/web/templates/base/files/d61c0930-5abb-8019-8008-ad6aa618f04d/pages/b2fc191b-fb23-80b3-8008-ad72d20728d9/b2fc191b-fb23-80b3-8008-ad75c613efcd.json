@@ -114,34 +114,34 @@
       }
     ]
   },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 8092,
       "y": 383.80000019073486,
-      "width": 65.7125015258789,
-      "height": 12.800000190734863,
-      "x1": 0,
-      "y1": 0,
-      "x2": 65.7125015258789,
-      "y2": 12.800000190734863,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "11px",
       "fontWeight": "600",
+      "y1": 0,
+      "width": 65.7125015258789,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 8092,
+      "x1": 0,
+      "y2": 12.800000190734863,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 65.7125015258789,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 12.800000190734863,
       "text": "AMNEZIAWG"
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9"
+  ]
 }

@@ -114,59 +114,59 @@
       }
     ]
   },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad772ce3497e",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 2060.800000190735,
       "y": 484.3000011444092,
-      "width": 398.4000244140625,
-      "height": 16.80000114440918,
-      "x1": 8.800000190734863,
-      "y1": 0,
-      "x2": 407.20002460479736,
-      "y2": 16.80000114440918,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "14px",
       "fontWeight": "400",
+      "y1": 0,
+      "width": 398.4000244140625,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 2060.800000190735,
+      "x1": 8.800000190734863,
+      "y2": 16.80000114440918,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 407.20002460479736,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 16.80000114440918,
       "text": "Stats are shown only for requests coming through the VPN tunnel. "
     },
     {
-      "x": 2085.3624992370605,
       "y": 501.10000228881836,
-      "width": 349.26251220703125,
-      "height": 16.80000114440918,
-      "x1": 33.36249923706055,
-      "y1": 16.80000114440918,
-      "x2": 382.6250114440918,
-      "y2": 33.60000228881836,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "14px",
       "fontWeight": "400",
+      "y1": 16.80000114440918,
+      "width": 349.26251220703125,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 2085.3624992370605,
+      "x1": 33.36249923706055,
+      "y2": 33.60000228881836,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 382.6250114440918,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 16.80000114440918,
       "text": "Turn on your AmneziaWG connection and reload the page."
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad772ce3497e"
+  ]
 }

@@ -114,34 +114,34 @@
       }
     ]
   },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 6212,
       "y": 424.8000011444092,
-      "width": 75.1624984741211,
-      "height": 16.80000114440918,
-      "x1": 0,
-      "y1": 0,
-      "x2": 75.1624984741211,
-      "y2": 16.80000114440918,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "14px",
       "fontWeight": "600",
+      "y1": 0,
+      "width": 75.1624984741211,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 6212,
+      "x1": 0,
+      "y2": 16.80000114440918,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
+      "x2": 75.1624984741211,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 16.80000114440918,
       "text": "alice-phone"
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9"
+  ]
 }

@@ -3,36 +3,36 @@
   "name": "Card",
   "type": "frame",
   "x": 512,
-  "y": 257.5,
+  "y": 262,
   "width": 416,
-  "height": 346,
+  "height": 337,
   "rotation": 0,
   "selrect": {
     "x": 512,
-    "y": 257.5,
+    "y": 262,
     "width": 416,
-    "height": 346,
+    "height": 337,
     "x1": 512,
-    "y1": 257.5,
+    "y1": 262,
     "x2": 928,
-    "y2": 603.5
+    "y2": 599
   },
   "points": [
     {
       "x": 512,
-      "y": 257.5
+      "y": 262
     },
     {
       "x": 928,
-      "y": 257.5
+      "y": 262
     },
     {
       "x": 928,
-      "y": 603.5
+      "y": 599
     },
     {
       "x": 512,
-      "y": 603.5
+      "y": 599
     }
   ],
   "transform": {
@@ -98,8 +98,8 @@
       "id": "b2fc191b-fb23-80b3-8008-ad6d112fdea7",
       "style": "drop-shadow",
       "color": {
-        "color": "#1a1d23",
-        "opacity": 0.06
+        "opacity": 0.06,
+        "color": "#1a1d23"
       },
       "offsetX": 0,
       "offsetY": 8,

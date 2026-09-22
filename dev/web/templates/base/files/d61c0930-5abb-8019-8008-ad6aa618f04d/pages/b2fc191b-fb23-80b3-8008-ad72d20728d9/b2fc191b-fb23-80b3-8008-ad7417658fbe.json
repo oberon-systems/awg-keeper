@@ -114,34 +114,34 @@
       }
     ]
   },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 6708,
       "y": 365.00000000000006,
-      "width": 125.88750457763672,
-      "height": 24,
-      "x1": 0,
-      "y1": 0,
-      "x2": 125.88750457763672,
-      "y2": 24,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "20px",
       "fontWeight": "700",
+      "y1": 0,
+      "width": 125.88750457763672,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 6708,
+      "x1": 0,
+      "y2": 24,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
+      "x2": 125.88750457763672,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 24,
       "text": "Are you sure?"
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9"
+  ]
 }

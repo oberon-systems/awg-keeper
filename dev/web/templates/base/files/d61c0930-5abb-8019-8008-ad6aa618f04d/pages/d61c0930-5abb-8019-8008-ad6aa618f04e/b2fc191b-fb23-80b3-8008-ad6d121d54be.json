@@ -3,36 +3,36 @@
   "name": "Message",
   "type": "text",
   "x": 2096,
-  "y": 340.5,
+  "y": 345,
   "width": 140,
   "height": 16,
   "rotation": 0,
   "selrect": {
     "x": 2096,
-    "y": 340.5,
+    "y": 345,
     "width": 140,
     "height": 16,
     "x1": 2096,
-    "y1": 340.5,
+    "y1": 345,
     "x2": 2236,
-    "y2": 356.5
+    "y2": 361
   },
   "points": [
     {
       "x": 2096,
-      "y": 340.5
+      "y": 345
     },
     {
       "x": 2236,
-      "y": 340.5
+      "y": 345
     },
     {
       "x": 2236,
-      "y": 356.5
+      "y": 361
     },
     {
       "x": 2096,
-      "y": 356.5
+      "y": 361
     }
   ],
   "transform": {
@@ -51,8 +51,8 @@
     "e": 0.0,
     "f": 0.0
   },
-  "parentId": "b2fc191b-fb23-80b3-8008-ad6d12178689",
-  "frameId": "b2fc191b-fb23-80b3-8008-ad6d12178689",
+  "parentId": "5c460aed-b25f-80f8-8008-ad85d298457c",
+  "frameId": "5c460aed-b25f-80f8-8008-ad85d298457c",
   "flipX": null,
   "flipY": null,
   "growType": "auto-width",
@@ -114,12 +114,14 @@
       }
     ]
   },
+  "layoutItemHSizing": "auto",
+  "pageId": "d61c0930-5abb-8019-8008-ad6aa618f04e",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
       "x": 2096,
-      "y": 355.69999998807907,
+      "y": 360.19999998807907,
       "width": 139.5500030517578,
       "height": 16,
       "x1": 0,
@@ -142,6 +144,5 @@
       "fontFamily": "\"Inter Tight\"",
       "text": "Wrong user or password"
     }
-  ],
-  "pageId": "d61c0930-5abb-8019-8008-ad6aa618f04e"
+  ]
 }

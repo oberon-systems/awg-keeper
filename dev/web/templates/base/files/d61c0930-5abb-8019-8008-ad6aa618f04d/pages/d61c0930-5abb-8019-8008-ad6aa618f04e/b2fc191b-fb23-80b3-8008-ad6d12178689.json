@@ -3,36 +3,36 @@
   "name": "Problem",
   "type": "frame",
   "x": 2084,
-  "y": 330.4999999999998,
+  "y": 335,
   "width": 352,
   "height": 36,
   "rotation": 0,
   "selrect": {
     "x": 2084,
-    "y": 330.4999999999998,
+    "y": 335,
     "width": 352,
     "height": 36,
     "x1": 2084,
-    "y1": 330.4999999999998,
+    "y1": 335,
     "x2": 2436,
-    "y2": 366.4999999999998
+    "y2": 371
   },
   "points": [
     {
       "x": 2084,
-      "y": 330.4999999999998
+      "y": 335
     },
     {
       "x": 2436,
-      "y": 330.4999999999998
+      "y": 335
     },
     {
       "x": 2436,
-      "y": 366.4999999999998
+      "y": 371
     },
     {
       "x": 2084,
-      "y": 366.4999999999998
+      "y": 371
     }
   ],
   "transform": {
@@ -72,7 +72,7 @@
   "layoutItemHSizing": "fill",
   "proportionLock": false,
   "layoutGap": {
-    "rowGap": 0,
+    "rowGap": 8,
     "columnGap": 0
   },
   "pageId": "d61c0930-5abb-8019-8008-ad6aa618f04e",
@@ -82,7 +82,7 @@
   "constraintsV": "top",
   "constraintsH": "left",
   "r1": 6,
-  "layoutFlexDir": "row",
+  "layoutFlexDir": "column",
   "layoutAlignContent": "stretch",
   "strokes": [],
   "proportion": 1,
@@ -94,6 +94,6 @@
     }
   ],
   "shapes": [
-    "b2fc191b-fb23-80b3-8008-ad6d121d54be"
+    "5c460aed-b25f-80f8-8008-ad85d298457c"
   ]
 }

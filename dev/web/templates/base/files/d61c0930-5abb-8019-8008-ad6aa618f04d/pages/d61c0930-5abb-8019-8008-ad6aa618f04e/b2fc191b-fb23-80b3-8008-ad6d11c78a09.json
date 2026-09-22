@@ -3,36 +3,36 @@
   "name": "Footnote",
   "type": "text",
   "x": 615,
-  "y": 627.5,
+  "y": 623,
   "width": 210,
   "height": 15,
   "rotation": 0,
   "selrect": {
     "x": 615,
-    "y": 627.5,
+    "y": 623,
     "width": 210,
     "height": 15,
     "x1": 615,
-    "y1": 627.5,
+    "y1": 623,
     "x2": 825,
-    "y2": 642.5
+    "y2": 638
   },
   "points": [
     {
       "x": 615,
-      "y": 627.5
+      "y": 623
     },
     {
       "x": 825,
-      "y": 627.5
+      "y": 623
     },
     {
       "x": 825,
-      "y": 642.5
+      "y": 638
     },
     {
       "x": 615,
-      "y": 642.5
+      "y": 638
     }
   ],
   "transform": {
@@ -114,12 +114,13 @@
       }
     ]
   },
+  "pageId": "d61c0930-5abb-8019-8008-ad6aa618f04e",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
       "x": 615,
-      "y": 641.9000007510185,
+      "y": 637.4000007510185,
       "width": 209.72500610351562,
       "height": 15.200000762939453,
       "x1": 0,
@@ -142,6 +143,5 @@
       "fontFamily": "\"Inter Tight\"",
       "text": "Credentials are pre-set on the panel host"
     }
-  ],
-  "pageId": "d61c0930-5abb-8019-8008-ad6aa618f04e"
+  ]
 }

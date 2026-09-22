@@ -114,34 +114,34 @@
       }
     ]
   },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad772ce3497e",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 2097,
       "y": 453.5,
-      "width": 325.0500183105469,
-      "height": 24,
-      "x1": 0,
-      "y1": 0,
-      "x2": 325.0500183105469,
-      "y2": 24,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "20px",
       "fontWeight": "700",
+      "y1": 0,
+      "width": 325.0500183105469,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 2097,
+      "x1": 0,
+      "y2": 24,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
+      "x2": 325.0500183105469,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 24,
       "text": "We don't recognise this connection"
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad772ce3497e"
+  ]
 }

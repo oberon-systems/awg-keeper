@@ -114,34 +114,34 @@
       }
     ]
   },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 1988,
       "y": 99.99999999999977,
-      "width": 103.9124984741211,
-      "height": 24,
-      "x1": 0,
-      "y1": 0,
-      "x2": 103.9124984741211,
-      "y2": 24,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "20px",
       "fontWeight": "700",
+      "y1": 0,
+      "width": 103.9124984741211,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 1988,
+      "x1": 0,
+      "y2": 24,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
+      "x2": 103.9124984741211,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 24,
       "text": "New profile"
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9"
+  ]
 }

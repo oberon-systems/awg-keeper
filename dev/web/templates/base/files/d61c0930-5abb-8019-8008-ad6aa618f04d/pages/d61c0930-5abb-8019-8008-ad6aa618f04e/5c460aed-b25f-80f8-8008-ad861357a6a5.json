@@ -1,0 +1,148 @@
+{
+  "id": "5c460aed-b25f-80f8-8008-ad861357a6a5",
+  "name": "Message",
+  "type": "text",
+  "x": 3636,
+  "y": 333.5,
+  "width": 140,
+  "height": 16,
+  "rotation": 0,
+  "selrect": {
+    "x": 3636,
+    "y": 333.5,
+    "width": 140,
+    "height": 16,
+    "x1": 3636,
+    "y1": 333.5,
+    "x2": 3776,
+    "y2": 349.5
+  },
+  "points": [
+    {
+      "x": 3636,
+      "y": 333.5
+    },
+    {
+      "x": 3776,
+      "y": 333.5
+    },
+    {
+      "x": 3776,
+      "y": 349.5
+    },
+    {
+      "x": 3636,
+      "y": 349.5
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "5c460aed-b25f-80f8-8008-ad861357a6a3",
+  "frameId": "5c460aed-b25f-80f8-8008-ad861357a6a3",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-width",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "13",
+                "fontWeight": "500",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "500",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#b00020",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": "Wrong user or password"
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-inter-tight",
+            "fontSize": "13",
+            "fontWeight": "500",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "500",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#b00020",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Inter Tight"
+          }
+        ]
+      }
+    ]
+  },
+  "layoutItemHSizing": "auto",
+  "pageId": "d61c0930-5abb-8019-8008-ad6aa618f04e",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 3636,
+      "y": 348.69999998807907,
+      "width": 139.5500030517578,
+      "height": 16,
+      "x1": 0,
+      "y1": -0.800000011920929,
+      "x2": 139.5500030517578,
+      "y2": 15.199999988079071,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "13px",
+      "fontWeight": "500",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#b00020",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "Wrong user or password"
+    }
+  ]
+}

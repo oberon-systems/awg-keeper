@@ -3,36 +3,36 @@
   "name": "Label",
   "type": "text",
   "x": 2642,
-  "y": 223,
+  "y": 283,
   "width": 73,
   "height": 16,
   "rotation": 0,
   "selrect": {
     "x": 2642,
-    "y": 223,
+    "y": 283,
     "width": 73,
     "height": 16,
     "x1": 2642,
-    "y1": 223,
+    "y1": 283,
     "x2": 2715,
-    "y2": 239
+    "y2": 299
   },
   "points": [
     {
       "x": 2642,
-      "y": 223
+      "y": 283
     },
     {
       "x": 2715,
-      "y": 223
+      "y": 283
     },
     {
       "x": 2715,
-      "y": 239
+      "y": 299
     },
     {
       "x": 2642,
-      "y": 239
+      "y": 299
     }
   ],
   "transform": {
@@ -114,12 +114,13 @@
       }
     ]
   },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
       "x": 2642,
-      "y": 238.19999998807907,
+      "y": 298.19999998807907,
       "width": 72.5625,
       "height": 16,
       "x1": 0,
@@ -142,6 +143,5 @@
       "fontFamily": "\"Inter Tight\"",
       "text": "Last seen up"
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b"
+  ]
 }

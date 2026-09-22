@@ -3,36 +3,36 @@
   "name": "Subtitle",
   "type": "text",
   "x": 544,
-  "y": 321.5,
+  "y": 326,
   "width": 282,
   "height": 17,
   "rotation": 0,
   "selrect": {
     "x": 544,
-    "y": 321.5,
+    "y": 326,
     "width": 282,
     "height": 17,
     "x1": 544,
-    "y1": 321.5,
+    "y1": 326,
     "x2": 826,
-    "y2": 338.5
+    "y2": 343
   },
   "points": [
     {
       "x": 544,
-      "y": 321.5
+      "y": 326
     },
     {
       "x": 826,
-      "y": 321.5
+      "y": 326
     },
     {
       "x": 826,
-      "y": 338.5
+      "y": 343
     },
     {
       "x": 544,
-      "y": 338.5
+      "y": 343
     }
   ],
   "transform": {
@@ -114,12 +114,13 @@
       }
     ]
   },
+  "pageId": "d61c0930-5abb-8019-8008-ad6aa618f04e",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
       "x": 544,
-      "y": 338.3000011444092,
+      "y": 342.8000011444092,
       "width": 281.3125,
       "height": 16.80000114440918,
       "x1": 0,
@@ -142,6 +143,5 @@
       "fontFamily": "\"Inter Tight\"",
       "text": "Sign in to manage AmneziaWG and Xray nodes"
     }
-  ],
-  "pageId": "d61c0930-5abb-8019-8008-ad6aa618f04e"
+  ]
 }

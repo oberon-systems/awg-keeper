@@ -3,36 +3,36 @@
   "name": "Part",
   "type": "text",
   "x": 752,
-  "y": 251,
+  "y": 311,
   "width": 85,
   "height": 16,
   "rotation": 0,
   "selrect": {
     "x": 752,
-    "y": 251,
+    "y": 311,
     "width": 85,
     "height": 16,
     "x1": 752,
-    "y1": 251,
+    "y1": 311,
     "x2": 837,
-    "y2": 267
+    "y2": 327
   },
   "points": [
     {
       "x": 752,
-      "y": 251
+      "y": 311
     },
     {
       "x": 837,
-      "y": 251
+      "y": 311
     },
     {
       "x": 837,
-      "y": 267
+      "y": 327
     },
     {
       "x": 752,
-      "y": 267
+      "y": 327
     }
   ],
   "transform": {
@@ -114,12 +114,13 @@
       }
     ]
   },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
       "x": 752,
-      "y": 266.19999998807907,
+      "y": 326.19999998807907,
       "width": 84.5,
       "height": 16,
       "x1": 0,
@@ -142,6 +143,5 @@
       "fontFamily": "\"Inter Tight\"",
       "text": "on 2 agents up"
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b"
+  ]
 }

@@ -114,34 +114,34 @@
       }
     ]
   },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 8642,
       "y": 432.19999998807907,
-      "width": 53.1875,
-      "height": 16,
-      "x1": 0,
-      "y1": -0.800000011920929,
-      "x2": 53.1875,
-      "y2": 15.199999988079071,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "400",
+      "y1": -0.800000011920929,
+      "width": 53.1875,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 8642,
+      "x1": 0,
+      "y2": 15.199999988079071,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
+      "x2": 53.1875,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 16,
       "text": "iPhone 15"
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9"
+  ]
 }

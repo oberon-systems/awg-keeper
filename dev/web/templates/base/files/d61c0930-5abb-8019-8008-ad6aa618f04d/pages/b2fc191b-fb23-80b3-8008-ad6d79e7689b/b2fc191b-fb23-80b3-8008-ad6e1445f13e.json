@@ -3,36 +3,36 @@
   "name": "Label",
   "type": "text",
   "x": 752,
-  "y": 189,
+  "y": 249,
   "width": 72,
   "height": 16,
   "rotation": 0,
   "selrect": {
     "x": 752,
-    "y": 189,
+    "y": 249,
     "width": 72,
     "height": 16,
     "x1": 752,
-    "y1": 189,
+    "y1": 249,
     "x2": 824,
-    "y2": 205
+    "y2": 265
   },
   "points": [
     {
       "x": 752,
-      "y": 189
+      "y": 249
     },
     {
       "x": 824,
-      "y": 189
+      "y": 249
     },
     {
       "x": 824,
-      "y": 205
+      "y": 265
     },
     {
       "x": 752,
-      "y": 205
+      "y": 265
     }
   ],
   "transform": {
@@ -114,12 +114,13 @@
       }
     ]
   },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
       "x": 752,
-      "y": 204.19999998807907,
+      "y": 264.19999998807907,
       "width": 71.23750305175781,
       "height": 16,
       "x1": 0,
@@ -142,6 +143,5 @@
       "fontFamily": "\"Inter Tight\"",
       "text": "Active peers"
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b"
+  ]
 }

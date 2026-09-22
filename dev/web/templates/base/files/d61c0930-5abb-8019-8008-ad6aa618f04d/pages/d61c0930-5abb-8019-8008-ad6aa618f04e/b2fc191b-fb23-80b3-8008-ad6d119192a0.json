@@ -3,36 +3,36 @@
   "name": "Label",
   "type": "text",
   "x": 544,
-  "y": 440.5,
+  "y": 445,
   "width": 57,
   "height": 16,
   "rotation": 0,
   "selrect": {
     "x": 544,
-    "y": 440.5,
+    "y": 445,
     "width": 57,
     "height": 16,
     "x1": 544,
-    "y1": 440.5,
+    "y1": 445,
     "x2": 601,
-    "y2": 456.5
+    "y2": 461
   },
   "points": [
     {
       "x": 544,
-      "y": 440.5
+      "y": 445
     },
     {
       "x": 601,
-      "y": 440.5
+      "y": 445
     },
     {
       "x": 601,
-      "y": 456.5
+      "y": 461
     },
     {
       "x": 544,
-      "y": 456.5
+      "y": 461
     }
   ],
   "transform": {
@@ -114,12 +114,13 @@
       }
     ]
   },
+  "pageId": "d61c0930-5abb-8019-8008-ad6aa618f04e",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
       "x": 544,
-      "y": 455.69999998807907,
+      "y": 460.19999998807907,
       "width": 56.29999923706055,
       "height": 16,
       "x1": 0,
@@ -142,6 +143,5 @@
       "fontFamily": "\"Inter Tight\"",
       "text": "Password"
     }
-  ],
-  "pageId": "d61c0930-5abb-8019-8008-ad6aa618f04e"
+  ]
 }

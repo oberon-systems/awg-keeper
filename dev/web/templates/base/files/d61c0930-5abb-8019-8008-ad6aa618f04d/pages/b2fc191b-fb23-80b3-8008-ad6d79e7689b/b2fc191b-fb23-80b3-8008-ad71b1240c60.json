@@ -3,36 +3,36 @@
   "name": "Healthcheck log",
   "type": "frame",
   "x": 1572,
-  "y": 636,
+  "y": 696,
   "width": 1376,
   "height": 551,
   "rotation": 0,
   "selrect": {
     "x": 1572,
-    "y": 636,
+    "y": 696,
     "width": 1376,
     "height": 551,
     "x1": 1572,
-    "y1": 636,
+    "y1": 696,
     "x2": 2948,
-    "y2": 1187
+    "y2": 1247
   },
   "points": [
     {
       "x": 1572,
-      "y": 636
+      "y": 696
     },
     {
       "x": 2948,
-      "y": 636
+      "y": 696
     },
     {
       "x": 2948,
-      "y": 1187
+      "y": 1247
     },
     {
       "x": 1572,
-      "y": 1187
+      "y": 1247
     }
   ],
   "transform": {
@@ -98,8 +98,8 @@
       "id": "b2fc191b-fb23-80b3-8008-ad71b130fba0",
       "style": "drop-shadow",
       "color": {
-        "color": "#1a1d23",
-        "opacity": 0.05
+        "opacity": 0.05,
+        "color": "#1a1d23"
       },
       "offsetX": 0,
       "offsetY": 1,
