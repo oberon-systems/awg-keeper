@@ -1,0 +1,172 @@
+{
+  "id": "b2fc191b-fb23-80b3-8008-ad7753410fb4",
+  "name": "Body",
+  "type": "text",
+  "x": 2052,
+  "y": 467.5,
+  "width": 416,
+  "height": 34,
+  "rotation": 0,
+  "selrect": {
+    "x": 2052,
+    "y": 467.5,
+    "width": 416,
+    "height": 34,
+    "x1": 2052,
+    "y1": 467.5,
+    "x2": 2468,
+    "y2": 501.5
+  },
+  "points": [
+    {
+      "x": 2052,
+      "y": 467.5
+    },
+    {
+      "x": 2468,
+      "y": 467.5
+    },
+    {
+      "x": 2468,
+      "y": 501.5
+    },
+    {
+      "x": 2052,
+      "y": 501.5
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "b2fc191b-fb23-80b3-8008-ad77532e6966",
+  "frameId": "b2fc191b-fb23-80b3-8008-ad77532e6966",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-height",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "14",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#6b7280",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": "Stats are shown only for requests coming through the VPN tunnel. Turn on your AmneziaWG connection and reload the page."
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "center",
+            "fontId": "gfont-inter-tight",
+            "fontSize": "14",
+            "fontWeight": "400",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "regular",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#6b7280",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Inter Tight"
+          }
+        ]
+      }
+    ]
+  },
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 2060.800000190735,
+      "y": 484.3000011444092,
+      "width": 398.4000244140625,
+      "height": 16.80000114440918,
+      "x1": 8.800000190734863,
+      "y1": 0,
+      "x2": 407.20002460479736,
+      "y2": 16.80000114440918,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#6b7280",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "Stats are shown only for requests coming through the VPN tunnel. "
+    },
+    {
+      "x": 2085.3624992370605,
+      "y": 501.10000228881836,
+      "width": 349.26251220703125,
+      "height": 16.80000114440918,
+      "x1": 33.36249923706055,
+      "y1": 16.80000114440918,
+      "x2": 382.6250114440918,
+      "y2": 33.60000228881836,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#6b7280",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "Turn on your AmneziaWG connection and reload the page."
+    }
+  ],
+  "pageId": "b2fc191b-fb23-80b3-8008-ad772ce3497e"
+}

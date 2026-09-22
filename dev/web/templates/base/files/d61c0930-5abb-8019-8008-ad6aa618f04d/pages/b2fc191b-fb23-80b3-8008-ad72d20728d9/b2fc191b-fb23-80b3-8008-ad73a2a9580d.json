@@ -1,0 +1,108 @@
+{
+  "id": "b2fc191b-fb23-80b3-8008-ad73a2a9580d",
+  "name": "Stat Profiles",
+  "type": "frame",
+  "x": 4652,
+  "y": 169,
+  "width": 326,
+  "height": 118.00000000000006,
+  "rotation": 0,
+  "selrect": {
+    "x": 4652,
+    "y": 169,
+    "width": 326,
+    "height": 118.00000000000006,
+    "x1": 4652,
+    "y1": 169,
+    "x2": 4978,
+    "y2": 287.00000000000006
+  },
+  "points": [
+    {
+      "x": 4652,
+      "y": 169
+    },
+    {
+      "x": 4978,
+      "y": 169
+    },
+    {
+      "x": 4978,
+      "y": 287.00000000000006
+    },
+    {
+      "x": 4652,
+      "y": 287.00000000000006
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "b2fc191b-fb23-80b3-8008-ad73a2a916eb",
+  "frameId": "b2fc191b-fb23-80b3-8008-ad73a2a916eb",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "layoutGapType": "multiple",
+  "layoutPadding": {
+    "p1": 20,
+    "p2": 20,
+    "p3": 20,
+    "p4": 20
+  },
+  "layoutWrapType": "nowrap",
+  "layout": "flex",
+  "hideInViewer": true,
+  "layoutAlignItems": "start",
+  "layoutPaddingType": "simple",
+  "r2": 12,
+  "layoutItemHSizing": "fix",
+  "proportionLock": false,
+  "layoutGap": {
+    "rowGap": 6,
+    "columnGap": 0
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
+  "layoutItemVSizing": "auto",
+  "r3": 12,
+  "layoutJustifyContent": "start",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 12,
+  "layoutFlexDir": "column",
+  "layoutAlignContent": "stretch",
+  "strokes": [
+    {
+      "strokeColor": "#d9dce1",
+      "strokeOpacity": 1,
+      "strokeAlignment": "inner",
+      "strokeWidth": 1
+    }
+  ],
+  "proportion": 1,
+  "r4": 12,
+  "fills": [
+    {
+      "fillColor": "#ffffff",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "b2fc191b-fb23-80b3-8008-ad73a2a9581a",
+    "b2fc191b-fb23-80b3-8008-ad73a2a9581b",
+    "b2fc191b-fb23-80b3-8008-ad73a2a9581c"
+  ]
+}

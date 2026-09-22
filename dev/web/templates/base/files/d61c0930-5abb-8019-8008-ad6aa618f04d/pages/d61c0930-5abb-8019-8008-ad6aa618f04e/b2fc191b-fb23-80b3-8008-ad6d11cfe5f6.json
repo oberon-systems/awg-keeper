@@ -1,0 +1,95 @@
+{
+  "id": "b2fc191b-fb23-80b3-8008-ad6d11cfe5f6",
+  "name": "Login / Error",
+  "type": "frame",
+  "x": 1540,
+  "y": 0,
+  "width": 1440,
+  "height": 900,
+  "rotation": 0,
+  "selrect": {
+    "x": 1540,
+    "y": 0,
+    "width": 1440,
+    "height": 900,
+    "x1": 1540,
+    "y1": 0,
+    "x2": 2980,
+    "y2": 900
+  },
+  "points": [
+    {
+      "x": 1540,
+      "y": 0
+    },
+    {
+      "x": 2980,
+      "y": 0
+    },
+    {
+      "x": 2980,
+      "y": 900
+    },
+    {
+      "x": 1540,
+      "y": 900
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "00000000-0000-0000-0000-000000000000",
+  "frameId": "00000000-0000-0000-0000-000000000000",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "layoutGapType": "multiple",
+  "layoutPadding": {
+    "p1": 0,
+    "p2": 0,
+    "p3": 0,
+    "p4": 0
+  },
+  "layoutWrapType": "nowrap",
+  "layout": "flex",
+  "layoutAlignItems": "center",
+  "layoutPaddingType": "simple",
+  "r2": 0,
+  "proportionLock": false,
+  "layoutGap": {
+    "rowGap": 24,
+    "columnGap": 0
+  },
+  "pageId": "d61c0930-5abb-8019-8008-ad6aa618f04e",
+  "r3": 0,
+  "layoutJustifyContent": "center",
+  "r1": 0,
+  "layoutFlexDir": "column",
+  "layoutAlignContent": "stretch",
+  "strokes": [],
+  "proportion": 1,
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#f4f5f7",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "b2fc191b-fb23-80b3-8008-ad6d1275cb54",
+    "b2fc191b-fb23-80b3-8008-ad6d11d8f88b"
+  ]
+}

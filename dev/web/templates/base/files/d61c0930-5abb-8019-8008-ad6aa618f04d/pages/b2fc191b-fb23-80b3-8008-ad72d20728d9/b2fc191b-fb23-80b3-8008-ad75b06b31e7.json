@@ -1,0 +1,105 @@
+{
+  "id": "b2fc191b-fb23-80b3-8008-ad75b06b31e7",
+  "name": "Plot",
+  "type": "frame",
+  "x": 8084,
+  "y": 352,
+  "width": 672,
+  "height": 190,
+  "rotation": 0,
+  "selrect": {
+    "x": 8084,
+    "y": 352,
+    "width": 672,
+    "height": 190,
+    "x1": 8084,
+    "y1": 352,
+    "x2": 8756,
+    "y2": 542
+  },
+  "points": [
+    {
+      "x": 8084,
+      "y": 352
+    },
+    {
+      "x": 8756,
+      "y": 352
+    },
+    {
+      "x": 8756,
+      "y": 542
+    },
+    {
+      "x": 8084,
+      "y": 542
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "b2fc191b-fb23-80b3-8008-ad75b00b08e4",
+  "frameId": "b2fc191b-fb23-80b3-8008-ad75b00b08e4",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "hideInViewer": true,
+  "r2": 0,
+  "proportionLock": false,
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
+  "r3": 0,
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "strokes": [],
+  "proportion": 1,
+  "r4": 0,
+  "fills": [],
+  "shapes": [
+    "b2fc191b-fb23-80b3-8008-ad75b071d8c6",
+    "b2fc191b-fb23-80b3-8008-ad75b07ce00c",
+    "b2fc191b-fb23-80b3-8008-ad75b08613b7",
+    "b2fc191b-fb23-80b3-8008-ad75b09192df",
+    "b2fc191b-fb23-80b3-8008-ad75b09ad4fa",
+    "b2fc191b-fb23-80b3-8008-ad75b0a3c00b",
+    "b2fc191b-fb23-80b3-8008-ad75b0aebcc7",
+    "b2fc191b-fb23-80b3-8008-ad75b0b96afe",
+    "b2fc191b-fb23-80b3-8008-ad75b0c243c6",
+    "b2fc191b-fb23-80b3-8008-ad75b0cb1bdc",
+    "b2fc191b-fb23-80b3-8008-ad75b0d49fff",
+    "b2fc191b-fb23-80b3-8008-ad75b0dd70bd",
+    "b2fc191b-fb23-80b3-8008-ad75b0e82ded",
+    "b2fc191b-fb23-80b3-8008-ad75b0f16ace",
+    "b2fc191b-fb23-80b3-8008-ad75b0fb6011",
+    "b2fc191b-fb23-80b3-8008-ad75b10670a8",
+    "b2fc191b-fb23-80b3-8008-ad75b1100ee8",
+    "b2fc191b-fb23-80b3-8008-ad75b1195cca",
+    "b2fc191b-fb23-80b3-8008-ad75b124b674",
+    "b2fc191b-fb23-80b3-8008-ad75b12dc3dc",
+    "b2fc191b-fb23-80b3-8008-ad75b13818f4",
+    "b2fc191b-fb23-80b3-8008-ad75b142d36c",
+    "b2fc191b-fb23-80b3-8008-ad75b14c70ea",
+    "b2fc191b-fb23-80b3-8008-ad75b156053b",
+    "b2fc191b-fb23-80b3-8008-ad75b1602c78",
+    "b2fc191b-fb23-80b3-8008-ad75b16b574c",
+    "b2fc191b-fb23-80b3-8008-ad75b176932c",
+    "b2fc191b-fb23-80b3-8008-ad75b18164d4",
+    "b2fc191b-fb23-80b3-8008-ad75b18c33e6",
+    "b2fc191b-fb23-80b3-8008-ad75b194aef2",
+    "b2fc191b-fb23-80b3-8008-ad75b19d8746",
+    "b2fc191b-fb23-80b3-8008-ad75b1a8dbce"
+  ]
+}

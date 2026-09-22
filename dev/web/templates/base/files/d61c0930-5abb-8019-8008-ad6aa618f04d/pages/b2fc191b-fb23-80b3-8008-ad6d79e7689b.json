@@ -1,0 +1,12 @@
+{
+  "id": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "name": "Dashboard",
+  "flows": {
+    "b2fc191b-fb23-80b3-8008-ad71c4caa6df": {
+      "id": "b2fc191b-fb23-80b3-8008-ad71c4caa6df",
+      "name": "Flow 1",
+      "startingFrame": "b2fc191b-fb23-80b3-8008-ad6e1380b0bb"
+    }
+  },
+  "index": 1
+}

@@ -1,0 +1,108 @@
+{
+  "id": "b2fc191b-fb23-80b3-8008-ad6e1427e934",
+  "name": "Stat Interfaces enabled",
+  "type": "frame",
+  "x": 382,
+  "y": 169.00000000000006,
+  "width": 326,
+  "height": 118,
+  "rotation": 0,
+  "selrect": {
+    "x": 382,
+    "y": 169.00000000000006,
+    "width": 326,
+    "height": 118,
+    "x1": 382,
+    "y1": 169.00000000000006,
+    "x2": 708,
+    "y2": 287.00000000000006
+  },
+  "points": [
+    {
+      "x": 382,
+      "y": 169.00000000000006
+    },
+    {
+      "x": 708,
+      "y": 169.00000000000006
+    },
+    {
+      "x": 708,
+      "y": 287.00000000000006
+    },
+    {
+      "x": 382,
+      "y": 287.00000000000006
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "b2fc191b-fb23-80b3-8008-ad6e140c6073",
+  "frameId": "b2fc191b-fb23-80b3-8008-ad6e140c6073",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "layoutGapType": "multiple",
+  "layoutPadding": {
+    "p1": 20,
+    "p2": 20,
+    "p3": 20,
+    "p4": 20
+  },
+  "layoutWrapType": "nowrap",
+  "layout": "flex",
+  "hideInViewer": true,
+  "layoutAlignItems": "start",
+  "layoutPaddingType": "simple",
+  "r2": 12,
+  "layoutItemHSizing": "fix",
+  "proportionLock": false,
+  "layoutGap": {
+    "rowGap": 6,
+    "columnGap": 0
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "layoutItemVSizing": "auto",
+  "r3": 12,
+  "layoutJustifyContent": "start",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 12,
+  "layoutFlexDir": "column",
+  "layoutAlignContent": "stretch",
+  "strokes": [
+    {
+      "strokeColor": "#d9dce1",
+      "strokeOpacity": 1,
+      "strokeAlignment": "inner",
+      "strokeWidth": 1
+    }
+  ],
+  "proportion": 1,
+  "r4": 12,
+  "fills": [
+    {
+      "fillColor": "#ffffff",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "b2fc191b-fb23-80b3-8008-ad6e142cd2b6",
+    "b2fc191b-fb23-80b3-8008-ad6e1435f4bc",
+    "b2fc191b-fb23-80b3-8008-ad6e1432fe2f"
+  ]
+}

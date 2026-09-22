@@ -1,0 +1,113 @@
+{
+  "id": "b2fc191b-fb23-80b3-8008-ad737326d68a",
+  "name": "Done button",
+  "type": "frame",
+  "x": 4066,
+  "y": 673.0000000000001,
+  "width": 66,
+  "height": 35,
+  "rotation": 0,
+  "selrect": {
+    "x": 4066,
+    "y": 673.0000000000001,
+    "width": 66,
+    "height": 35,
+    "x1": 4066,
+    "y1": 673.0000000000001,
+    "x2": 4132,
+    "y2": 708.0000000000001
+  },
+  "points": [
+    {
+      "x": 4066,
+      "y": 673.0000000000001
+    },
+    {
+      "x": 4132,
+      "y": 673.0000000000001
+    },
+    {
+      "x": 4132,
+      "y": 708.0000000000001
+    },
+    {
+      "x": 4066,
+      "y": 708.0000000000001
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "b2fc191b-fb23-80b3-8008-ad7372c79640",
+  "frameId": "b2fc191b-fb23-80b3-8008-ad7372c79640",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "layoutGapType": "multiple",
+  "layoutPadding": {
+    "p1": 9,
+    "p2": 16,
+    "p3": 9,
+    "p4": 16
+  },
+  "layoutWrapType": "nowrap",
+  "layout": "flex",
+  "hideInViewer": true,
+  "layoutAlignItems": "center",
+  "layoutPaddingType": "simple",
+  "r2": 6,
+  "layoutItemHSizing": "auto",
+  "proportionLock": false,
+  "layoutGap": {
+    "rowGap": 0,
+    "columnGap": 6
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
+  "layoutItemVSizing": "auto",
+  "r3": 6,
+  "layoutJustifyContent": "start",
+  "constraintsV": "top",
+  "interactions": [
+    {
+      "eventType": "click",
+      "actionType": "navigate",
+      "destination": "b2fc191b-fb23-80b3-8008-ad72fd0c2979",
+      "positionRelativeTo": null,
+      "preserveScroll": false,
+      "animation": {
+        "animationType": "dissolve",
+        "duration": 150,
+        "easing": "ease-out"
+      }
+    }
+  ],
+  "constraintsH": "left",
+  "r1": 6,
+  "layoutFlexDir": "row",
+  "layoutAlignContent": "stretch",
+  "strokes": [],
+  "proportion": 1,
+  "r4": 6,
+  "fills": [
+    {
+      "fillColor": "#2f6feb",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "b2fc191b-fb23-80b3-8008-ad73733bd71f"
+  ]
+}

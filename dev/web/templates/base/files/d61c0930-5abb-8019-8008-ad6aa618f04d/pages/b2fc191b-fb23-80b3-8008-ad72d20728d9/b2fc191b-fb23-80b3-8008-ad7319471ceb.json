@@ -1,0 +1,172 @@
+{
+  "id": "b2fc191b-fb23-80b3-8008-ad7319471ceb",
+  "name": "Text",
+  "type": "text",
+  "x": 2002,
+  "y": 664.0000000000002,
+  "width": 516,
+  "height": 32,
+  "rotation": 0,
+  "selrect": {
+    "x": 2002,
+    "y": 664.0000000000002,
+    "width": 516,
+    "height": 32,
+    "x1": 2002,
+    "y1": 664.0000000000002,
+    "x2": 2518,
+    "y2": 696.0000000000002
+  },
+  "points": [
+    {
+      "x": 2002,
+      "y": 664.0000000000002
+    },
+    {
+      "x": 2518,
+      "y": 664.0000000000002
+    },
+    {
+      "x": 2518,
+      "y": 696.0000000000002
+    },
+    {
+      "x": 2002,
+      "y": 696.0000000000002
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "b2fc191b-fb23-80b3-8008-ad73193fdefa",
+  "frameId": "b2fc191b-fb23-80b3-8008-ad73193fdefa",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-height",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "13",
+                "fontWeight": "500",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "500",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#8a5a00",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": "The configuration is shown once, right after creation. Lost configs cannot be recovered, only reissued."
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-inter-tight",
+            "fontSize": "13",
+            "fontWeight": "500",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "500",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#8a5a00",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Inter Tight"
+          }
+        ]
+      }
+    ]
+  },
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 2002,
+      "y": 679.1999999880793,
+      "width": 499.6875,
+      "height": 16,
+      "x1": 0,
+      "y1": -0.800000011920929,
+      "x2": 499.6875,
+      "y2": 15.199999988079071,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "13px",
+      "fontWeight": "500",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#8a5a00",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "The configuration is shown once, right after creation. Lost configs cannot be recovered, "
+    },
+    {
+      "x": 2002,
+      "y": 694.8000001907351,
+      "width": 78.7750015258789,
+      "height": 16,
+      "x1": 0,
+      "y1": 14.800000190734863,
+      "x2": 78.7750015258789,
+      "y2": 30.800000190734863,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "13px",
+      "fontWeight": "500",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#8a5a00",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "only reissued."
+    }
+  ],
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9"
+}

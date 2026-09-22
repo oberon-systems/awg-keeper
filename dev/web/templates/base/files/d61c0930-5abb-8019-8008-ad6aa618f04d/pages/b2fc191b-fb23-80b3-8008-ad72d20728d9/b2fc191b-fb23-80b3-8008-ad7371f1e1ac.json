@@ -1,0 +1,172 @@
+{
+  "id": "b2fc191b-fb23-80b3-8008-ad7371f1e1ac",
+  "name": "Text",
+  "type": "text",
+  "x": 3482,
+  "y": 152.0000000000001,
+  "width": 636,
+  "height": 32,
+  "rotation": 0,
+  "selrect": {
+    "x": 3482,
+    "y": 152.0000000000001,
+    "width": 636,
+    "height": 32,
+    "x1": 3482,
+    "y1": 152.0000000000001,
+    "x2": 4118,
+    "y2": 184.0000000000001
+  },
+  "points": [
+    {
+      "x": 3482,
+      "y": 152.0000000000001
+    },
+    {
+      "x": 4118,
+      "y": 152.0000000000001
+    },
+    {
+      "x": 4118,
+      "y": 184.0000000000001
+    },
+    {
+      "x": 3482,
+      "y": 184.0000000000001
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "b2fc191b-fb23-80b3-8008-ad7371e3c09e",
+  "frameId": "b2fc191b-fb23-80b3-8008-ad7371e3c09e",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-height",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "13",
+                "fontWeight": "500",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "500",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#8a5a00",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": "This is the only time this configuration can be taken. The private key was generated in your browser and the panel never saw it."
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-inter-tight",
+            "fontSize": "13",
+            "fontWeight": "500",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "500",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#8a5a00",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Inter Tight"
+          }
+        ]
+      }
+    ]
+  },
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 3482,
+      "y": 167.19999998807918,
+      "width": 612.7250366210938,
+      "height": 16,
+      "x1": 0,
+      "y1": -0.800000011920929,
+      "x2": 612.7250366210938,
+      "y2": 15.199999988079071,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "13px",
+      "fontWeight": "500",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#8a5a00",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "This is the only time this configuration can be taken. The private key was generated in your browser and the "
+    },
+    {
+      "x": 3482,
+      "y": 182.80000019073498,
+      "width": 105.95000457763672,
+      "height": 16,
+      "x1": 0,
+      "y1": 14.800000190734863,
+      "x2": 105.95000457763672,
+      "y2": 30.800000190734863,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "13px",
+      "fontWeight": "500",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#8a5a00",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "panel never saw it."
+    }
+  ],
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9"
+}
