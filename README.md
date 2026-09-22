@@ -51,6 +51,9 @@ Nothing in CI runs the suites, so the `pre-push` hooks do: a push that touches
 interface is checked there too, by `eslint` and `tsc`, and that hook stands
 aside on a machine with no node installed.
 
+Mockups for the Panel's interface are drawn with a disposable Penpot stack;
+see [dev/web/README.md](dev/web/README.md).
+
 ## Agent
 
 The Agent reads its configuration from the environment only, with the
