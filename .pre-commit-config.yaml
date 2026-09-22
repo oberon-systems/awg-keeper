@@ -77,20 +77,24 @@ repos:
     hooks:
       - id: hadolint-docker
 
-  # `cz check` validates the message against the provider's schema_pattern(),
-  # so the hook environment needs the provider itself: pre-commit builds it in
-  # isolation and .cz.yaml names wyld_cz. Without the extra dependency the hook
-  # fails with "The committer has not been found in the system".
-  #
-  # The three versions move together: wyld-cz requires commitizen >=4.9,<5.
-  # Keep this rev, the pin in requirements.txt and the provider release in step.
-  - repo: https://github.com/commitizen-tools/commitizen
-    rev: v4.18.0
+  # `cz check` needs the wyld_cz provider .cz.yaml names, so running the venv's
+  # own cz keeps commitizen and the provider pinned once, in requirements.txt.
+  - repo: local
     hooks:
       - id: commitizen
-        additional_dependencies: [wyld-cz==0.2.2]
+        name: Check the commit message
+        entry: .venv/bin/cz check --allow-abort --commit-msg-file
+        language: system
+        stages: [commit-msg]
+
+      # commitizen expands $PRE_COMMIT_FROM_REF itself, which is what the
+      # upstream hook relies on as well: pre-commit passes the literal through.
       - id: commitizen-branch
-        additional_dependencies: [wyld-cz==0.2.2]
+        name: Check the commit messages on this branch
+        entry: .venv/bin/cz check --rev-range $PRE_COMMIT_FROM_REF..$PRE_COMMIT_TO_REF
+        language: system
+        always_run: true
+        pass_filenames: false
         stages: [pre-push]
 
   - repo: meta
