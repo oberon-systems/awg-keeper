@@ -24,13 +24,16 @@ model and the milestones, and [ROADMAP.md](ROADMAP.md) for what is built.
 ## Development
 
 ```bash
-make init   # create .venv, install the tooling, install the git hooks
-make lint   # run the pre-commit hooks over every file
+make install   # create .venv, install the tooling, install the git hooks
+make           # open a subshell with the venv activated
+make lint      # run the pre-commit hooks over every file
 ```
 
-`make init` installs the `pre-commit`, `commit-msg` and `pre-push` hooks, and
-both components' runtime and test dependencies into the same virtualenv. The
-`pre-commit` cache lives in `.pre-commit/` when `PRE_COMMIT_HOME` points there.
+`make install` installs the `pre-commit`, `commit-msg` and `pre-push` hooks,
+and both components' runtime and test dependencies into the same virtualenv. A
+bare `make` is `make shell`: an interactive subshell with `.venv` activated
+and `PRE_COMMIT_HOME` pointed at `.pre-commit/`, so the cache stays in the
+repository instead of `~/.cache/pre-commit`; `make help` lists every target.
 
 Each component is self-contained: `agent/` and `web/` carry their own
 `pyproject.toml`, their own suite, their own packaging and their own version.
