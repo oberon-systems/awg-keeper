@@ -8,13 +8,13 @@ export PRE_COMMIT_HOME := $(CURDIR)/.pre-commit
 
 .DEFAULT_GOAL := shell
 
-.PHONY: help install lint test secrets clean shell
+.PHONY: help install lint test secrets kickstart clean shell
 
 help:  ## Show the available targets
 	@echo "awg-keeper"
 	@echo
 	@echo "Targets:"
-	@awk 'BEGIN {FS = ":.*## "} /^[a-z-]+:.*## / {printf "  %-8s %s\n", $$1, $$2}' \
+	@awk 'BEGIN {FS = ":.*## "} /^[a-z-]+:.*## / {printf "  %-10s %s\n", $$1, $$2}' \
 		$(MAKEFILE_LIST)
 
 install:  ## Create the virtualenv, install the tooling and wire up the hooks
@@ -34,6 +34,9 @@ test:  ## Run both test suites
 
 secrets:  ## Mint the panel's secrets for a new deployment
 	$(MAKE) -C web secrets
+
+kickstart:  ## Bring up the whole product locally over a fake awg/xray host
+	$(MAKE) -C dev/stack kickstart
 
 clean:  ## Remove the virtualenv and the hook environments
 	rm -rf $(VENV) .pre-commit

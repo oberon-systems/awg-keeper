@@ -1,0 +1,33 @@
+# The agent as a container, for the development stand only. A real deployment
+# installs the rpm or the deb from agent/packaging and runs the agent on the
+# host, where the tunnel it manages actually is.
+#
+# The build context is the repository root, because the fake host is built
+# here from the agent's own test fixtures.
+FROM python:3.13-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app/src
+
+WORKDIR /app
+
+COPY agent/requirements.txt ./
+RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
+
+COPY agent/src ./src
+
+# The fake awg, xray and ip live inside the image rather than on a mount: the
+# stand keeps no state on disk, so everything they record dies with the
+# container. The stand-ins are lifted out of agent/tests/conftest.py, where
+# the same fakes serve the unit tests.
+COPY dev/stack/bin/fakehost.py agent/tests/conftest.py /build/
+RUN python /build/fakehost.py /host --force --conftest /build/conftest.py \
+    && rm -rf /build
+
+EXPOSE 8081
+
+HEALTHCHECK --interval=15s --timeout=5s --start-period=5s --retries=3 \
+    CMD ["python", "-c", "import urllib.request as r; r.urlopen('http://127.0.0.1:8081/v1/health')"]
+
+CMD ["python", "-m", "awg_agent"]

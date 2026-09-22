@@ -1,0 +1,15 @@
+# Applies to builds whose context is the repository root, which today is only
+# dev/stack/Dockerfile.agent. The panel builds from web/ and reads
+# web/.dockerignore instead.
+.git/
+.venv/
+.pre-commit/
+.ruff_cache/
+.pytest_cache/
+__pycache__/
+*.pyc
+node_modules/
+dist/
+target/
+.idea/
+dev/web/templates/

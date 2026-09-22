@@ -1,0 +1,59 @@
+# The development stand: the panel and one agent, on a network of their own.
+#
+# The agent drives a fake host - stand-in awg, xray and ip binaries baked into
+# its image - so the stand manages no tunnel, needs no privileges and keeps no
+# state. Nothing here is a volume and nothing is written outside the
+# containers: `down` takes the whole stand with it.
+#
+# A real deployment runs the agent on the host it tunnels for; see
+# web/docker-compose.yaml for the shape that deploys.
+#
+# Nothing in this file is interpolated, so there is no .env beside it and no
+# --env-file anywhere. The one env file below is read raw.
+name: awg-keeper-stand
+
+services:
+  panel:
+    build:
+      context: ../../web
+    env_file:
+      - path: stand.env
+        format: raw
+    environment:
+      AWG_PANEL_STATIC_DIR: /app/static
+    volumes:
+      # Read-only, and the repository's own files: a change to the panel's
+      # python is picked up by a restart. The interface is built into the
+      # image and needs the image rebuilt. The database is not here - it
+      # lives inside the container and dies with it.
+      - ../../web/src:/app/src:ro
+      - ../../web/migrations:/app/migrations:ro
+    networks:
+      - stand
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      agent:
+        condition: service_healthy
+
+  agent:
+    build:
+      context: ../..
+      dockerfile: dev/stack/Dockerfile.agent
+    env_file:
+      - path: stand.env
+        format: raw
+    volumes:
+      - ../../agent/src:/app/src:ro
+    networks:
+      - stand
+    ports:
+      # Published so the agent API can be poked with curl directly, which is
+      # how you tell a panel bug from an agent bug.
+      - "127.0.0.1:8081:8081"
+
+networks:
+  stand:
+    ipam:
+      config:
+        - subnet: 172.31.0.0/24
