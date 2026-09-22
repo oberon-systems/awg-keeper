@@ -63,7 +63,12 @@ repos:
   - repo: https://github.com/jumanjihouse/pre-commit-hooks
     rev: 3.0.0
     hooks:
+      # The webfont the mockups are drawn in is vendored under
+      # web/ui/src/fonts rather than installed from npm or fetched from a
+      # CDN, so the panel builds and serves itself with no network. A woff2
+      # is the only binary this repository carries.
       - id: forbid-binary
+        exclude: \.woff2$
       - id: shellcheck
         args: [-e, SC2086]
       # -i 4 overrides shfmt's tab indentation, which the forbid-tabs hook
