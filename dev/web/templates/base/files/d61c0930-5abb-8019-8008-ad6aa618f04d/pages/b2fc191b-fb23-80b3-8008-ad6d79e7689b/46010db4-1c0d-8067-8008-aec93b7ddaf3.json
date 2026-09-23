@@ -1,0 +1,147 @@
+{
+  "id": "46010db4-1c0d-8067-8008-aec93b7ddaf3",
+  "name": "Glyph",
+  "type": "text",
+  "x": 5310.5,
+  "y": 277,
+  "width": 3,
+  "height": 14,
+  "rotation": 0,
+  "selrect": {
+    "x": 5310.5,
+    "y": 277,
+    "width": 3,
+    "height": 14,
+    "x1": 5310.5,
+    "y1": 277,
+    "x2": 5313.5,
+    "y2": 291
+  },
+  "points": [
+    {
+      "x": 5310.5,
+      "y": 277
+    },
+    {
+      "x": 5313.5,
+      "y": 277
+    },
+    {
+      "x": 5313.5,
+      "y": 291
+    },
+    {
+      "x": 5310.5,
+      "y": 291
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "46010db4-1c0d-8067-8008-aec93b687c2e",
+  "frameId": "46010db4-1c0d-8067-8008-aec93b687c2e",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-width",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "11",
+                "fontWeight": "700",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "700",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#9aa1ac",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": "i"
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-inter-tight",
+            "fontSize": "11",
+            "fontWeight": "700",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "700",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#9aa1ac",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Inter Tight"
+          }
+        ]
+      }
+    ]
+  },
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 5310.5,
+      "y": 289.80000019073486,
+      "width": 2.637500047683716,
+      "height": 12.800000190734863,
+      "x1": 0,
+      "y1": 0,
+      "x2": 2.637500047683716,
+      "y2": 12.800000190734863,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "11px",
+      "fontWeight": "700",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#9aa1ac",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "i"
+    }
+  ],
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b"
+}

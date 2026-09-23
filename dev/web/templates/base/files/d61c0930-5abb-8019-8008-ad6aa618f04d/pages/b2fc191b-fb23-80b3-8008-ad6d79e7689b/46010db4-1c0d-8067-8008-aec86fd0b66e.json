@@ -1,0 +1,70 @@
+{
+  "id": "46010db4-1c0d-8067-8008-aec86fd0b66e",
+  "name": "Severity bar",
+  "type": "rect",
+  "x": 3112,
+  "y": 728,
+  "width": 3,
+  "height": 45,
+  "rotation": 0,
+  "selrect": {
+    "x": 3112,
+    "y": 728,
+    "width": 3,
+    "height": 45,
+    "x1": 3112,
+    "y1": 728,
+    "x2": 3115,
+    "y2": 773
+  },
+  "points": [
+    {
+      "x": 3112,
+      "y": 728
+    },
+    {
+      "x": 3115,
+      "y": 728
+    },
+    {
+      "x": 3115,
+      "y": 773
+    },
+    {
+      "x": 3112,
+      "y": 773
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "46010db4-1c0d-8067-8008-aec86fd0b5fd",
+  "frameId": "46010db4-1c0d-8067-8008-aec86fd0b5fd",
+  "flipX": null,
+  "flipY": null,
+  "r2": 0,
+  "proportionLock": false,
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "layoutItemVSizing": "fill",
+  "r3": 0,
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "strokes": [],
+  "proportion": 1,
+  "r4": 0,
+  "fills": []
+}
