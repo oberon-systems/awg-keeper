@@ -24,9 +24,11 @@ class CommandError(RuntimeError):
         self.stderr = stderr
 
 
-def run(argv: list[str], timeout: float = 10.0) -> str:
+def run(argv: list[str], timeout: float = 10.0, secret: str | None = None) -> str:
     """Run a command and return its stdout, raising CommandError otherwise."""
-    LOG.debug("running %s", argv)
+    # The secret still reaches the process; only the log and the error lose it.
+    shown = [("***" if secret and item == secret else item) for item in argv]
+    LOG.debug("running %s", shown)
     try:
         done = subprocess.run(
             argv,
@@ -36,13 +38,13 @@ def run(argv: list[str], timeout: float = 10.0) -> str:
             timeout=timeout,
         )
     except FileNotFoundError as exc:
-        raise CommandError(argv, "not found on PATH") from exc
+        raise CommandError(shown, "not found on PATH") from exc
     except subprocess.TimeoutExpired as exc:
-        raise CommandError(argv, f"timed out after {timeout}s") from exc
+        raise CommandError(shown, f"timed out after {timeout}s") from exc
 
     if done.returncode != 0:
         stderr = done.stderr.strip()
         LOG.error("%s exited %d: %s", argv[0], done.returncode, stderr)
-        raise CommandError(argv, f"exited {done.returncode}", stderr)
+        raise CommandError(shown, f"exited {done.returncode}", stderr)
 
     return done.stdout

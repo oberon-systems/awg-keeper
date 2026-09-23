@@ -68,13 +68,52 @@ class XrayUserCreate(BaseModel):
     level: int = Field(default=0, ge=0)
 
 
-class XrayInbound(BaseModel):
-    """An inbound and the clients config.json holds for it."""
+class XrayTransport(BaseModel):
+    """What a client link needs from an inbound; never the Reality private key."""
 
     model_config = ConfigDict(extra="forbid")
 
     tag: str
+    protocol: str = ""
+    listen: str | None = None
+    port: int = 0
+    network: str = "tcp"
+    security: str = "none"
+    server_names: list[str] = []
+    short_ids: list[str] = []
+    public_key: str | None = None
+
+
+class XrayInbound(XrayTransport):
+    """An inbound and the clients config.json holds for it."""
+
     users: list[XrayUser] = []
+
+
+class InboundHealth(XrayTransport):
+    """An inbound as the healthcheck reports it: the transport and a client count."""
+
+    clients: int = 0
+
+
+class XrayUserStats(BaseModel):
+    """What the stats service counted for one client since Xray started."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    email: str
+    uplink: int = 0
+    downlink: int = 0
+    online_ips: list[str] = []
+
+
+class XrayStats(BaseModel):
+    """Per-client counters, or enabled false when config.json turns them off."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool = False
+    users: list[XrayUserStats] = []
 
 
 class State(BaseModel):
@@ -117,4 +156,5 @@ class Status(Health):
     """Health, and what the host shows for the interfaces this agent drives."""
 
     interfaces: list[InterfaceHealth] = []
+    inbounds: list[InboundHealth] = []
     error: str | None = None

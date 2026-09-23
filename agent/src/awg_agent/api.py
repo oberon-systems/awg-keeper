@@ -15,12 +15,14 @@ from awg_agent.auth import require_source, require_token, settings_of
 from awg_agent.commands import CommandError
 from awg_agent.models import (
     Health,
+    InboundHealth,
     Interface,
     Peer,
     PeerCreate,
     State,
     Status,
     XrayInbound,
+    XrayStats,
     XrayUser,
     XrayUserCreate,
 )
@@ -79,11 +81,17 @@ def status(request: Request) -> Status:
     request.app.state.interfaces_seen = awg.log_probe(
         interfaces, error, request.app.state.interfaces_seen
     )
+    inbounds: list[InboundHealth] = []
+    try:
+        inbounds = xray.health(settings)
+    except CommandError as exc:
+        LOG.warning("xray inbounds unavailable: %s", exc)
     return Status(
         version=__version__,
         awg=awg.version(settings),
         xray=xray.version(settings),
         interfaces=interfaces,
+        inbounds=inbounds,
         error=error,
     )
 
@@ -117,6 +125,12 @@ def remove_peer(request: Request, iface: str, public_key: str) -> Response:
     """Remove one peer and persist the interface config."""
     awg.remove_peer(settings_of(request), iface, public_key)
     return Response(status_code=204)
+
+
+@private.get("/xray/stats")
+def xray_stats(request: Request) -> XrayStats:
+    """Traffic counters and online addresses per Xray client."""
+    return xray.stats(settings_of(request))
 
 
 @private.get("/xray/{inbound}/users")

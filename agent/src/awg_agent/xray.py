@@ -23,9 +23,19 @@ from typing import Any
 from awg_agent import validate
 from awg_agent.commands import CommandError, run
 from awg_agent.config import Settings
-from awg_agent.models import XrayInbound, XrayUser
+from awg_agent.models import (
+    InboundHealth,
+    XrayInbound,
+    XrayStats,
+    XrayUser,
+    XrayUserStats,
+)
 
 LOG = logging.getLogger(__name__)
+
+
+# Derived once per private key; the key is only ever compared against, never shown.
+_PUBLIC_KEYS: dict[str, str | None] = {}
 
 
 class UnknownInbound(LookupError):
@@ -92,17 +102,119 @@ def _write(settings: Settings, document: dict[str, Any]) -> None:
     os.replace(staging, target)
 
 
+def _public_key(settings: Settings, private: str | None) -> str | None:
+    if not private:
+        return None
+    if private not in _PUBLIC_KEYS:
+        try:
+            answer = run(
+                [settings.xray_bin, "x25519", "-i", private],
+                settings.command_timeout,
+                secret=private,
+            )
+        except CommandError as exc:
+            LOG.warning("reality public key unavailable: %s", exc)
+            return None
+        found = None
+        for line in answer.splitlines():
+            name, _, value = line.partition(":")
+            # "Public key" up to 24.x, "Password" from 25.x on.
+            if name.strip().lower().replace(" ", "") in ("publickey", "password"):
+                found = value.strip() or None
+        _PUBLIC_KEYS[private] = found
+    return _PUBLIC_KEYS[private]
+
+
+def _transport(settings: Settings, entry: dict[str, Any]) -> dict[str, Any]:
+    stream = entry.get("streamSettings") or {}
+    security = stream.get("security") or "none"
+    reality = stream.get("realitySettings") or {}
+    return {
+        "tag": entry.get("tag", ""),
+        "protocol": entry.get("protocol", ""),
+        "listen": entry.get("listen"),
+        "port": int(entry.get("port") or 0),
+        "network": stream.get("network") or "tcp",
+        "security": security,
+        "server_names": list(reality.get("serverNames") or []),
+        "short_ids": [item for item in reality.get("shortIds") or [] if item],
+        "public_key": _public_key(settings, reality.get("privateKey"))
+        if security == "reality"
+        else None,
+    }
+
+
 def inbounds(settings: Settings) -> list[XrayInbound]:
     """Every inbound config.json carries, with its clients."""
     document = _document(settings)
     return [
         XrayInbound(
-            tag=entry.get("tag", ""),
+            **_transport(settings, entry),
             users=[_user(client) for client in _clients(entry)],
         )
         for entry in document.get("inbounds", [])
         if entry.get("tag")
     ]
+
+
+def health(settings: Settings) -> list[InboundHealth]:
+    """Report the inbounds for the healthcheck; no config.json means no Xray."""
+    if not settings.xray_config.exists():
+        return []
+    document = _document(settings)
+    return [
+        InboundHealth(
+            **_transport(settings, entry),
+            clients=len((entry.get("settings") or {}).get("clients") or []),
+        )
+        for entry in document.get("inbounds", [])
+        if entry.get("tag")
+    ]
+
+
+def _api_json(settings: Settings, *args: str) -> dict[str, Any]:
+    answer = run(
+        [settings.xray_bin, "api", args[0], f"--server={settings.xray_api}", *args[1:]],
+        settings.command_timeout,
+    )
+    try:
+        parsed = json.loads(answer or "{}")
+    except json.JSONDecodeError as exc:
+        raise CommandError([settings.xray_bin, "api", args[0]], "not JSON") from exc
+    return parsed if isinstance(parsed, dict) else {}
+
+
+def stats(settings: Settings) -> XrayStats:
+    """Read the per-client counters; a stats service that is off is not an error.
+
+    Counting needs `stats` and `policy.levels.0.statsUserUplink/Downlink` in
+    config.json, and the online IPs `statsUserOnline` as well.
+    """
+    if not settings.xray_config.exists():
+        return XrayStats()
+    try:
+        answer = _api_json(settings, "statsquery", "-pattern", "user>>>")
+    except CommandError as exc:
+        LOG.info("xray stats unavailable: %s", exc)
+        return XrayStats()
+
+    found: dict[str, XrayUserStats] = {}
+    for item in answer.get("stat") or []:
+        parts = str(item.get("name", "")).split(">>>")
+        if len(parts) != 4 or parts[0] != "user" or parts[2] != "traffic":
+            continue
+        user = found.setdefault(parts[1], XrayUserStats(email=parts[1]))
+        if parts[3] in ("uplink", "downlink"):
+            setattr(user, parts[3], int(item.get("value") or 0))
+
+    for user in found.values():
+        try:
+            online = _api_json(settings, "statsonlineiplist", "-email", user.email)
+        except CommandError:
+            # No statsUserOnline: every other user would fail the same way.
+            break
+        user.online_ips = sorted(online.get("ips") or {})
+    return XrayStats(enabled=True, users=sorted(found.values(), key=lambda u: u.email))
 
 
 def list_users(settings: Settings, tag: str) -> list[XrayUser]:

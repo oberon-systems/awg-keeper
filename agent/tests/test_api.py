@@ -133,6 +133,14 @@ def test_status_reports_what_awg_shows(client: TestClient, host: Path) -> None:
     assert not [line for line in argv_log(host) if forbidden & set(line)]
 
 
+def test_status_reports_the_inbounds(client: TestClient) -> None:
+    body = client.get("/v1/status").json()
+    assert [(item["tag"], item["clients"]) for item in body["inbounds"]] == [
+        ("vless-in", 1)
+    ]
+    assert body["inbounds"][0]["security"] == "reality"
+
+
 def test_status_without_ip_reports_no_addresses(settings: Settings) -> None:
     blind = settings.model_copy(update={"ip_bin": "/nonexistent/ip"})
     with TestClient(create_app(blind), client=SOURCE) as test_client:

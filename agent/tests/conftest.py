@@ -15,6 +15,7 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
+from awg_agent import xray
 from awg_agent.app import create_app
 from awg_agent.config import Settings
 
@@ -29,6 +30,7 @@ OBFUSCATION = {"jc": "4", "jmin": "50", "jmax": "1000", "h1": "1077035230"}
 
 UUID_A = "6f1f0b8e-0b1a-4c2e-9d3f-5a6b7c8d9e01"
 UUID_B = "7a2f1c9d-1c2b-4d3f-8e4a-6b7c8d9e0f12"
+REALITY_KEY = "yH8sQk2mVb7Lr4Tn1Wc9Xe5Pz3Ad6Fg0Jh2Ku8Nq4R"
 
 FAKE_AWG = '''#!/usr/bin/env python3
 """A stand-in for awg: logs its argv, and remembers what was set."""
@@ -135,6 +137,7 @@ else:
 
 FAKE_XRAY = '''#!/usr/bin/env python3
 """A stand-in for xray: logs its argv, and the payload adu was handed."""
+import json
 import os
 import sys
 
@@ -155,6 +158,35 @@ elif argv[:2] == ["api", "adu"]:
         handle.write(payload)
 elif argv[:2] == ["api", "rmu"]:
     pass
+elif argv[:2] in (["api", "statsquery"], ["api", "statsonlineiplist"]):
+    path = os.environ.get("FAKE_XRAY_STATS", "")
+    if not os.path.exists(path):
+        sys.stderr.write("xray: unknown service xray.app.stats.command.StatsService\\n")
+        sys.exit(1)
+    with open(path, encoding="utf-8") as handle:
+        counted = json.load(handle)
+    if argv[1] == "statsquery":
+        stat = []
+        for email, item in counted.items():
+            for name in ("uplink", "downlink"):
+                stat.append({
+                    "name": "user>>>%s>>>traffic>>>%s" % (email, name),
+                    "value": str(item.get(name, 0)),
+                })
+        print(json.dumps({"stat": stat}))
+    else:
+        email = argv[argv.index("-email") + 1]
+        ips = counted.get(email, {}).get("ips")
+        if ips is None:
+            sys.stderr.write("xray: online map not enabled\\n")
+            sys.exit(1)
+        print(json.dumps({"name": "user>>>%s>>>online" % email,
+                          "ips": {ip: 1758553200 for ip in ips}}))
+elif argv[:2] == ["x25519", "-i"]:
+    # Not the real curve: reversing is enough for a key the tests can predict.
+    print("PrivateKey: %s" % argv[2])
+    print("Password: %s" % argv[2][::-1])
+    print("Hash32: -")
 else:
     sys.stderr.write("xray: unknown command %s\\n" % argv)
     sys.exit(1)
@@ -201,6 +233,14 @@ def _clean_environment(monkeypatch: pytest.MonkeyPatch) -> None:
             monkeypatch.delenv(name)
 
 
+@pytest.fixture(autouse=True)
+def _forget_derived_keys() -> Iterator[None]:
+    """Forget the derived Reality keys, so each test starts with a cold cache."""
+    xray._PUBLIC_KEYS.clear()
+    yield
+    xray._PUBLIC_KEYS.clear()
+
+
 @pytest.fixture
 def host(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     """Build a fake host: the two binaries, their logs and their state."""
@@ -229,8 +269,19 @@ def host(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
         "inbounds": [
             {
                 "tag": "vless-in",
+                "listen": "0.0.0.0",
+                "port": 443,
                 "protocol": "vless",
                 "settings": {"clients": [{"id": UUID_A, "email": "one@node"}]},
+                "streamSettings": {
+                    "network": "tcp",
+                    "security": "reality",
+                    "realitySettings": {
+                        "privateKey": REALITY_KEY,
+                        "serverNames": ["www.example.com"],
+                        "shortIds": ["", "0123456789abcdef"],
+                    },
+                },
             }
         ]
     }
@@ -240,6 +291,7 @@ def host(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     monkeypatch.setenv("FAKE_AWG_STATE", str(root / "awg-state.json"))
     monkeypatch.setenv("FAKE_XRAY_LOG", str(root / "xray.log"))
     monkeypatch.setenv("FAKE_XRAY_PAYLOAD", str(root / "adu.json"))
+    monkeypatch.setenv("FAKE_XRAY_STATS", str(root / "xray-stats.json"))
     return root
 
 
