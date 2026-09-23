@@ -204,6 +204,7 @@ export function AgentDetail({
           <InterfaceForm
             key={`${agent.id}-${item.name}`}
             item={item}
+            agent={agent.name}
             onClose={() => setEditing(null)}
             onSaved={() => {
               setEditing(null);
