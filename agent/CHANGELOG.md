@@ -1,3 +1,9 @@
+## awg-keeper-agent-v0.4.0 (2026-09-23)
+
+### Features
+
+- **agent**: report inbounds and xray stats
+
 ## awg-keeper-agent-v0.3.4 (2026-09-18)
 
 ### Bug Fixes
