@@ -8,8 +8,9 @@
 # A real deployment runs the agent on the host it tunnels for; see
 # web/docker-compose.yaml for the shape that deploys.
 #
-# Nothing in this file is interpolated, so there is no .env beside it and no
-# --env-file anywhere. The one env file below is read raw.
+# Only LISTEN_PORT is interpolated, from the environment kickstart.sh sets;
+# there is no .env beside it and no --env-file anywhere. The one env file
+# below is read raw.
 name: awg-keeper-stand
 
 services:
@@ -31,7 +32,7 @@ services:
     networks:
       - stand
     ports:
-      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:${LISTEN_PORT:?run through kickstart.sh}:8000"
     depends_on:
       agent:
         condition: service_healthy

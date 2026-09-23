@@ -2,12 +2,13 @@
 set -euo pipefail
 
 stack="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-panel="http://127.0.0.1:8000"
+# The host port the panel is published on; compose reads it from here.
+export LISTEN_PORT="${LISTEN_PORT:-8000}"
+panel="http://127.0.0.1:$LISTEN_PORT"
 agent="http://127.0.0.1:8081"
 
-# No --env-file and no .env beside the compose file: nothing in it is
-# interpolated, so there is nothing for compose to substitute and nothing it
-# can mangle.
+# No --env-file and no .env beside the compose file: the only thing compose
+# substitutes is LISTEN_PORT from this environment, and nothing it can mangle.
 compose() {
     docker compose --project-directory "$stack" "$@"
 }

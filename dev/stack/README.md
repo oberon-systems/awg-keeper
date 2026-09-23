@@ -34,6 +34,10 @@ panel http://127.0.0.1:8000     admin / admin
 agent http://127.0.0.1:8081/v1/health
 ```
 
+The panel is published on port 8000. When that port is taken on the host,
+pick another one: `make kickstart LISTEN_PORT=8090`, or export `LISTEN_PORT`
+before running it.
+
 Both interfaces come up disabled. That is the real behaviour: the panel
 discovers an interface from the agent but refuses to issue against one that
 has no endpoint host, so fill that in and enable it before creating a

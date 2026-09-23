@@ -3,6 +3,7 @@
 
 .PHONY: kickstart down restart logs calls
 
+export LISTEN_PORT
 
 # stack
 kickstart down restart logs calls:
