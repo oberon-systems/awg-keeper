@@ -1,3 +1,14 @@
+## awg-keeper-web-v0.5.0 (2026-09-23)
+
+### Features
+
+- **web**: serve the own stats page on /stats
+- **web**: build the profiles page on the mockup
+- **web**: issue xray clients and sample profile stats
+- **web**: build the interface modal on the mockup
+- **web**: build the dashboard on the mockup
+- **web**: rebuild the sign in page on the mockup
+
 ## awg-keeper-web-v0.4.0 (2026-09-18)
 
 ### Features
