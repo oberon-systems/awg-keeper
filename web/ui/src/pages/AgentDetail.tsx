@@ -4,6 +4,7 @@ import { api, type Agent, type AgentInterface, type Check } from "../api";
 import { age, ms, summary, when } from "../format";
 import { describe, type Problem } from "../problem";
 import { Banner, Pill, Stat, counted, toneOf, type Part } from "../tiles";
+import { InboundForm } from "./InboundForm";
 import { InterfaceForm } from "./InterfaceForm";
 
 const LOG_LIMIT = 10;
@@ -13,6 +14,10 @@ function label(status: string): string {
     return "OK";
   }
   return status === "degraded" ? "Warning" : "Error";
+}
+
+function needs(missing: string[]): string {
+  return `needs ${missing.map((field) => field.replace("_", " ")).join(", ")}`;
 }
 
 function peerParts(interfaces: AgentInterface[]): Part[] {
@@ -49,6 +54,7 @@ export function AgentDetail({
 }) {
   const [checks, setChecks] = useState<Check[]>([]);
   const [editing, setEditing] = useState<string | null>(null);
+  const [editingInbound, setEditingInbound] = useState<string | null>(null);
   const [problem, setProblem] = useState<Problem | null>(null);
   const [detailShown, setDetailShown] = useState(false);
 
@@ -208,6 +214,78 @@ export function AgentDetail({
             onClose={() => setEditing(null)}
             onSaved={() => {
               setEditing(null);
+              onSaved();
+            }}
+          />
+        ))}
+
+      <div className="panel">
+        <div className="panel-title">
+          <h2>Inbounds</h2>
+        </div>
+        <table className="interfaces-table">
+          <thead>
+            <tr>
+              <th>Inbound</th>
+              <th>Transport</th>
+              <th>Port</th>
+              <th>Reality key</th>
+              <th>Clients</th>
+              <th>Profiles</th>
+            </tr>
+          </thead>
+          <tbody>
+            {agent.inbounds.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="cell-empty">
+                  The agent reported no vless inbounds. Check AWG_KEEPER_XRAY_CONFIG and the
+                  agent log.
+                </td>
+              </tr>
+            ) : null}
+            {agent.inbounds.map((item) => (
+              <tr key={item.tag} className="clickable" onClick={() => setEditingInbound(item.tag)}>
+                <td className="cell-name">{item.tag}</td>
+                <td className={item.present ? "" : "problem"}>
+                  {item.present
+                    ? [item.protocol, item.network, item.security].join(" \u00b7 ")
+                    : "absent"}
+                </td>
+                <td>{item.port || "-"}</td>
+                <td className={item.public_key ? "key" : "cell-empty"}>{item.public_key ?? "-"}</td>
+                <td>{item.present ? item.clients : "-"}</td>
+                <td>
+                  {item.enabled ? (
+                    <Pill tone="ok">enabled</Pill>
+                  ) : item.missing.length ? (
+                    <Pill tone="warn">not configured</Pill>
+                  ) : (
+                    <Pill tone="idle">disabled</Pill>
+                  )}
+                  <div className="muted">
+                    {!item.enabled && item.missing.length
+                      ? needs(item.missing)
+                      : item.server_names.length
+                        ? `sni ${item.server_names[0]}`
+                        : "-"}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {agent.inbounds
+        .filter((item) => item.tag === editingInbound && item.id !== null)
+        .map((item) => (
+          <InboundForm
+            key={`${agent.id}-${item.tag}`}
+            item={item}
+            agent={agent.name}
+            onClose={() => setEditingInbound(null)}
+            onSaved={() => {
+              setEditingInbound(null);
               onSaved();
             }}
           />

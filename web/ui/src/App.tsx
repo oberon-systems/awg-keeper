@@ -69,7 +69,7 @@ export function App() {
           </button>
         </div>
       </header>
-      <main className={tab === "dashboard" ? "flush" : undefined}>
+      <main className="flush">
         {tab === "dashboard" ? <Dashboard /> : <Profiles />}
       </main>
     </>

@@ -5,6 +5,15 @@ export interface Peer {
   assigned_ip: string;
   allowed_ips: string;
   interface_id: number;
+  interface: string;
+  enabled: boolean;
+}
+
+export interface XrayClient {
+  inbound_id: number;
+  inbound: string;
+  email: string;
+  flow: string | null;
   enabled: boolean;
 }
 
@@ -14,12 +23,60 @@ export interface Profile {
   note: string | null;
   enabled: boolean;
   created_at: string;
+  node: string | null;
   peer: Peer | null;
+  xray: XrayClient | null;
 }
 
 export interface Issued {
   profile: Profile;
-  config_template: string;
+  config_template: string | null;
+  link: string | null;
+}
+
+export interface ProfileCreate {
+  name: string;
+  note: string | null;
+  awg?: { interface_id: number; public_key: string };
+  xray?: { inbound_id: number; id: string };
+}
+
+export interface Inbound {
+  id: number;
+  node_id: number;
+  tag: string;
+  port: number;
+  network: string;
+  security: string;
+  endpoint_host: string;
+}
+
+export type Period = "24h" | "7d" | "30d";
+
+export interface ProfileStats {
+  period: Period;
+  online: boolean;
+  last_seen_at: string | null;
+  last_source: string | null;
+  rx: number;
+  tx: number;
+  connected_seconds: number;
+  session_count: number;
+  buckets: { start: string; rx: number; tx: number }[];
+  protocols: {
+    protocol: string;
+    key: string;
+    rx: number;
+    tx: number;
+    last_seen_at: string | null;
+  }[];
+  sessions: {
+    started_at: string;
+    ended_at: string | null;
+    protocol: string;
+    source: string | null;
+    traffic: number;
+  }[];
 }
 
 export interface Interface {
@@ -63,6 +120,27 @@ export interface AgentInterface {
   missing: string[];
 }
 
+export interface AgentInbound {
+  id: number | null;
+  tag: string;
+  present: boolean;
+  clients: number;
+  protocol: string;
+  port: number;
+  network: string;
+  security: string;
+  server_names: string[];
+  short_ids: string[];
+  public_key: string | null;
+  enabled: boolean;
+  endpoint_host: string | null;
+  flow: string | null;
+  fingerprint: string | null;
+  short_id: string | null;
+  label: string | null;
+  missing: string[];
+}
+
 export interface Agent extends Node {
   configured: boolean;
   checked_at: string | null;
@@ -71,6 +149,7 @@ export interface Agent extends Node {
   awg: string | null;
   xray: string | null;
   interfaces: AgentInterface[];
+  inbounds: AgentInbound[];
   error: string | null;
 }
 
@@ -103,6 +182,15 @@ export interface InterfaceUpdate {
   mtu?: number | null;
   client_allowed_ips?: string | null;
   keepalive?: number | null;
+}
+
+export interface InboundUpdate {
+  enabled?: boolean;
+  endpoint_host?: string | null;
+  flow?: string | null;
+  fingerprint?: string | null;
+  short_id?: string | null;
+  label?: string | null;
 }
 
 export class ApiError extends Error {
@@ -172,13 +260,12 @@ export const api = {
     call<Check[]>("GET", `/agents/${nodeId}/checks?limit=${limit}`),
   updateInterface: (id: number, body: InterfaceUpdate) =>
     call<Agent>("PATCH", `/interfaces/${id}`, body),
+  updateInbound: (id: number, body: InboundUpdate) =>
+    call<Agent>("PATCH", `/inbounds/${id}`, body),
   profiles: () => call<Profile[]>("GET", "/profiles"),
-  createProfile: (name: string, note: string, interfaceId: number, key: string) =>
-    call<Issued>("POST", "/profiles", {
-      name,
-      note: note || null,
-      interface_id: interfaceId,
-      public_key: key,
-    }),
+  inbounds: () => call<Inbound[]>("GET", "/inbounds"),
+  createProfile: (body: ProfileCreate) => call<Issued>("POST", "/profiles", body),
+  profileStats: (id: number, period: Period) =>
+    call<ProfileStats>("GET", `/profiles/${id}/stats?period=${period}`),
   deleteProfile: (id: number) => call<void>("DELETE", `/profiles/${id}`),
 };

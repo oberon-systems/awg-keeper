@@ -1,36 +1,44 @@
 import { useState } from "react";
 
-import { api, type AgentInterface } from "../api";
-import { Field } from "../fields";
+import { api, type AgentInbound } from "../api";
+import { Choice, Field } from "../fields";
 import { describe, type Problem } from "../problem";
 import { Banner } from "../tiles";
 
-function text(value: string | number | null): string {
-  return value === null ? "" : String(value);
-}
+const FLOWS = [
+  { value: "xtls-rprx-vision", label: "xtls-rprx-vision" },
+  { value: "", label: "none" },
+];
+const FINGERPRINTS = [
+  "chrome",
+  "firefox",
+  "safari",
+  "ios",
+  "android",
+  "edge",
+  "360",
+  "qq",
+  "random",
+  "randomized",
+].map((value) => ({ value, label: value }));
 
-function number(value: string): number | null {
-  return value.trim() === "" ? null : Number(value);
-}
-
-export function InterfaceForm({
+export function InboundForm({
   item,
   agent,
   onSaved,
   onClose,
 }: {
-  item: AgentInterface;
+  item: AgentInbound;
   agent: string;
   onSaved: () => void;
   onClose: () => void;
 }) {
-  const host = item.address ? item.address.split("/")[0] : null;
   const [enabled, setEnabled] = useState(item.enabled);
-  const [endpointHost, setEndpointHost] = useState(text(item.endpoint_host));
-  const [dns, setDns] = useState(text(item.dns ?? host));
-  const [mtu, setMtu] = useState(text(item.mtu));
-  const [allowed, setAllowed] = useState(text(item.client_allowed_ips ?? "0.0.0.0/0"));
-  const [keepalive, setKeepalive] = useState(text(item.keepalive));
+  const [endpointHost, setEndpointHost] = useState(item.endpoint_host ?? "");
+  const [flow, setFlow] = useState(item.flow ?? "");
+  const [fingerprint, setFingerprint] = useState(item.fingerprint ?? "");
+  const [shortId, setShortId] = useState(item.short_id ?? "");
+  const [label, setLabel] = useState(item.label ?? "");
   const [confirming, setConfirming] = useState(false);
   const [problem, setProblem] = useState<Problem | null>(null);
   const [detailShown, setDetailShown] = useState(false);
@@ -49,31 +57,34 @@ export function InterfaceForm({
     setProblem(null);
     setDetailShown(false);
     try {
-      await api.updateInterface(item.id, {
+      await api.updateInbound(item.id, {
         enabled,
         endpoint_host: endpointHost,
-        dns,
-        mtu: number(mtu),
-        client_allowed_ips: allowed,
-        keepalive: number(keepalive),
+        flow: flow || null,
+        fingerprint: fingerprint || null,
+        short_id: shortId || null,
+        label,
       });
       onSaved();
     } catch (error) {
-      setProblem(describe(error, "Could not save the interface"));
+      setProblem(describe(error, "Could not save the inbound"));
     } finally {
       setBusy(false);
       setConfirming(false);
     }
   }
 
+  const transport = [item.protocol, item.network, item.security].join(" \u00b7 ");
+
   return (
     <div className="scrim">
       <form className="modal" onSubmit={ask}>
         <div className="modal-header">
           <div className="modal-heading">
-            <h2>Configure {item.name}</h2>
+            <h2>Configure {item.tag}</h2>
             <p>
-              {agent} &middot; port {item.listen_port || "-"} &middot; discovered from the agent
+              {agent} &middot; {transport} &middot; port {item.port || "-"} &middot; discovered
+              from the agent
             </p>
           </div>
           <button type="button" className="modal-close" aria-label="Close" onClick={onClose}>
@@ -89,37 +100,42 @@ export function InterfaceForm({
           />
           <span>
             <span className="check-title">Enabled</span>
-            <span className="check-hint">Profiles can be issued on this interface</span>
+            <span className="check-hint">Profiles can be issued on this inbound</span>
           </span>
         </label>
 
         <div className="field-row">
           <Field
-            label="Address"
-            value={text(item.address)}
+            label="Server names"
+            value={item.server_names.join(", ")}
             onChange={() => undefined}
-            locked={`Read from ${item.name} on the host. The agent reports it on every healthcheck, so change it in the interface config on ${agent}.`}
+            locked={`Read from config.json on ${agent}. Change serverNames in the Xray config on the host.`}
           />
           <Field
-            label="Pool"
-            value={text(item.pool)}
+            label="Public key"
+            value={item.public_key ?? ""}
             onChange={() => undefined}
-            locked={`Derived from the interface address: peers on ${item.name} get addresses from this network.`}
+            locked={`Derived on the host from the Reality private key, which never leaves ${agent}.`}
           />
         </div>
         <Field label="Endpoint host" value={endpointHost} onChange={setEndpointHost} />
         <div className="field-row">
-          <Field
-            label="DNS"
-            value={dns}
-            onChange={setDns}
-            hint="Defaults to the interface address"
+          <Choice label="Flow" value={flow} options={FLOWS} onChange={setFlow} />
+          <Choice
+            label="Fingerprint"
+            value={fingerprint}
+            options={FINGERPRINTS}
+            onChange={setFingerprint}
           />
-          <Field label="MTU" value={mtu} onChange={setMtu} numeric />
         </div>
         <div className="field-row">
-          <Field label="Client allowed IPs" value={allowed} onChange={setAllowed} />
-          <Field label="Keepalive" value={keepalive} onChange={setKeepalive} numeric />
+          <Choice
+            label="Short id"
+            value={shortId}
+            options={item.short_ids.map((value) => ({ value, label: value }))}
+            onChange={setShortId}
+          />
+          <Field label="Label" value={label} onChange={setLabel} />
         </div>
 
         <Banner
@@ -145,7 +161,7 @@ export function InterfaceForm({
               <div className="modal-heading">
                 <h2>Are you sure?</h2>
                 <p>
-                  Save interface {item.name} on {agent}
+                  Save inbound {item.tag} on {agent}
                 </p>
               </div>
               <button
