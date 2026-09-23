@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import logging
 from datetime import UTC, datetime, timedelta
+from ipaddress import ip_address
 from typing import Any
 
 from sqlalchemy import delete
@@ -28,7 +29,13 @@ from awg_panel.models import (
     TrafficHour,
     XrayClient,
 )
-from awg_panel.schemas import Bucket, ProfileStats, ProtocolStats, SessionRead
+from awg_panel.schemas import (
+    Bucket,
+    OwnStats,
+    ProfileStats,
+    ProtocolStats,
+    SessionRead,
+)
 
 LOG = logging.getLogger(__name__)
 
@@ -333,4 +340,34 @@ def profile_stats(
             )
             for row in rows[:RECENT]
         ],
+    )
+
+
+def own_stats(
+    session: Session,
+    source: str,
+    period: str,
+    now: datetime | None = None,
+) -> OwnStats:
+    """Stats of the profile whose tunnel address the request came from."""
+    try:
+        address = ip_address(source)
+    except ValueError:
+        return OwnStats(source=source)
+    found = session.exec(
+        select(AwgPeer, Interface, Node)
+        .where(AwgPeer.assigned_ip == f"{address}/{address.max_prefixlen}")
+        .where(AwgPeer.interface_id == Interface.id)
+        .where(Interface.node_id == Node.id)
+    ).first()
+    profile = session.get(Profile, found[0].profile_id) if found else None
+    if found is None or profile is None:
+        return OwnStats(source=source)
+    _peer, _interface, node = found
+    return OwnStats(
+        source=source,
+        name=profile.name,
+        node=node.name,
+        address=str(address),
+        stats=profile_stats(session, profile, period, now),
     )

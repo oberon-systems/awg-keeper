@@ -3,9 +3,14 @@ import { useEffect, useState } from "react";
 import { api } from "./api";
 import { Dashboard } from "./pages/Dashboard";
 import { Login } from "./pages/Login";
+import { OwnStats } from "./pages/OwnStats";
 import { Profiles } from "./pages/Profiles";
 
 export function App() {
+  return window.location.pathname === "/stats" ? <OwnStats /> : <Panel />;
+}
+
+function Panel() {
   const [user, setUser] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const [tab, setTab] = useState<"dashboard" | "profiles">("dashboard");

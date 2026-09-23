@@ -1454,3 +1454,155 @@ button.small.danger-outline {
   font-weight: 600;
   color: var(--ok);
 }
+
+/* Stats: the public page a user reaches through the tunnel */
+
+a.chrome-signout {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+main.own {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 960px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.own-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.own-name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.own-name h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.own-who {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.own .tile,
+.own .chart,
+.own .sessions {
+  background: var(--surface);
+  border-radius: var(--radius-card);
+}
+
+.own .tile {
+  padding: 16px 18px;
+}
+
+.own .tile-label {
+  font-size: 13px;
+}
+
+.own .tile-value {
+  font-size: 26px;
+}
+
+.own .chart {
+  padding: 18px 20px;
+}
+
+.own .chart-title,
+.own .sessions-title h3 {
+  font-size: 15px;
+}
+
+.own .sessions-title {
+  padding: 14px 20px;
+}
+
+.own-sessions th:first-child,
+.own-sessions td:first-child {
+  padding-left: 20px;
+}
+
+.own-sessions th:nth-child(1) { width: 20.8%; }
+.own-sessions th:nth-child(2) { width: 20.8%; }
+.own-sessions th:nth-child(3) { width: 16.7%; }
+.own-sessions th:nth-child(4) { width: 20.8%; }
+.own-sessions th:nth-child(5) { width: 20.9%; }
+
+.own-footnote {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+main.own-centre {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 64px);
+  padding: 0;
+}
+
+.own-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 480px;
+  max-width: 100%;
+  padding: 32px;
+  box-sizing: border-box;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+
+.own-card h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.own-card p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+
+.own-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--warn);
+  background: var(--warn-bg);
+}
+
+.own-seen {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--ink-muted);
+  background: var(--surface-sunken);
+  border-radius: 8px;
+}

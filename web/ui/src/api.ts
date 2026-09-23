@@ -79,6 +79,14 @@ export interface ProfileStats {
   }[];
 }
 
+export interface OwnStats {
+  source: string;
+  name: string | null;
+  node: string | null;
+  address: string | null;
+  stats: ProfileStats | null;
+}
+
 export interface Interface {
   id: number;
   node_id: number;
@@ -267,5 +275,6 @@ export const api = {
   createProfile: (body: ProfileCreate) => call<Issued>("POST", "/profiles", body),
   profileStats: (id: number, period: Period) =>
     call<ProfileStats>("GET", `/profiles/${id}/stats?period=${period}`),
+  ownStats: (period: Period) => call<OwnStats>("GET", `/stats/me?period=${period}`),
   deleteProfile: (id: number) => call<void>("DELETE", `/profiles/${id}`),
 };

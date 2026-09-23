@@ -26,6 +26,7 @@ from awg_panel.schemas import (
     InterfaceUpdate,
     LoginRequest,
     NodeRead,
+    OwnStats,
     ProfileCreate,
     ProfileIssued,
     ProfileRead,
@@ -48,6 +49,9 @@ public = APIRouter(
     tags=["auth"],
     dependencies=[Depends(auth.require_source)],
 )
+# No source check and no session: the caller is recognised by the tunnel
+# address alone, and only ever sees the profile that address belongs to.
+mine = APIRouter(prefix="/api/v1", tags=["stats"])
 private = APIRouter(
     prefix="/api/v1",
     dependencies=[Depends(auth.require_source), Depends(auth.require_session)],
@@ -77,6 +81,17 @@ def logout(response: Response) -> Response:
     """Drop the session. Valid without one, so a stale tab can still clear."""
     auth.close_session(response)
     return Response(status_code=204)
+
+
+@mine.get("/stats/me")
+def own_stats(
+    request: Request,
+    session: SessionDep,
+    period: Annotated[str, Query(pattern="^(24h|7d|30d)$")] = "7d",
+) -> OwnStats:
+    """Stats of the caller's own profile, or just the address it came from."""
+    source = request.client.host if request.client else ""
+    return stats.own_stats(session, source, period)
 
 
 @private.get("/auth/me")

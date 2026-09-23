@@ -183,6 +183,18 @@ class ProfileStats(BaseModel):
     sessions: list[SessionRead] = []
 
 
+class OwnStats(BaseModel):
+    """The public stats page: the caller's profile, found by its tunnel address."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    source: str
+    name: str | None = None
+    node: str | None = None
+    address: str | None = None
+    stats: ProfileStats | None = None
+
+
 class InterfaceRead(BaseModel):
     """An interface, as the create form needs to offer it."""
 

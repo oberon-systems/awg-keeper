@@ -147,6 +147,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app.include_router(api.ping)
     app.include_router(api.public)
+    app.include_router(api.mine)
     app.include_router(api.private)
     _mount_spa(app, settings.static_dir)
     return app

@@ -7,6 +7,9 @@ import time
 from conftest import INBOUND, StubAgent
 from fastapi.testclient import TestClient
 
+from awg_panel.app import create_app
+from awg_panel.config import Settings
+
 KEY = "a" * 43 + "="
 UUID = "2f9c1e7a-4b3d-4e8f-9a61-5d0c7b2e8f14"
 
@@ -148,3 +151,42 @@ def test_an_unknown_period_is_422(signed_in: TestClient) -> None:
     profile = _awg_profile(signed_in)
     answer = signed_in.get(f"/api/v1/profiles/{profile}/stats?period=1y")
     assert answer.status_code == 422
+
+
+def test_an_unknown_source_is_not_recognised(client: TestClient) -> None:
+    answer = client.get("/api/v1/stats/me")
+    assert answer.status_code == 200
+    assert answer.json() == {
+        "source": "127.0.0.1",
+        "name": None,
+        "node": None,
+        "address": None,
+        "stats": None,
+    }
+
+
+def test_the_tunnel_address_finds_its_own_profile(
+    signed_in: TestClient,
+    settings: Settings,
+    stub: StubAgent,
+) -> None:
+    _awg_profile(signed_in)
+    _peer(stub, sent=0, received=0)
+    signed_in.post("/api/v1/agents/probe")
+    with TestClient(
+        create_app(settings), base_url="https://testserver", client=("10.8.0.2", 1)
+    ) as tunnel:
+        answer = tunnel.get("/api/v1/stats/me?period=24h")
+    assert answer.status_code == 200
+    found = answer.json()
+    assert (found["name"], found["node"], found["address"]) == (
+        "laptop",
+        "gateway",
+        "10.8.0.2",
+    )
+    assert found["stats"]["period"] == "24h"
+    assert found["stats"]["online"] is True
+
+
+def test_an_unknown_own_period_is_422(client: TestClient) -> None:
+    assert client.get("/api/v1/stats/me?period=1y").status_code == 422
