@@ -28,6 +28,8 @@ SERVER_KEY_1 = "Tz5wB1yUqNfL8kJdR6sXoM2vHaE7cG0pIgZ4nQtY9mE="
 PEER_A = "aQ7rT2nLpX8vK1mZcW5dYbH3jNsG6iF0oUlV9xC4eR8="
 PEER_B = "bW3kY9tRqM5nL2pXcV8dZfH7jSsG1iB0oAlU6xE4wT2="
 PEER_C = "cE6mU4pKrN9vL3qXdW7bZgH2jTsF5iC0oBlY8xA1yR7="
+REALITY_KEY_443 = "mA4pRt8vKq2nLx6sWd0cYb3hZj5gFe9uNo1iTl7rP2Q"
+REALITY_KEY_8443 = "qW9eRt2yUi4oPa6sDf8gHj0kLz3xCv5bNm7QwE1rT4Y"
 
 AWG_STATE = {
     "awg0": {
@@ -46,8 +48,8 @@ AWG_STATE = {
             "h4": "1826115271",
         },
         "peers": {
-            PEER_A: {"allowed_ips": "10.8.0.2/32", "rx": 1048576, "tx": 2097152},
-            PEER_B: {"allowed_ips": "10.8.0.3/32", "rx": 524288, "tx": 131072},
+            PEER_A: {"allowed_ips": "10.8.0.200/32", "rx": 1048576, "tx": 2097152},
+            PEER_B: {"allowed_ips": "10.8.0.201/32", "rx": 524288, "tx": 131072},
         },
     },
     "awg1": {
@@ -61,7 +63,17 @@ AWG_STATE = {
 
 XRAY_CONFIG = {
     "log": {"loglevel": "warning"},
-    "api": {"tag": "api", "services": ["HandlerService"]},
+    "api": {"tag": "api", "services": ["HandlerService", "StatsService"]},
+    "stats": {},
+    "policy": {
+        "levels": {
+            "0": {
+                "statsUserUplink": True,
+                "statsUserDownlink": True,
+                "statsUserOnline": True,
+            }
+        }
+    },
     "inbounds": [
         {
             "tag": "reality-443",
@@ -83,13 +95,37 @@ XRAY_CONFIG = {
                 "security": "reality",
                 "realitySettings": {
                     "dest": "www.microsoft.com:443",
+                    "privateKey": REALITY_KEY_443,
                     "serverNames": ["www.microsoft.com"],
-                    "shortIds": ["0123456789abcdef"],
+                    "shortIds": ["0123456789abcdef", "6ba85179e30d4fc2"],
                 },
             },
-        }
+        },
+        {
+            "tag": "reality-8443",
+            "listen": "0.0.0.0",
+            "port": 8443,
+            "protocol": "vless",
+            "settings": {"decryption": "none", "clients": []},
+            "streamSettings": {
+                "network": "tcp",
+                "security": "reality",
+                "realitySettings": {
+                    "dest": "www.apple.com:443",
+                    "privateKey": REALITY_KEY_8443,
+                    "serverNames": ["www.apple.com"],
+                    "shortIds": ["a1b2c3d4"],
+                },
+            },
+        },
     ],
     "outbounds": [{"tag": "direct", "protocol": "freedom"}],
+}
+
+XRAY_STATS = {
+    "seed@ams-1": {"uplink": 5242880, "downlink": 73400320, "ips": ["198.51.100.7"]},
+    "carol": {"uplink": 1048576, "downlink": 20971520},
+    "bob-phone": {"uplink": 3145728, "downlink": 41943040, "ips": ["203.0.113.9"]},
 }
 
 
@@ -129,6 +165,7 @@ def _write_state(root: Path, force: bool) -> None:
     seeds = {
         root / "awg-state.json": json.dumps(AWG_STATE, indent=2) + "\n",
         root / "etc" / "xray" / "config.json": json.dumps(XRAY_CONFIG, indent=2) + "\n",
+        root / "xray-stats.json": json.dumps(XRAY_STATS, indent=2) + "\n",
         root / "awg.log": "",
         root / "xray.log": "",
     }

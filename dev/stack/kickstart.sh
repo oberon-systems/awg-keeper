@@ -37,6 +37,12 @@ rollback() {
     exit "$status"
 }
 
+# Three profiles issued through the panel's own service layer, inside its
+# container: nothing is written anywhere the stand does not throw away.
+seed() {
+    compose exec -T panel python - <"$stack/bin/seed.py"
+}
+
 # Everything the stand runs is built from this tree every time. Docker caches
 # its layers, so an unchanged tree costs a moment - while an image kept
 # because it merely exists is a stand running code nobody has in front of them.
@@ -52,14 +58,16 @@ kickstart() {
         compose logs --tail 20 agent >&2
         fail "the agent did not answer at $agent/v1/health"
     fi
+    seed
     trap - EXIT
     cat <<REPORT
 
 panel $panel     admin / admin
 agent $agent/v1/health
 
-awg0 and awg1 come up discovered and disabled, which is the real behaviour:
-give one an endpoint host and enable it before issuing a profile.
+awg0 and reality-443 are enabled and carry three profiles: alice-laptop
+(AmneziaWG), carol (Xray) and bob-phone (both). awg1 and reality-8443 come up
+discovered and disabled, which is the real behaviour.
 
 The stand keeps nothing. Everything it did is gone after make down.
 REPORT

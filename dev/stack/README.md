@@ -38,10 +38,13 @@ The panel is published on port 8000. When that port is taken on the host,
 pick another one: `make kickstart LISTEN_PORT=8090`, or export `LISTEN_PORT`
 before running it.
 
-Both interfaces come up disabled. That is the real behaviour: the panel
-discovers an interface from the agent but refuses to issue against one that
-has no endpoint host, so fill that in and enable it before creating a
-profile.
+Once both answer, it seeds the panel: awg0 and reality-443 get an endpoint
+host and are enabled, and three profiles are issued on them - `alice-laptop`
+with AmneziaWG, `carol` with Xray and `bob-phone` with both. awg1 and
+reality-8443 stay as discovered, disabled, which is the real behaviour: the
+panel refuses to issue on anything without an endpoint host. The seed is
+`bin/seed.py`, run through the panel's own service layer inside its
+container.
 
 ## Commands
 
