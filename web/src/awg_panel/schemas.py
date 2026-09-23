@@ -4,8 +4,9 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Any
+from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class LoginRequest(BaseModel):
@@ -35,11 +36,24 @@ class PeerRead(BaseModel):
     assigned_ip: str
     allowed_ips: str
     interface_id: int
+    interface: str
+    enabled: bool
+
+
+class XrayClientRead(BaseModel):
+    """An Xray client as the panel knows it. No UUID exists here to leak."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    inbound_id: int
+    inbound: str
+    email: str
+    flow: str | None = None
     enabled: bool
 
 
 class ProfileRead(BaseModel):
-    """A profile and the peer it owns, if it owns one."""
+    """A profile, the agent it lives on, and what it owns."""
 
     model_config = ConfigDict(extra="forbid")
 
@@ -48,31 +62,125 @@ class ProfileRead(BaseModel):
     note: str | None = None
     enabled: bool
     created_at: datetime
+    node: str | None = None
     peer: PeerRead | None = None
+    xray: XrayClientRead | None = None
+
+
+class AwgRequest(BaseModel):
+    """The AmneziaWG half of a new profile. The key was generated in the browser."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    interface_id: int
+    public_key: str
+
+
+class XrayRequest(BaseModel):
+    """The Xray half of a new profile. The UUID was generated in the browser."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    inbound_id: int
+    id: UUID
 
 
 class ProfileCreate(BaseModel):
-    """Adding a profile. The public key was generated in the browser."""
+    """Adding a profile with an AmneziaWG peer, an Xray client, or both."""
 
     model_config = ConfigDict(extra="forbid")
 
     name: str = Field(min_length=1, max_length=64)
     note: str | None = None
-    interface_id: int
-    public_key: str
+    awg: AwgRequest | None = None
+    xray: XrayRequest | None = None
+
+    @model_validator(mode="after")
+    def _something(self) -> ProfileCreate:
+        if self.awg is None and self.xray is None:
+            raise ValueError("a profile needs AmneziaWG, Xray or both")
+        return self
 
 
 class ProfileIssued(BaseModel):
     """What the browser needs to finish a profile it has just created.
 
     The template carries every field but the private key, which the browser
-    holds and injects locally. This is the only moment it can be rendered.
+    holds and injects locally; the link carries the UUID only because the
+    browser sent it. This is the only moment either can be rendered.
     """
 
     model_config = ConfigDict(extra="forbid")
 
     profile: ProfileRead
-    config_template: str
+    config_template: str | None = None
+    link: str | None = None
+
+
+class InboundRead(BaseModel):
+    """An enabled inbound, as the create form needs to offer it."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: int
+    node_id: int
+    tag: str
+    port: int
+    network: str
+    security: str
+    endpoint_host: str
+
+
+class Bucket(BaseModel):
+    """Traffic within one hour or one day."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    start: datetime
+    rx: int = 0
+    tx: int = 0
+
+
+class ProtocolStats(BaseModel):
+    """Traffic of one protocol of a profile within the period."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    protocol: str
+    key: str
+    rx: int = 0
+    tx: int = 0
+    last_seen_at: datetime | None = None
+
+
+class SessionRead(BaseModel):
+    """One stretch of time a profile was connected."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    started_at: datetime
+    ended_at: datetime | None = None
+    protocol: str
+    source: str | None = None
+    traffic: int = 0
+
+
+class ProfileStats(BaseModel):
+    """What the stats modal shows. rx is received by the device, tx sent by it."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    period: str
+    online: bool = False
+    last_seen_at: datetime | None = None
+    last_source: str | None = None
+    rx: int = 0
+    tx: int = 0
+    connected_seconds: int = 0
+    session_count: int = 0
+    buckets: list[Bucket] = []
+    protocols: list[ProtocolStats] = []
+    sessions: list[SessionRead] = []
 
 
 class InterfaceRead(BaseModel):
@@ -128,6 +236,31 @@ class AgentInterface(BaseModel):
     missing: list[str] = []
 
 
+class AgentInbound(BaseModel):
+    """An Xray inbound: what the agent last reported, and what the operator set."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: int | None = None
+    tag: str
+    present: bool
+    clients: int = 0
+    protocol: str = ""
+    port: int = 0
+    network: str = "tcp"
+    security: str = "none"
+    server_names: list[str] = []
+    short_ids: list[str] = []
+    public_key: str | None = None
+    enabled: bool = False
+    endpoint_host: str | None = None
+    flow: str | None = None
+    fingerprint: str | None = None
+    short_id: str | None = None
+    label: str | None = None
+    missing: list[str] = []
+
+
 class AgentRead(BaseModel):
     """A node and its last healthcheck."""
 
@@ -146,6 +279,7 @@ class AgentRead(BaseModel):
     awg: str | None = None
     xray: str | None = None
     interfaces: list[AgentInterface] = []
+    inbounds: list[AgentInbound] = []
     error: str | None = None
 
 
@@ -178,6 +312,19 @@ class InterfaceUpdate(BaseModel):
     mtu: int | None = Field(default=None, ge=576, le=65535)
     client_allowed_ips: str | None = None
     keepalive: int | None = Field(default=None, ge=0, le=65535)
+
+
+class InboundUpdate(BaseModel):
+    """What the operator sets on a discovered inbound. Absent keys are kept."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool | None = None
+    endpoint_host: str | None = None
+    flow: str | None = None
+    fingerprint: str | None = None
+    short_id: str | None = None
+    label: str | None = None
 
 
 class Drift(BaseModel):

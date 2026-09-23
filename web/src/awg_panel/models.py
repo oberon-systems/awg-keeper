@@ -52,6 +52,29 @@ class Interface(SQLModel, table=True):
     obfuscation: dict[str, Any] = Field(default_factory=dict, sa_column=Column(JSON))
 
 
+class Inbound(SQLModel, table=True):
+    """An Xray inbound, and everything a vless:// link needs from it."""
+
+    id: int | None = Field(default=None, primary_key=True)
+    node_id: int = Field(foreign_key="node.id", index=True)
+    tag: str
+    # Discovered from the agent disabled, like an interface.
+    enabled: bool = False
+    protocol: str = ""
+    port: int = 0
+    network: str = "tcp"
+    security: str = "none"
+    server_names: list[str] = Field(default_factory=list, sa_column=Column(JSON))
+    short_ids: list[str] = Field(default_factory=list, sa_column=Column(JSON))
+    # Derived on the host; the private half never leaves it.
+    public_key: str | None = None
+    endpoint_host: str | None = None
+    flow: str | None = None
+    fingerprint: str | None = None
+    short_id: str | None = None
+    label: str | None = None
+
+
 class AgentCheck(SQLModel, table=True):
     """One healthcheck of one agent, kept for check_retention days."""
 
@@ -69,10 +92,11 @@ class AgentCheck(SQLModel, table=True):
     interfaces: list[dict[str, Any]] = Field(
         default_factory=list, sa_column=Column(JSON)
     )
+    inbounds: list[dict[str, Any]] = Field(default_factory=list, sa_column=Column(JSON))
 
 
 class Profile(SQLModel, table=True):
-    """A person or a device. Owns zero or one AWG peer."""
+    """A person or a device. Owns zero or one AWG peer and zero or one Xray client."""
 
     id: int | None = Field(default=None, primary_key=True)
     name: str = Field(index=True, unique=True)
@@ -94,6 +118,71 @@ class AwgPeer(SQLModel, table=True):
     allowed_ips: str = "0.0.0.0/0"
     enabled: bool = True
     created_at: datetime = Field(default_factory=_now)
+
+
+class XrayClient(SQLModel, table=True):
+    """An Xray client, addressed by its email tag.
+
+    There is no column for its UUID on purpose: the link is shown once, and a
+    lost one is reissued, never recovered.
+    """
+
+    __tablename__ = "xray_client"
+
+    id: int | None = Field(default=None, primary_key=True)
+    profile_id: int = Field(foreign_key="profile.id", index=True, unique=True)
+    inbound_id: int = Field(foreign_key="inbound.id", index=True)
+    email: str = Field(index=True, unique=True)
+    flow: str | None = None
+    enabled: bool = True
+    created_at: datetime = Field(default_factory=_now)
+
+
+class PeerCounter(SQLModel, table=True):
+    """The last raw counters of one protocol of a profile, to take deltas from.
+
+    rx is what the device received and tx what it sent, whatever the protocol.
+    """
+
+    __tablename__ = "peer_counter"
+
+    id: int | None = Field(default=None, primary_key=True)
+    profile_id: int = Field(foreign_key="profile.id", index=True)
+    protocol: str
+    rx: int = 0
+    tx: int = 0
+    seen_at: datetime | None = None
+    source: str | None = None
+    sampled_at: datetime = Field(default_factory=_now)
+
+
+class TrafficHour(SQLModel, table=True):
+    """Traffic of one protocol of a profile within one hour."""
+
+    __tablename__ = "traffic_hour"
+
+    id: int | None = Field(default=None, primary_key=True)
+    profile_id: int = Field(foreign_key="profile.id", index=True)
+    protocol: str
+    hour: datetime = Field(index=True)
+    rx: int = 0
+    tx: int = 0
+
+
+class ProfileSession(SQLModel, table=True):
+    """A stretch of time a profile was connected over one protocol."""
+
+    __tablename__ = "profile_session"
+
+    id: int | None = Field(default=None, primary_key=True)
+    profile_id: int = Field(foreign_key="profile.id", index=True)
+    protocol: str
+    started_at: datetime = Field(index=True)
+    ended_at: datetime | None = None
+    last_seen_at: datetime
+    source: str | None = None
+    rx: int = 0
+    tx: int = 0
 
 
 class ReleasedIp(SQLModel, table=True):

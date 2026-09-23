@@ -108,9 +108,9 @@ def _call(
     return parsed if isinstance(parsed, dict) else {"data": parsed}
 
 
-def state(settings: Settings, node: Node) -> dict[str, Any]:
-    """Actual state on the node, for the drift view."""
-    return _call(settings, node, "GET", "/v1/state") or {}
+def state(settings: Settings, node: Node, quiet: bool = False) -> dict[str, Any]:
+    """Actual state on the node, for the drift view and the sampler."""
+    return _call(settings, node, "GET", "/v1/state", quiet=quiet) or {}
 
 
 def status(settings: Settings, node: Node) -> dict[str, Any]:
@@ -146,5 +146,33 @@ def remove_peer(
         _call(settings, node, "DELETE", f"/v1/awg/{interface}/peers/{public_key}")
     except AgentError as exc:
         # The peer is gone either way, which is what the caller wanted.
+        if exc.status != 404:
+            raise
+
+
+def xray_stats(settings: Settings, node: Node) -> dict[str, Any]:
+    """Traffic counters per Xray client, for the sampler."""
+    return _call(settings, node, "GET", "/v1/xray/stats", quiet=True) or {}
+
+
+def add_user(
+    settings: Settings,
+    node: Node,
+    inbound: str,
+    identity: str,
+    email: str,
+    flow: str | None = None,
+) -> dict[str, Any]:
+    """Push one Xray client to the node. The UUID passes through, never kept."""
+    payload = {"email": email, "id": identity, "flow": flow}
+    return _call(settings, node, "POST", f"/v1/xray/{inbound}/users", payload) or {}
+
+
+def remove_user(settings: Settings, node: Node, inbound: str, email: str) -> None:
+    """Remove one Xray client from the node. An absent one is not an error here."""
+    try:
+        _call(settings, node, "DELETE", f"/v1/xray/{inbound}/users/{email}")
+    except AgentError as exc:
+        # The client is gone either way, which is what the caller wanted.
         if exc.status != 404:
             raise

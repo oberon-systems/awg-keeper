@@ -8,6 +8,7 @@ address goes back in the pool.
 from __future__ import annotations
 
 import logging
+import re
 import time
 from datetime import UTC, datetime, timedelta
 from ipaddress import ip_interface, ip_network
@@ -16,18 +17,32 @@ from typing import Any
 from sqlalchemy import Engine, delete
 from sqlmodel import Session, col, select
 
-from awg_panel import agent, clientconf, pool
+from awg_panel import agent, clientconf, clientlink, pool, stats
 from awg_panel.config import Settings
-from awg_panel.models import AgentCheck, AwgPeer, Interface, Node, Profile
+from awg_panel.models import (
+    AgentCheck,
+    AwgPeer,
+    Inbound,
+    Interface,
+    Node,
+    PeerCounter,
+    Profile,
+    ProfileSession,
+    TrafficHour,
+    XrayClient,
+)
 from awg_panel.schemas import (
+    AgentInbound,
     AgentInterface,
     AgentRead,
     CheckRead,
+    InboundUpdate,
     InterfaceUpdate,
     PeerRead,
     ProfileCreate,
     ProfileIssued,
     ProfileRead,
+    XrayClientRead,
 )
 
 LOG = logging.getLogger(__name__)
@@ -45,6 +60,14 @@ class UnknownNode(LookupError):
     """No node with that id."""
 
 
+class UnknownInbound(LookupError):
+    """No inbound with that id."""
+
+
+class InboundNotReady(ValueError):
+    """An inbound that cannot be enabled as configured."""
+
+
 class InterfaceNotReady(ValueError):
     """An interface that is disabled, or cannot be enabled as configured."""
 
@@ -53,13 +76,24 @@ class DuplicateProfile(ValueError):
     """A profile with that name, or a peer with that key, already exists."""
 
 
-def _read(profile: Profile, peer: AwgPeer | None) -> ProfileRead:
+# An email tag is what Xray addresses a client by, and the agent validates it.
+EMAIL = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._@+-]{0,63}$")
+
+
+def _read(session: Session, profile: Profile) -> ProfileRead:
+    peer = _peer_of(session, profile)
+    client = _client_of(session, profile)
+    interface = session.get(Interface, peer.interface_id) if peer else None
+    inbound = session.get(Inbound, client.inbound_id) if client else None
+    owner: Interface | Inbound | None = interface or inbound
+    node = session.get(Node, owner.node_id) if owner else None
     return ProfileRead(
         id=int(profile.id or 0),
         name=profile.name,
         note=profile.note,
         enabled=profile.enabled,
-        created_at=profile.created_at,
+        created_at=_utc(profile.created_at) or profile.created_at,
+        node=node.name if node else None,
         peer=None
         if peer is None
         else PeerRead(
@@ -67,13 +101,28 @@ def _read(profile: Profile, peer: AwgPeer | None) -> ProfileRead:
             assigned_ip=peer.assigned_ip,
             allowed_ips=peer.allowed_ips,
             interface_id=peer.interface_id,
+            interface=interface.name if interface else "",
             enabled=peer.enabled,
+        ),
+        xray=None
+        if client is None
+        else XrayClientRead(
+            inbound_id=client.inbound_id,
+            inbound=inbound.tag if inbound else "",
+            email=client.email,
+            flow=client.flow,
+            enabled=client.enabled,
         ),
     )
 
 
 def _peer_of(session: Session, profile: Profile) -> AwgPeer | None:
     return session.exec(select(AwgPeer).where(AwgPeer.profile_id == profile.id)).first()
+
+
+def _client_of(session: Session, profile: Profile) -> XrayClient | None:
+    query = select(XrayClient).where(XrayClient.profile_id == profile.id)
+    return session.exec(query).first()
 
 
 def node_of(session: Session, node_id: int) -> Node:
@@ -85,17 +134,40 @@ def node_of(session: Session, node_id: int) -> Node:
 
 
 def list_profiles(session: Session) -> list[ProfileRead]:
-    """Every profile, with its peer."""
+    """Every profile, with its peer and its Xray client."""
     profiles = session.exec(select(Profile).order_by(Profile.name)).all()
-    return [_read(profile, _peer_of(session, profile)) for profile in profiles]
+    return [_read(session, profile) for profile in profiles]
 
 
 def get_profile(session: Session, profile_id: int) -> ProfileRead:
     """One profile, or UnknownProfile."""
+    return _read(session, profile_of(session, profile_id))
+
+
+def profile_of(session: Session, profile_id: int) -> Profile:
+    """One profile row, or UnknownProfile."""
     profile = session.get(Profile, profile_id)
     if profile is None:
         raise UnknownProfile(str(profile_id))
-    return _read(profile, _peer_of(session, profile))
+    return profile
+
+
+def _issuable_interface(session: Session, interface_id: int) -> Interface:
+    interface = session.get(Interface, interface_id)
+    if interface is None:
+        raise UnknownInterface(str(interface_id))
+    if not interface.enabled:
+        raise InterfaceNotReady(f"interface {interface.name} is not enabled")
+    return interface
+
+
+def _issuable_inbound(session: Session, inbound_id: int) -> Inbound:
+    inbound = session.get(Inbound, inbound_id)
+    if inbound is None:
+        raise UnknownInbound(str(inbound_id))
+    if not inbound.enabled:
+        raise InboundNotReady(f"inbound {inbound.tag} is not enabled")
+    return inbound
 
 
 def create_profile(
@@ -103,66 +175,108 @@ def create_profile(
     settings: Settings,
     body: ProfileCreate,
 ) -> ProfileIssued:
-    """Add a profile, allocate an address, push the peer, render the config."""
-    interface = session.get(Interface, body.interface_id)
-    if interface is None:
-        raise UnknownInterface(str(body.interface_id))
-    if not interface.enabled:
-        raise InterfaceNotReady(f"interface {interface.name} is not enabled")
-    node = node_of(session, interface.node_id)
+    """Add a profile, push its peer and its Xray client, render them once."""
+    interface: Interface | None = None
+    inbound: Inbound | None = None
+    if body.awg is not None:
+        interface = _issuable_interface(session, body.awg.interface_id)
+    if body.xray is not None:
+        inbound = _issuable_inbound(session, body.xray.inbound_id)
+    owner: Interface | Inbound | None = interface or inbound
+    if owner is None:
+        raise ValueError("a profile needs AmneziaWG, Xray or both")
+    if interface and inbound and interface.node_id != inbound.node_id:
+        raise ValueError("the interface and the inbound are on different agents")
+    node = node_of(session, owner.node_id)
 
     taken = session.exec(select(Profile).where(Profile.name == body.name)).first()
     if taken is not None:
         raise DuplicateProfile(body.name)
-
-    existing = session.exec(
-        select(AwgPeer).where(AwgPeer.public_key == body.public_key)
-    ).first()
-    if existing is not None:
-        raise DuplicateProfile(body.public_key)
+    if inbound is not None:
+        if not EMAIL.match(body.name):
+            raise ValueError(
+                f"{body.name!r} cannot be an Xray email tag: use letters, digits "
+                "and . _ @ + -, starting with a letter or digit"
+            )
+        clash = select(XrayClient).where(XrayClient.email == body.name)
+        if session.exec(clash).first() is not None:
+            raise DuplicateProfile(body.name)
+    if body.awg is not None:
+        existing = session.exec(
+            select(AwgPeer).where(AwgPeer.public_key == body.awg.public_key)
+        ).first()
+        if existing is not None:
+            raise DuplicateProfile(body.awg.public_key)
 
     profile = Profile(name=body.name, note=body.note)
     session.add(profile)
     session.flush()
 
-    address = pool.allocate(session, interface)
-    peer = AwgPeer(
-        profile_id=int(profile.id or 0),
-        interface_id=int(interface.id or 0),
-        public_key=body.public_key,
-        assigned_ip=address,
-        allowed_ips=interface.client_allowed_ips,
-    )
-    session.add(peer)
+    peer = None
+    if interface is not None and body.awg is not None:
+        peer = AwgPeer(
+            profile_id=int(profile.id or 0),
+            interface_id=int(interface.id or 0),
+            public_key=body.awg.public_key,
+            assigned_ip=pool.allocate(session, interface),
+            allowed_ips=interface.client_allowed_ips,
+        )
+        session.add(peer)
+    client = None
+    link = None
+    if inbound is not None and body.xray is not None:
+        client = XrayClient(
+            profile_id=int(profile.id or 0),
+            inbound_id=int(inbound.id or 0),
+            email=body.name,
+            flow=inbound.flow,
+        )
+        session.add(client)
+        link = clientlink.render(inbound, str(body.xray.id), body.name)
     session.flush()
 
     try:
-        agent.add_peer(
-            settings,
-            node,
-            interface.name,
-            peer.public_key,
-            [peer.assigned_ip],
-            interface.keepalive,
-        )
+        if peer is not None and interface is not None:
+            agent.add_peer(
+                settings,
+                node,
+                interface.name,
+                peer.public_key,
+                [peer.assigned_ip],
+                interface.keepalive,
+            )
+        if client is not None and inbound is not None and body.xray is not None:
+            try:
+                agent.add_user(
+                    settings,
+                    node,
+                    inbound.tag,
+                    str(body.xray.id),
+                    client.email,
+                    client.flow,
+                )
+            except agent.AgentError:
+                if peer is not None and interface is not None:
+                    agent.remove_peer(settings, node, interface.name, peer.public_key)
+                raise
     except agent.AgentError:
         session.rollback()
         raise
 
     session.commit()
     session.refresh(profile)
-    session.refresh(peer)
     return ProfileIssued(
-        profile=_read(profile, peer),
-        config_template=clientconf.render(interface, peer),
+        profile=_read(session, profile),
+        config_template=clientconf.render(interface, peer)
+        if interface is not None and peer is not None
+        else None,
+        link=link,
     )
 
 
 def delete_profile(session: Session, settings: Settings, profile_id: int) -> None:
-    """Remove the peer from the node, then the rows, then quarantine the address."""
-    profile = session.get(Profile, profile_id)
-    if profile is None:
-        raise UnknownProfile(str(profile_id))
+    """Remove the peer and the client from the node, then the rows and the stats."""
+    profile = profile_of(session, profile_id)
 
     peer = _peer_of(session, profile)
     if peer is not None:
@@ -173,6 +287,16 @@ def delete_profile(session: Session, settings: Settings, profile_id: int) -> Non
         pool.release(session, peer)
         session.delete(peer)
 
+    client = _client_of(session, profile)
+    if client is not None:
+        inbound = session.get(Inbound, client.inbound_id)
+        if inbound is not None:
+            node = node_of(session, inbound.node_id)
+            agent.remove_user(settings, node, inbound.tag, client.email)
+        session.delete(client)
+
+    for table in (PeerCounter, TrafficHour, ProfileSession):
+        session.exec(delete(table).where(col(table.profile_id) == profile.id))
     session.delete(profile)
     session.commit()
 
@@ -196,6 +320,21 @@ OBFUSCATION_NAMES = {
     "i5": "I5",
 }
 REQUIRED_TO_ENABLE = ("address", "pool", "endpoint_host")
+# A vless:// link without any of these looks right and never connects.
+INBOUND_REQUIRED = ("endpoint_host", "public_key", "server_names", "short_id")
+FLOWS = ("xtls-rprx-vision",)
+FINGERPRINTS = (
+    "chrome",
+    "firefox",
+    "safari",
+    "ios",
+    "android",
+    "edge",
+    "360",
+    "qq",
+    "random",
+    "randomized",
+)
 
 
 def _utc(moment: datetime | None) -> datetime | None:
@@ -300,6 +439,48 @@ def _discover(session: Session, node: Node, reported: list[dict[str, Any]]) -> N
         session.add(row)
 
 
+def _discover_inbounds(
+    session: Session, node: Node, reported: list[dict[str, Any]]
+) -> None:
+    rows = {
+        row.tag: row
+        for row in session.exec(select(Inbound).where(Inbound.node_id == node.id))
+    }
+    for item in reported:
+        # Only vless is issued; the api inbound and the rest are not the panel's.
+        if item.get("protocol") != "vless" or not item.get("tag"):
+            continue
+        row = rows.get(item["tag"])
+        if row is None:
+            row = Inbound(node_id=int(node.id or 0), tag=item["tag"])
+            if item.get("security") == "reality" and item.get("network") == "tcp":
+                row.flow = FLOWS[0]
+            row.fingerprint = FINGERPRINTS[0]
+            LOG.info(
+                "agent %s: inbound %s discovered, disabled until configured",
+                node.name,
+                row.tag,
+            )
+        elif row.port != item.get("port") or (
+            item.get("public_key") and row.public_key != item["public_key"]
+        ):
+            LOG.warning(
+                "agent %s: inbound %s changed key or port; issued links are stale",
+                node.name,
+                row.tag,
+            )
+        row.protocol = item.get("protocol") or ""
+        row.port = int(item.get("port") or 0)
+        row.network = item.get("network") or "tcp"
+        row.security = item.get("security") or "none"
+        row.server_names = list(item.get("server_names") or [])
+        row.short_ids = list(item.get("short_ids") or [])
+        row.public_key = item.get("public_key") or row.public_key
+        if row.short_id not in row.short_ids:
+            row.short_id = row.short_ids[0] if row.short_ids else None
+        session.add(row)
+
+
 def _describe_interfaces(check: AgentCheck) -> str:
     parts = []
     for item in check.interfaces:
@@ -366,6 +547,7 @@ def _probe(
         )
     else:
         interfaces = list(answer.get("interfaces") or [])
+        inbounds = list(answer.get("inbounds") or [])
         failing = answer.get("error") or any(item.get("error") for item in interfaces)
         check = AgentCheck(
             node_id=int(node.id or 0),
@@ -376,9 +558,11 @@ def _probe(
             awg=answer.get("awg"),
             xray=answer.get("xray"),
             interfaces=interfaces,
+            inbounds=inbounds,
         )
         node.last_seen = check.checked_at
         _discover(session, node, interfaces)
+        _discover_inbounds(session, node, inbounds)
 
     _log_check(node, previous, check, announce)
     node.status = check.status
@@ -396,10 +580,13 @@ def probe_agents(
     nodes = session.exec(select(Node).order_by(Node.name)).all()
     for node in nodes:
         if node.name in settings.agents:
-            _probe(session, settings, node, announce)
+            check = _probe(session, settings, node, announce)
+            if check.status != "down":
+                stats.sample(session, settings, node)
 
     horizon = datetime.now(UTC) - timedelta(days=settings.check_retention)
     session.exec(delete(AgentCheck).where(col(AgentCheck.checked_at) < horizon))
+    stats.prune(session, settings)
     session.commit()
     return list_agents(session, settings)
 
@@ -465,6 +652,45 @@ def _agent_interfaces(
     return found
 
 
+def _inbound_missing(row: Inbound) -> list[str]:
+    missing = [field for field in INBOUND_REQUIRED if not getattr(row, field)]
+    return missing if row.security == "reality" else ["reality", *missing]
+
+
+def _agent_inbounds(
+    session: Session,
+    node: Node,
+    last: AgentCheck | None,
+) -> list[AgentInbound]:
+    reported = {item["tag"]: item for item in ((last.inbounds or []) if last else [])}
+    rows = session.exec(
+        select(Inbound).where(Inbound.node_id == node.id).order_by(Inbound.tag)
+    ).all()
+    return [
+        AgentInbound(
+            id=row.id,
+            tag=row.tag,
+            present=row.tag in reported,
+            clients=int(reported.get(row.tag, {}).get("clients") or 0),
+            protocol=row.protocol,
+            port=row.port,
+            network=row.network,
+            security=row.security,
+            server_names=row.server_names,
+            short_ids=row.short_ids,
+            public_key=row.public_key,
+            enabled=row.enabled,
+            endpoint_host=row.endpoint_host,
+            flow=row.flow,
+            fingerprint=row.fingerprint,
+            short_id=row.short_id,
+            label=row.label,
+            missing=_inbound_missing(row),
+        )
+        for row in rows
+    ]
+
+
 def list_agents(session: Session, settings: Settings) -> list[AgentRead]:
     """Every node with its last healthcheck, as recorded; nothing is probed."""
     found = []
@@ -484,6 +710,7 @@ def list_agents(session: Session, settings: Settings) -> list[AgentRead]:
                 awg=last.awg if last else None,
                 xray=last.xray if last else None,
                 interfaces=_agent_interfaces(session, node, last),
+                inbounds=_agent_inbounds(session, node, last),
                 error=last.error if last else None,
             )
         )
@@ -564,6 +791,47 @@ def update_interface(
         "agent %s: interface %s %s",
         node.name,
         row.name,
+        "enabled" if row.enabled else "disabled",
+    )
+    return next(item for item in list_agents(session, settings) if item.id == node.id)
+
+
+def update_inbound(
+    session: Session,
+    settings: Settings,
+    inbound_id: int,
+    body: InboundUpdate,
+) -> AgentRead:
+    """Apply what the operator set, refusing an enabled inbound that cannot issue."""
+    row = session.get(Inbound, inbound_id)
+    if row is None:
+        raise UnknownInbound(str(inbound_id))
+    node = node_of(session, row.node_id)
+
+    for field in body.model_fields_set - {"enabled"}:
+        setattr(row, field, _clean(getattr(body, field)))
+    if body.enabled is not None:
+        row.enabled = body.enabled
+
+    if row.flow is not None and row.flow not in FLOWS:
+        raise ValueError(f"flow {row.flow} is not one of {', '.join(FLOWS)}")
+    if row.fingerprint is not None and row.fingerprint not in FINGERPRINTS:
+        raise ValueError(f"fingerprint {row.fingerprint} is not a known one")
+    if row.short_id is not None and row.short_id not in row.short_ids:
+        raise ValueError(f"short id {row.short_id} is not configured on {row.tag}")
+
+    missing = _inbound_missing(row)
+    if row.enabled and missing:
+        raise InboundNotReady(
+            f"{row.tag} cannot be enabled without {', '.join(missing)}"
+        )
+
+    session.add(row)
+    session.commit()
+    LOG.info(
+        "agent %s: inbound %s %s",
+        node.name,
+        row.tag,
         "enabled" if row.enabled else "disabled",
     )
     return next(item for item in list_agents(session, settings) if item.id == node.id)

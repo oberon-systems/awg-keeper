@@ -7,7 +7,7 @@ from datetime import UTC, datetime, timedelta
 
 import httpx
 import pytest
-from conftest import SOURCE, StubAgent
+from conftest import API_INBOUND, INBOUND, SOURCE, StubAgent
 from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, select
 
@@ -24,7 +24,7 @@ OTHER = "b" * 43 + "="
 def _create(client: TestClient, name: str, key: str = KEY) -> dict:
     return client.post(
         "/api/v1/profiles",
-        json={"name": name, "interface_id": 1, "public_key": key},
+        json={"name": name, "awg": {"interface_id": 1, "public_key": key}},
     ).json()
 
 
@@ -40,7 +40,7 @@ def test_creating_a_profile_pushes_the_peer(
 ) -> None:
     answer = signed_in.post(
         "/api/v1/profiles",
-        json={"name": "laptop", "interface_id": 1, "public_key": KEY},
+        json={"name": "laptop", "awg": {"interface_id": 1, "public_key": KEY}},
     )
     assert answer.status_code == 201
 
@@ -54,7 +54,7 @@ def test_a_duplicate_name_is_409(signed_in: TestClient) -> None:
     _create(signed_in, "laptop")
     answer = signed_in.post(
         "/api/v1/profiles",
-        json={"name": "laptop", "interface_id": 1, "public_key": OTHER},
+        json={"name": "laptop", "awg": {"interface_id": 1, "public_key": OTHER}},
     )
     assert answer.status_code == 409
 
@@ -62,7 +62,7 @@ def test_a_duplicate_name_is_409(signed_in: TestClient) -> None:
 def test_an_unknown_interface_is_404(signed_in: TestClient) -> None:
     answer = signed_in.post(
         "/api/v1/profiles",
-        json={"name": "laptop", "interface_id": 99, "public_key": KEY},
+        json={"name": "laptop", "awg": {"interface_id": 99, "public_key": KEY}},
     )
     assert answer.status_code == 404
 
@@ -74,7 +74,7 @@ def test_a_refusing_node_leaves_no_profile(
     stub.fail = True
     answer = signed_in.post(
         "/api/v1/profiles",
-        json={"name": "laptop", "interface_id": 1, "public_key": KEY},
+        json={"name": "laptop", "awg": {"interface_id": 1, "public_key": KEY}},
     )
     assert answer.status_code == 502
     assert signed_in.get("/api/v1/profiles").json() == []
@@ -270,6 +270,81 @@ def test_a_reported_address_sets_address_and_pool(
     assert enabled.status_code == 200
 
 
+def test_a_reported_inbound_is_discovered_disabled(
+    signed_in: TestClient,
+    stub: StubAgent,
+) -> None:
+    stub.inbounds = [dict(INBOUND), dict(API_INBOUND)]
+    found = signed_in.post("/api/v1/agents/probe").json()
+    assert [item["tag"] for item in found[0]["inbounds"]] == ["reality-443"]
+    new = found[0]["inbounds"][0]
+    assert new["enabled"] is False
+    assert new["present"] is True
+    assert new["clients"] == 2
+    assert (new["flow"], new["fingerprint"], new["short_id"]) == (
+        "xtls-rprx-vision",
+        "chrome",
+        "0123456789abcdef",
+    )
+    assert new["missing"] == ["endpoint_host"]
+
+    refused = signed_in.patch(f"/api/v1/inbounds/{new['id']}", json={"enabled": True})
+    assert refused.status_code == 422
+    assert "endpoint_host" in refused.json()["detail"]
+
+    enabled = signed_in.patch(
+        f"/api/v1/inbounds/{new['id']}",
+        json={
+            "enabled": True,
+            "endpoint_host": "vpn.example",
+            "short_id": "6ba85179e30d4fc2",
+            "label": "gateway reality",
+        },
+    )
+    assert enabled.status_code == 200
+    now = enabled.json()["inbounds"][0]
+    assert (now["enabled"], now["short_id"], now["missing"]) == (
+        True,
+        "6ba85179e30d4fc2",
+        [],
+    )
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        {"short_id": "ffffffff"},
+        {"flow": "xtls-rprx-direct"},
+        {"fingerprint": "netscape"},
+    ],
+)
+def test_an_inbound_refuses_what_it_cannot_carry(
+    signed_in: TestClient,
+    stub: StubAgent,
+    body: dict[str, str],
+) -> None:
+    stub.inbounds = [dict(INBOUND)]
+    signed_in.post("/api/v1/agents/probe")
+    assert signed_in.patch("/api/v1/inbounds/1", json=body).status_code == 422
+
+
+def test_an_inbound_without_reality_cannot_be_enabled(
+    signed_in: TestClient,
+    stub: StubAgent,
+) -> None:
+    stub.inbounds = [{**INBOUND, "security": "none"}]
+    signed_in.post("/api/v1/agents/probe")
+    refused = signed_in.patch(
+        "/api/v1/inbounds/1", json={"enabled": True, "endpoint_host": "vpn.example"}
+    )
+    assert refused.status_code == 422
+    assert "reality" in refused.json()["detail"]
+
+
+def test_an_unknown_inbound_is_404(signed_in: TestClient) -> None:
+    assert signed_in.patch("/api/v1/inbounds/9", json={}).status_code == 404
+
+
 def test_discovery_keeps_what_the_operator_set(
     signed_in: TestClient,
     settings: Settings,
@@ -293,7 +368,7 @@ def test_a_disabled_interface_issues_nothing(
     )
     answer = signed_in.post(
         "/api/v1/profiles",
-        json={"name": "laptop", "interface_id": 1, "public_key": KEY},
+        json={"name": "laptop", "awg": {"interface_id": 1, "public_key": KEY}},
     )
     assert answer.status_code == 422
     assert stub.calls == []

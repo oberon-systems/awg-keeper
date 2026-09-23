@@ -42,7 +42,7 @@ def test_a_write_without_the_csrf_token_is_403(signed_in: TestClient) -> None:
     del signed_in.headers["X-CSRF-Token"]
     answer = signed_in.post(
         "/api/v1/profiles",
-        json={"name": "a", "interface_id": 1, "public_key": "a" * 43 + "="},
+        json={"name": "a", "awg": {"interface_id": 1, "public_key": "a" * 43 + "="}},
     )
     assert answer.status_code == 403
 

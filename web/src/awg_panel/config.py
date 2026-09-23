@@ -58,6 +58,8 @@ class Settings(BaseSettings):
     # Seconds between background healthchecks; 0 turns the loop off.
     probe_interval: int = Field(default=30, ge=0)
     check_retention: int = Field(default=7, gt=0)
+    # Days of per-profile traffic and sessions, sampled on every healthcheck.
+    stats_retention: int = Field(default=30, gt=0)
 
     static_dir: Path = Path("/app/static")
     log_level: str = "INFO"

@@ -13,13 +13,15 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, Request, Response
 from sqlmodel import Session, col, select
 
-from awg_panel import __version__, agent, auth, db, service
-from awg_panel.models import AwgPeer, Interface, Node
+from awg_panel import __version__, agent, auth, db, service, stats
+from awg_panel.models import AwgPeer, Inbound, Interface, Node
 from awg_panel.schemas import (
     AgentRead,
     CheckRead,
     Drift,
     Identity,
+    InboundRead,
+    InboundUpdate,
     InterfaceRead,
     InterfaceUpdate,
     LoginRequest,
@@ -27,6 +29,7 @@ from awg_panel.schemas import (
     ProfileCreate,
     ProfileIssued,
     ProfileRead,
+    ProfileStats,
 )
 
 LOG = logging.getLogger(__name__)
@@ -123,7 +126,7 @@ def create_profile(
     body: ProfileCreate,
     session: SessionDep,
 ) -> ProfileIssued:
-    """Add a profile, push its peer to the node, and render its config once."""
+    """Add a profile, push it to the node, and render its config and link once."""
     return service.create_profile(session, auth.settings_of(request), body)
 
 
@@ -136,13 +139,23 @@ def show_profile(
     return service.get_profile(session, profile_id)
 
 
+@private.get("/profiles/{profile_id}/stats")
+def profile_stats(
+    profile_id: int,
+    session: SessionDep,
+    period: Annotated[str, Query(pattern="^(24h|7d|30d)$")] = "7d",
+) -> ProfileStats:
+    """Traffic, sessions and the last connection of one profile."""
+    return stats.profile_stats(session, service.profile_of(session, profile_id), period)
+
+
 @private.delete("/profiles/{profile_id}", status_code=204)
 def remove_profile(
     request: Request,
     profile_id: int,
     session: SessionDep,
 ) -> Response:
-    """Remove a profile and its peer, and quarantine the address it held."""
+    """Remove a profile, its peer and its Xray client; quarantine the address."""
     service.delete_profile(session, auth.settings_of(request), profile_id)
     return Response(status_code=204)
 
@@ -181,6 +194,35 @@ def update_interface(
     return service.update_interface(
         session, auth.settings_of(request), interface_id, body
     )
+
+
+@private.get("/inbounds")
+def list_inbounds(session: SessionDep) -> list[InboundRead]:
+    """List the enabled inbounds, the ones an Xray client can be issued on."""
+    query = select(Inbound).where(col(Inbound.enabled)).order_by(Inbound.tag)
+    return [
+        InboundRead(
+            id=int(row.id or 0),
+            node_id=row.node_id,
+            tag=row.tag,
+            port=row.port,
+            network=row.network,
+            security=row.security,
+            endpoint_host=row.endpoint_host or "",
+        )
+        for row in session.exec(query).all()
+    ]
+
+
+@private.patch("/inbounds/{inbound_id}")
+def update_inbound(
+    request: Request,
+    inbound_id: int,
+    body: InboundUpdate,
+    session: SessionDep,
+) -> AgentRead:
+    """Configure a discovered inbound and enable or disable it."""
+    return service.update_inbound(session, auth.settings_of(request), inbound_id, body)
 
 
 @private.get("/nodes")

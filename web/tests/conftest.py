@@ -31,6 +31,29 @@ SERVER_KEY = "c" * 43 + "="
 AGENTS = {"gateway": "http://127.0.0.1:8081"}
 OBFUSCATION = {"Jc": 4, "Jmin": 50, "Jmax": 1000, "S1": 86, "S2": 574, "H1": 1077035230}
 
+REALITY_KEY = "r" * 43
+INBOUND = {
+    "tag": "reality-443",
+    "protocol": "vless",
+    "listen": "0.0.0.0",
+    "port": 443,
+    "network": "tcp",
+    "security": "reality",
+    "server_names": ["www.example.com"],
+    "short_ids": ["0123456789abcdef", "6ba85179e30d4fc2"],
+    "public_key": REALITY_KEY,
+    "clients": 2,
+}
+API_INBOUND = {
+    "tag": "api",
+    "protocol": "dokodemo-door",
+    "listen": "127.0.0.1",
+    "port": 10085,
+    "network": "tcp",
+    "security": "none",
+    "clients": 0,
+}
+
 
 class StubAgent:
     """Records what the panel asked the node to do, and can be told to fail."""
@@ -42,6 +65,12 @@ class StubAgent:
         self.peers: list[str] = []
         self.probed: list[str] = []
         self.extra: list[dict[str, Any]] = []
+        self.inbounds: list[dict[str, Any]] = []
+        self.users: list[str] = []
+        self.fail_xray = False
+        # What `awg show dump` would say per peer, and Xray's stats per email.
+        self.counters: dict[str, dict[str, Any]] = {}
+        self.xray_counts: dict[str, dict[str, Any]] = {}
 
     def add_peer(
         self,
@@ -100,10 +129,13 @@ class StubAgent:
                 },
                 *self.extra,
             ],
+            "inbounds": self.inbounds,
             "error": None,
         }
 
-    def state(self, settings: Settings, node: Node) -> dict[str, Any]:
+    def state(
+        self, settings: Settings, node: Node, quiet: bool = False
+    ) -> dict[str, Any]:
         """Stand in for GET /v1/state."""
         if self.fail:
             raise agent.AgentError("the agent is unreachable")
@@ -111,10 +143,48 @@ class StubAgent:
             "interfaces": [
                 {
                     "name": "awg-mgmt",
-                    "peers": [{"public_key": key} for key in self.peers],
+                    "peers": [
+                        {"public_key": key, **self.counters.get(key, {})}
+                        for key in self.peers
+                    ],
                 }
             ],
             "inbounds": [],
+        }
+
+    def add_user(
+        self,
+        settings: Settings,
+        node: Node,
+        inbound: str,
+        identity: str,
+        email: str,
+        flow: str | None = None,
+    ) -> dict[str, Any]:
+        """Stand in for a POST of an Xray client to the agent."""
+        if self.fail or self.fail_xray:
+            raise agent.AgentError("the agent is unreachable")
+        self.calls.append(("add_user", node.name, inbound, identity, email, flow))
+        self.users.append(email)
+        return {"email": email, "id": identity, "flow": flow}
+
+    def remove_user(
+        self, settings: Settings, node: Node, inbound: str, email: str
+    ) -> None:
+        """Stand in for a DELETE of an Xray client."""
+        if self.fail:
+            raise agent.AgentError("the agent is unreachable")
+        self.calls.append(("remove_user", node.name, inbound, email))
+        if email in self.users:
+            self.users.remove(email)
+
+    def xray_stats(self, settings: Settings, node: Node) -> dict[str, Any]:
+        """Stand in for GET /v1/xray/stats."""
+        return {
+            "enabled": True,
+            "users": [
+                {"email": email, **counts} for email, counts in self.xray_counts.items()
+            ],
         }
 
 
@@ -178,6 +248,9 @@ def stub(monkeypatch: pytest.MonkeyPatch) -> StubAgent:
     monkeypatch.setattr(agent, "remove_peer", stand_in.remove_peer)
     monkeypatch.setattr(agent, "state", stand_in.state)
     monkeypatch.setattr(agent, "status", stand_in.status)
+    monkeypatch.setattr(agent, "add_user", stand_in.add_user)
+    monkeypatch.setattr(agent, "remove_user", stand_in.remove_user)
+    monkeypatch.setattr(agent, "xray_stats", stand_in.xray_stats)
     return stand_in
 
 
