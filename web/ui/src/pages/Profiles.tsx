@@ -157,7 +157,7 @@ export function Profiles() {
           ))}
           <p>
             {idle.length
-              ? "Configure it on the Status page."
+              ? "Configure it on the Dashboard page."
               : "This agent reports no interface: check AWG_KEEPER_INTERFACES and the agent log."}
           </p>
         </div>

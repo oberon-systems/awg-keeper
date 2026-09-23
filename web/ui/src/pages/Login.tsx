@@ -1,26 +1,15 @@
 import { useState } from "react";
 
 import { ApiError, api } from "../api";
+import { describe, type Problem } from "../problem";
+import { Banner } from "../tiles";
 
-interface Problem {
-  message: string;
-  detail: string;
-}
-
-// A refused sign in says the same thing whichever half was wrong; the status
-// and what the panel actually answered stay behind the detail toggle.
-function describe(error: unknown): Problem {
-  if (error instanceof ApiError) {
-    return {
-      message:
-        error.status === 401 ? "Wrong user or password" : error.message,
-      detail: `${error.status} - ${error.message}`,
-    };
+// A refused sign in says the same thing whichever half was wrong.
+function describeSignIn(error: unknown): Problem {
+  if (error instanceof ApiError && error.status === 401) {
+    return describe(error, "Wrong user or password");
   }
-  return {
-    message: "Could not reach the panel",
-    detail: error instanceof Error ? error.message : String(error),
-  };
+  return describe(error);
 }
 
 export function Login({ onSignedIn }: { onSignedIn: (user: string) => void }) {
@@ -39,7 +28,7 @@ export function Login({ onSignedIn }: { onSignedIn: (user: string) => void }) {
       const identity = await api.login(user, password);
       onSignedIn(identity.user);
     } catch (error) {
-      setProblem(describe(error));
+      setProblem(describeSignIn(error));
     } finally {
       setBusy(false);
     }
@@ -60,25 +49,11 @@ export function Login({ onSignedIn }: { onSignedIn: (user: string) => void }) {
           </p>
         </div>
 
-        {problem ? (
-          <div className="auth-problem" role="alert">
-            <div className="auth-problem-summary">
-              <span>{problem.message}</span>
-              <button
-                type="button"
-                className="auth-detail-toggle"
-                aria-expanded={detailShown}
-                aria-label="Show what the panel answered"
-                onClick={() => setDetailShown((shown) => !shown)}
-              >
-                i
-              </button>
-            </div>
-            {detailShown ? (
-              <p className="auth-problem-detail">{problem.detail}</p>
-            ) : null}
-          </div>
-        ) : null}
+        <Banner
+          problem={problem}
+          shown={detailShown}
+          onToggle={() => setDetailShown((shown) => !shown)}
+        />
 
         <label className="auth-field">
           User

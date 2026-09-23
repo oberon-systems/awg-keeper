@@ -19,6 +19,16 @@
   --accent-ink: #ffffff;
   --danger: #b00020;
   --danger-bg: #fdecee;
+  --danger-row: #fff5f6;
+  --ink-strong-muted: #4b5563;
+  --line-soft: #eef0f3;
+  --accent-soft: #e8f0fe;
+  --ok: #127a3e;
+  --ok-bg: #e4f5ea;
+  --warn: #8a5a00;
+  --warn-bg: #fff4db;
+  --warn-bar: #e0a100;
+  --warn-row: #fffbf0;
 
   --radius-card: 12px;
   --radius-control: 6px;
@@ -31,28 +41,13 @@ body {
   color: var(--ink);
 }
 
-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 0.75rem 1.5rem;
-  border-bottom: 1px solid var(--line);
-  background: var(--surface);
-}
-
-header h1 {
-  font-size: 1.1rem;
-  margin: 0;
-}
-
-.who {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-}
-
 main {
   padding: 1.5rem;
+}
+
+/* The dashboard brings its own gutter; the older pages still want main's. */
+main.flush {
+  padding: 0;
 }
 
 main.centre {
@@ -114,8 +109,9 @@ td {
 
 td.key,
 .key {
-  font-family: ui-monospace, monospace;
-  font-size: 0.8rem;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--ink-strong-muted);
 }
 
 pre {
@@ -142,18 +138,6 @@ pre {
   background: rgba(0, 0, 0, 0.5);
 }
 
-.tabs {
-  display: flex;
-  gap: 0.25rem;
-  margin-right: auto;
-  margin-left: 1.5rem;
-}
-
-.tabs button.active {
-  font-weight: 600;
-  border-bottom: 2px solid currentColor;
-}
-
 h2 {
   font-size: 1rem;
   margin: 2rem 0 0;
@@ -169,6 +153,10 @@ h3 {
   color: var(--ink-muted);
 }
 
+.muted.problem {
+  color: var(--danger);
+}
+
 label.inline {
   flex-direction: row;
   align-items: center;
@@ -179,41 +167,48 @@ tr.clickable {
   cursor: pointer;
 }
 
-tr.selected {
-  background: rgba(128, 128, 128, 0.12);
-}
+/* The error banner: sign in, the dashboard and an agent all raise it. */
 
-tr.failed {
-  background: rgba(176, 0, 32, 0.08);
-}
-
-.badge {
-  display: inline-block;
-  padding: 0.1rem 0.5rem;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border: 1px solid currentColor;
-}
-
-.status-up {
-  color: #127a3e;
-}
-
-.status-degraded {
-  color: #8a5a00;
-}
-
-.status-down {
+.problem-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--danger-bg);
+  border-radius: var(--radius-control);
   color: var(--danger);
 }
 
-.status-unknown {
-  color: var(--ink-muted);
+.problem-banner-summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
 }
 
-.status-unconfigured {
-  color: #8a5a00;
+.problem-banner-toggle {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--danger);
+  background: none;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.problem-banner-detail {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
 /* Sign in */
@@ -332,50 +327,446 @@ tr.failed {
   opacity: 0.6;
 }
 
-.auth-problem {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px 12px;
-  background: var(--danger-bg);
-  border-radius: var(--radius-control);
-  color: var(--danger);
-}
-
-.auth-problem-summary {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 16px;
-}
-
-.auth-detail-toggle {
-  flex: none;
-  width: 16px;
-  height: 16px;
-  padding: 0;
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--danger);
-  background: none;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.auth-problem-detail {
-  margin: 0;
-  font-size: 12px;
-  line-height: 1.25;
-  overflow-wrap: anywhere;
-}
-
 .auth-footnote {
   margin: 0;
   font-size: 12px;
   color: var(--ink-muted);
 }
+
+/* Chrome: the top bar every signed-in page sits under */
+
+.chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 32px;
+  box-sizing: border-box;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.chrome-left {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.chrome-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chrome-brand h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.chrome-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.chrome-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.chrome-tabs button {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+
+.chrome-tabs button.active {
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.chrome-who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chrome-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--line-soft);
+  color: var(--ink-strong-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.chrome-user {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.chrome-signout {
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+
+/* The page shell both dashboard screens share */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1376px;
+  margin: 0 auto;
+  padding: 24px 32px;
+  box-sizing: border-box;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.page-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.page-heading h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.page-note {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.action {
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border: 0;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+
+.action:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+/* Stat tiles */
+
+.stats {
+  display: flex;
+  gap: 24px;
+}
+
+.stat {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  box-sizing: border-box;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+
+.stat-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.stat-caption {
+  display: flex;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+
+.stat-caption .ok {
+  color: var(--ok);
+}
+
+.stat-caption .warn {
+  color: var(--warn);
+}
+
+.stat-caption .down {
+  color: var(--danger);
+}
+
+/* A panel: a title bar over a table */
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+}
+
+.panel-title h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel-scope {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.panel-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel table {
+  width: 100%;
+  margin: 0;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.panel th {
+  padding: 10px 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  background: var(--line-soft);
+  border: 0;
+}
+
+.panel td {
+  padding: 12px 0;
+  font-size: 13px;
+  vertical-align: middle;
+  border: 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+.panel th:first-child,
+.panel td:first-child {
+  padding-left: 20px;
+}
+
+.panel th:last-child,
+.panel td:last-child {
+  padding-right: 20px;
+}
+
+.panel tbody tr.clickable:hover {
+  background: var(--surface-sunken);
+}
+
+.panel .muted {
+  font-size: 12px;
+}
+
+.cell-name {
+  font-weight: 600;
+}
+
+.cell-empty {
+  color: var(--ink-muted);
+}
+
+/* Pills */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pill-ok {
+  color: var(--ok);
+  background: var(--ok-bg);
+}
+
+.pill-warn {
+  color: var(--warn);
+  background: var(--warn-bg);
+}
+
+.pill-down {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.pill-idle {
+  color: var(--ink-muted);
+  background: var(--line-soft);
+}
+
+.pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* An agent: breadcrumb and identity */
+
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.crumbs button {
+  padding: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.identity-name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.identity-name h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.identity-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+/* The healthcheck log: severity is the row, not just the pill */
+
+.check-warn {
+  background: var(--warn-row);
+}
+
+.check-down {
+  background: var(--danger-row);
+}
+
+.check-warn td:last-child {
+  font-weight: 500;
+  color: var(--warn);
+}
+
+.check-down td:last-child {
+  font-weight: 500;
+  color: var(--danger);
+}
+
+.checks-table .pill,
+.panel-summary .pill {
+  padding: 3px 10px;
+}
+
+.check-warn td:first-child {
+  box-shadow: inset 3px 0 0 var(--warn-bar);
+}
+
+.check-down td:first-child {
+  box-shadow: inset 3px 0 0 var(--danger);
+}
+
+.agents-table th:nth-child(1) { width: 18.7%; }
+.agents-table th:nth-child(2) { width: 8.2%; }
+.agents-table th:nth-child(3) { width: 16.5%; }
+.agents-table th:nth-child(4) { width: 16.5%; }
+.agents-table th:nth-child(5) { width: 7.5%; }
+.agents-table th:nth-child(6) { width: 15%; }
+.agents-table th:nth-child(7) { width: 17.6%; }
+
+.interfaces-table th:nth-child(1) { width: 10.5%; }
+.interfaces-table th:nth-child(2) { width: 15%; }
+.interfaces-table th:nth-child(3) { width: 8.2%; }
+.interfaces-table th:nth-child(4) { width: 28.4%; }
+.interfaces-table th:nth-child(5) { width: 9%; }
+.interfaces-table th:nth-child(6) { width: 28.9%; }
+
+.checks-table th:nth-child(1) { width: 16.4%; }
+.checks-table th:nth-child(2) { width: 11.2%; }
+.checks-table th:nth-child(3) { width: 9%; }
+.checks-table th:nth-child(4) { width: 63.4%; }
