@@ -1,0 +1,104 @@
+{
+  "id": "46010db4-1c0d-8067-8008-aeeb6595313f",
+  "name": "Header row",
+  "type": "frame",
+  "x": 1572,
+  "y": 746,
+  "width": 1376,
+  "height": 34,
+  "rotation": 0,
+  "selrect": {
+    "x": 1572,
+    "y": 746,
+    "width": 1376,
+    "height": 34,
+    "x1": 1572,
+    "y1": 746,
+    "x2": 2948,
+    "y2": 780
+  },
+  "points": [
+    {
+      "x": 1572,
+      "y": 746
+    },
+    {
+      "x": 2948,
+      "y": 746
+    },
+    {
+      "x": 2948,
+      "y": 780
+    },
+    {
+      "x": 1572,
+      "y": 780
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "46010db4-1c0d-8067-8008-aeeb65953138",
+  "frameId": "46010db4-1c0d-8067-8008-aeeb65953138",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "layoutGapType": "multiple",
+  "layoutPadding": {
+    "p1": 10,
+    "p2": 20,
+    "p3": 10,
+    "p4": 20
+  },
+  "layoutWrapType": "nowrap",
+  "layout": "flex",
+  "hideInViewer": true,
+  "layoutAlignItems": "center",
+  "layoutPaddingType": "simple",
+  "r2": 0,
+  "layoutItemHSizing": "fill",
+  "proportionLock": false,
+  "layoutGap": {
+    "rowGap": 0,
+    "columnGap": 0
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "layoutItemVSizing": "auto",
+  "r3": 0,
+  "layoutJustifyContent": "start",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "layoutFlexDir": "row",
+  "layoutAlignContent": "stretch",
+  "strokes": [],
+  "proportion": 1,
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#eef0f3",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "46010db4-1c0d-8067-8008-aeeb65956218",
+    "46010db4-1c0d-8067-8008-aeeb65956219",
+    "46010db4-1c0d-8067-8008-aeeb6595621a",
+    "46010db4-1c0d-8067-8008-aeeb6595621b",
+    "46010db4-1c0d-8067-8008-aeeb6595621c",
+    "46010db4-1c0d-8067-8008-aeeb6595621d"
+  ]
+}

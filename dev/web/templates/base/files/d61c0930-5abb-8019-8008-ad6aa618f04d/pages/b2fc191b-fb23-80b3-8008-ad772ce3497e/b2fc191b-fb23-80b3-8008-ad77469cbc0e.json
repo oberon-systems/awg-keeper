@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 908.6666666666665,
       "y": 254.19999998807907,
-      "width": 106.7874984741211,
-      "height": 16,
-      "x1": 0,
-      "y1": -0.800000011920929,
-      "x2": 106.7874984741211,
-      "y2": 15.199999988079071,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "500",
+      "y1": -0.800000011920929,
+      "width": 106.7874984741211,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 908.6666666666665,
+      "x1": 0,
+      "y2": 15.199999988079071,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 106.7874984741211,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 16,
       "text": "Connected, 7 days"
     }
   ]

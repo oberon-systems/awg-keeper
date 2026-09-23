@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 52,
       "y": 404.5999996066094,
-      "width": 48.4375,
-      "height": 18.399999618530273,
-      "x1": 0,
-      "y1": -0.800000011920929,
-      "x2": 48.4375,
-      "y2": 17.599999606609344,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "15px",
       "fontWeight": "600",
+      "y1": -0.800000011920929,
+      "width": 48.4375,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 52,
+      "x1": 0,
+      "y2": 17.599999606609344,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
+      "x2": 48.4375,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 18.399999618530273,
       "text": "Agents"
     }
   ]

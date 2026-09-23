@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 698.5,
       "y": 555.3000011444092,
-      "width": 42.04999923706055,
-      "height": 16.80000114440918,
-      "x1": 0,
-      "y1": 0,
-      "x2": 42.04999923706055,
-      "y2": 16.80000114440918,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "14px",
       "fontWeight": "600",
+      "y1": 0,
+      "width": 42.04999923706055,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 698.5,
+      "x1": 0,
+      "y2": 16.80000114440918,
       "fills": [
         {
           "fillColor": "#ffffff",
           "fillOpacity": 1
         }
       ],
+      "x2": 42.04999923706055,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 16.80000114440918,
       "text": "Sign in"
     }
   ]

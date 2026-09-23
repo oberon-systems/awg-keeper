@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 2430,
       "y": 809.8000011444094,
-      "width": 85.01250457763672,
-      "height": 16.80000114440918,
-      "x1": 0,
-      "y1": 0,
-      "x2": 85.01250457763672,
-      "y2": 16.80000114440918,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "14px",
       "fontWeight": "600",
+      "y1": 0,
+      "width": 85.01250457763672,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 2430,
+      "x1": 0,
+      "y2": 16.80000114440918,
       "fills": [
         {
           "fillColor": "#ffffff",
           "fillOpacity": 1
         }
       ],
+      "x2": 85.01250457763672,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 16.80000114440918,
       "text": "Create profile"
     }
   ]

@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 52,
       "y": 642.8000011444092,
-      "width": 30.325000762939453,
-      "height": 16.80000114440918,
-      "x1": 0,
-      "y1": 0,
-      "x2": 30.325000762939453,
-      "y2": 16.80000114440918,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "14px",
       "fontWeight": "600",
+      "y1": 0,
+      "width": 30.325000762939453,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 52,
+      "x1": 0,
+      "y2": 16.80000114440918,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
+      "x2": 30.325000762939453,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 16.80000114440918,
       "text": "hel-1"
     }
   ]

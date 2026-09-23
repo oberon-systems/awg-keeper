@@ -1,0 +1,147 @@
+{
+  "id": "46010db4-1c0d-8067-8008-aeee1520be4b",
+  "name": "Key",
+  "type": "text",
+  "x": 3627,
+  "y": 1814,
+  "width": 346,
+  "height": 15,
+  "rotation": 0,
+  "selrect": {
+    "x": 3627,
+    "y": 1814,
+    "width": 346,
+    "height": 15,
+    "x1": 3627,
+    "y1": 1814,
+    "x2": 3973,
+    "y2": 1829
+  },
+  "points": [
+    {
+      "x": 3627,
+      "y": 1814
+    },
+    {
+      "x": 3973,
+      "y": 1814
+    },
+    {
+      "x": 3973,
+      "y": 1829
+    },
+    {
+      "x": 3627,
+      "y": 1829
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "46010db4-1c0d-8067-8008-aeee1520be40",
+  "frameId": "46010db4-1c0d-8067-8008-aeee1520be40",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-width",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-jetbrains-mono",
+                "fontSize": "12",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#4b5563",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "JetBrains Mono",
+                "text": "dave-phone \u00b7 reality-443 \u00b7 ams-1.example.net:443"
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-jetbrains-mono",
+            "fontSize": "12",
+            "fontWeight": "400",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "regular",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#4b5563",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "JetBrains Mono"
+          }
+        ]
+      }
+    ]
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 3627,
+      "y": 1829.199999988079,
+      "width": 345.6125183105469,
+      "height": 16,
+      "x1": 0,
+      "y1": -0.800000011920929,
+      "x2": 345.6125183105469,
+      "y2": 15.199999988079071,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#4b5563",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"JetBrains Mono\"",
+      "text": "dave-phone \u00b7 reality-443 \u00b7 ams-1.example.net:443"
+    }
+  ]
+}
