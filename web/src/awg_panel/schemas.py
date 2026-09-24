@@ -114,7 +114,41 @@ class ProfileIssued(BaseModel):
 
     profile: ProfileRead
     config_template: str | None = None
+    amnezia_template: str | None = None
     link: str | None = None
+
+
+class ProfileUpdate(BaseModel):
+    """Turning a profile's AmneziaWG peer off and on again."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool
+
+
+class AwgReissue(BaseModel):
+    """The new public key of a peer. Its private half stays in the browser."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    public_key: str
+
+
+class XrayReissue(BaseModel):
+    """The new UUID of an Xray client, generated in the browser."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: UUID
+
+
+class ProfileReissue(BaseModel):
+    """New keys for every half a profile owns, keeping its name and address."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    awg: AwgReissue | None = None
+    xray: XrayReissue | None = None
 
 
 class InboundRead(BaseModel):
@@ -239,6 +273,7 @@ class AgentInterface(BaseModel):
     address: str | None = None
     pool: str | None = None
     endpoint_host: str | None = None
+    label: str | None = None
     dns: str | None = None
     mtu: int | None = None
     client_allowed_ips: str | None = None
@@ -320,6 +355,7 @@ class InterfaceUpdate(BaseModel):
     address: str | None = None
     pool: str | None = None
     endpoint_host: str | None = None
+    label: str | None = None
     dns: str | None = None
     mtu: int | None = Field(default=None, ge=576, le=65535)
     client_allowed_ips: str | None = None

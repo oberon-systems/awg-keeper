@@ -27,3 +27,16 @@ export const PLACEHOLDER = "__PRIVATE_KEY__";
 export function fillConfig(template: string, privateKey: string): string {
   return template.replace(PLACEHOLDER, privateKey);
 }
+
+// qCompress framing, which AmneziaVPN undoes: the length as a big-endian u32,
+// then the zlib stream. The key is that, base64url without padding.
+export async function amneziaKey(template: string, privateKey: string): Promise<string> {
+  const text = template.replaceAll(PLACEHOLDER, privateKey);
+  const stream = new Blob([text]).stream().pipeThrough(new CompressionStream("deflate"));
+  const packed = new Uint8Array(await new Response(stream).arrayBuffer());
+  const framed = new Uint8Array(4 + packed.length);
+  new DataView(framed.buffer).setUint32(0, new TextEncoder().encode(text).length);
+  framed.set(packed, 4);
+  const encoded = toBase64(framed).replace(/\+/g, "-").replace(/\//g, "_");
+  return `vpn://${encoded.replace(/=+$/, "")}`;
+}

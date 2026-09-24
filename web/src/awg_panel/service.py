@@ -17,7 +17,7 @@ from typing import Any
 from sqlalchemy import Engine, delete
 from sqlmodel import Session, col, select
 
-from awg_panel import agent, clientconf, clientlink, pool, stats
+from awg_panel import agent, amneziakey, clientconf, clientlink, pool, stats
 from awg_panel.config import Settings
 from awg_panel.models import (
     AgentCheck,
@@ -42,6 +42,7 @@ from awg_panel.schemas import (
     ProfileCreate,
     ProfileIssued,
     ProfileRead,
+    ProfileReissue,
     XrayClientRead,
 )
 
@@ -265,13 +266,131 @@ def create_profile(
 
     session.commit()
     session.refresh(profile)
+    return _issued(session, profile, peer, link)
+
+
+def _issued(
+    session: Session,
+    profile: Profile,
+    peer: AwgPeer | None,
+    link: str | None,
+) -> ProfileIssued:
+    interface = session.get(Interface, peer.interface_id) if peer else None
+    if peer is None or interface is None:
+        return ProfileIssued(profile=_read(session, profile), link=link)
     return ProfileIssued(
         profile=_read(session, profile),
-        config_template=clientconf.render(interface, peer)
-        if interface is not None and peer is not None
-        else None,
+        config_template=clientconf.render(interface, peer),
+        amnezia_template=amneziakey.render(interface, peer, profile.name),
         link=link,
     )
+
+
+def _interface_of(session: Session, peer: AwgPeer) -> Interface:
+    interface = session.get(Interface, peer.interface_id)
+    if interface is None:
+        raise UnknownInterface(str(peer.interface_id))
+    return interface
+
+
+def set_profile_enabled(
+    session: Session,
+    settings: Settings,
+    profile_id: int,
+    enabled: bool,
+) -> ProfileRead:
+    """Take a profile's peer off the node or put it back; rows and stats stay."""
+    profile = profile_of(session, profile_id)
+    peer = _peer_of(session, profile)
+    if peer is None:
+        raise ValueError(f"{profile.name} has no AmneziaWG peer to turn on or off")
+
+    if peer.enabled != enabled:
+        interface = _interface_of(session, peer)
+        node = node_of(session, interface.node_id)
+        if enabled:
+            agent.add_peer(
+                settings,
+                node,
+                interface.name,
+                peer.public_key,
+                [peer.assigned_ip],
+                interface.keepalive,
+            )
+        else:
+            agent.remove_peer(settings, node, interface.name, peer.public_key)
+    peer.enabled = enabled
+    profile.enabled = enabled
+    session.add(peer)
+    session.add(profile)
+    session.commit()
+    session.refresh(profile)
+    LOG.info("profile %s %s", profile.name, "enabled" if enabled else "disabled")
+    return _read(session, profile)
+
+
+def reissue_profile(
+    session: Session,
+    settings: Settings,
+    profile_id: int,
+    body: ProfileReissue,
+) -> ProfileIssued:
+    """Replace the keys of a profile; its name, address and stats are kept."""
+    profile = profile_of(session, profile_id)
+    peer = _peer_of(session, profile)
+    client = _client_of(session, profile)
+    if (peer is None) != (body.awg is None) or (client is None) != (body.xray is None):
+        raise ValueError(f"{profile.name} needs a new key for each half it owns")
+
+    if peer is not None and body.awg is not None:
+        existing = session.exec(
+            select(AwgPeer).where(AwgPeer.public_key == body.awg.public_key)
+        ).first()
+        if existing is not None:
+            raise DuplicateProfile(body.awg.public_key)
+        if peer.enabled:
+            interface = _interface_of(session, peer)
+            node = node_of(session, interface.node_id)
+            agent.remove_peer(settings, node, interface.name, peer.public_key)
+            try:
+                agent.add_peer(
+                    settings,
+                    node,
+                    interface.name,
+                    body.awg.public_key,
+                    [peer.assigned_ip],
+                    interface.keepalive,
+                )
+            except agent.AgentError:
+                agent.add_peer(
+                    settings,
+                    node,
+                    interface.name,
+                    peer.public_key,
+                    [peer.assigned_ip],
+                    interface.keepalive,
+                )
+                raise
+        peer.public_key = body.awg.public_key
+        session.add(peer)
+
+    link = None
+    if client is not None and body.xray is not None:
+        inbound = session.get(Inbound, client.inbound_id)
+        if inbound is None:
+            raise UnknownInbound(str(client.inbound_id))
+        node = node_of(session, inbound.node_id)
+        link = clientlink.render(inbound, str(body.xray.id), profile.name)
+        # The old UUID is not kept anywhere, so a failed add is retried, not undone.
+        agent.remove_user(settings, node, inbound.tag, client.email)
+        agent.add_user(
+            settings, node, inbound.tag, str(body.xray.id), client.email, client.flow
+        )
+
+    session.commit()
+    session.refresh(profile)
+    LOG.info("profile %s reissued", profile.name)
+    return _issued(session, profile, peer, link)
 
 
 def delete_profile(session: Session, settings: Settings, profile_id: int) -> None:
@@ -636,6 +755,7 @@ def _agent_interfaces(
                 address=row.address if row else None,
                 pool=row.pool if row else None,
                 endpoint_host=row.endpoint_host if row else None,
+                label=row.label if row else None,
                 dns=row.dns if row else None,
                 mtu=row.mtu if row else None,
                 client_allowed_ips=row.client_allowed_ips if row else None,

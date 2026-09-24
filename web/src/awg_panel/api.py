@@ -30,7 +30,9 @@ from awg_panel.schemas import (
     ProfileCreate,
     ProfileIssued,
     ProfileRead,
+    ProfileReissue,
     ProfileStats,
+    ProfileUpdate,
 )
 
 LOG = logging.getLogger(__name__)
@@ -152,6 +154,30 @@ def show_profile(
 ) -> ProfileRead:
     """One profile."""
     return service.get_profile(session, profile_id)
+
+
+@private.patch("/profiles/{profile_id}")
+def update_profile(
+    request: Request,
+    profile_id: int,
+    body: ProfileUpdate,
+    session: SessionDep,
+) -> ProfileRead:
+    """Turn the profile's AmneziaWG peer off or on again."""
+    return service.set_profile_enabled(
+        session, auth.settings_of(request), profile_id, body.enabled
+    )
+
+
+@private.post("/profiles/{profile_id}/reissue")
+def reissue_profile(
+    request: Request,
+    profile_id: int,
+    body: ProfileReissue,
+    session: SessionDep,
+) -> ProfileIssued:
+    """Issue new keys for a profile and render its config and link once."""
+    return service.reissue_profile(session, auth.settings_of(request), profile_id, body)
 
 
 @private.get("/profiles/{profile_id}/stats")
@@ -294,5 +320,9 @@ def drift(
 
 
 def _peers_of(session: Session, interface_id: int) -> list[AwgPeer]:
-    query = select(AwgPeer).where(AwgPeer.interface_id == interface_id)
+    query = (
+        select(AwgPeer)
+        .where(AwgPeer.interface_id == interface_id)
+        .where(col(AwgPeer.enabled))
+    )
     return list(session.exec(query).all())

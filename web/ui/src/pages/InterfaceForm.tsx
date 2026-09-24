@@ -27,6 +27,7 @@ export function InterfaceForm({
   const host = item.address ? item.address.split("/")[0] : null;
   const [enabled, setEnabled] = useState(item.enabled);
   const [endpointHost, setEndpointHost] = useState(text(item.endpoint_host));
+  const [label, setLabel] = useState(text(item.label));
   const [dns, setDns] = useState(text(item.dns ?? host));
   const [mtu, setMtu] = useState(text(item.mtu));
   const [allowed, setAllowed] = useState(text(item.client_allowed_ips ?? "0.0.0.0/0"));
@@ -52,6 +53,7 @@ export function InterfaceForm({
       await api.updateInterface(item.id, {
         enabled,
         endpoint_host: endpointHost,
+        label,
         dns,
         mtu: number(mtu),
         client_allowed_ips: allowed,
@@ -108,6 +110,12 @@ export function InterfaceForm({
           />
         </div>
         <Field label="Endpoint host" value={endpointHost} onChange={setEndpointHost} />
+        <Field
+          label="Label"
+          value={label}
+          onChange={setLabel}
+          hint="Server name in the Amnezia key. Empty means the profile name"
+        />
         <div className="field-row">
           <Field
             label="DNS"

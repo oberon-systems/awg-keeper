@@ -7,6 +7,7 @@ import { Banner, Pill, Stat, counted, type Part } from "../tiles";
 import { IssuedConfig, type Issue } from "./IssuedConfig";
 import { ProfileDelete } from "./ProfileDelete";
 import { ProfileNew } from "./ProfileNew";
+import { ProfileReroll } from "./ProfileReroll";
 import { ProfileStats } from "./ProfileStats";
 
 const WEEK_MS = 7 * 24 * 3600 * 1000;
@@ -28,6 +29,8 @@ export function Profiles() {
   const [creating, setCreating] = useState(false);
   const [issued, setIssued] = useState<Issue | null>(null);
   const [deleting, setDeleting] = useState<Profile | null>(null);
+  const [rerolling, setRerolling] = useState<Profile | null>(null);
+  const [switching, setSwitching] = useState<number | null>(null);
   const [inspected, setInspected] = useState<Profile | null>(null);
 
   const reload = useCallback(async () => {
@@ -43,6 +46,18 @@ export function Profiles() {
   useEffect(() => {
     void reload();
   }, [reload]);
+
+  async function toggle(item: Profile, enabled: boolean) {
+    setSwitching(item.id);
+    try {
+      await api.setProfileEnabled(item.id, enabled);
+      await reload();
+    } catch (error) {
+      setProblem(describe(error, `Could not turn ${item.name} ${enabled ? "on" : "off"}`));
+    } finally {
+      setSwitching(null);
+    }
+  }
 
   const wanted = query.trim().toLowerCase();
   const shown = profiles.filter(
@@ -154,14 +169,32 @@ export function Profiles() {
                 </td>
                 <td>{item.note || <Empty />}</td>
                 <td>
-                  <Pill tone={item.enabled ? "ok" : "idle"}>
-                    {item.enabled ? "enabled" : "disabled"}
-                  </Pill>
+                  <div className="status-cell">
+                    {item.peer ? (
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={item.peer.enabled}
+                        aria-label={`AmneziaWG of ${item.name}`}
+                        className={item.peer.enabled ? "toggle on" : "toggle"}
+                        disabled={switching === item.id}
+                        onClick={() => void toggle(item, !item.peer?.enabled)}
+                      />
+                    ) : (
+                      <span className="toggle-space" />
+                    )}
+                    <Pill tone={item.enabled ? "ok" : "idle"}>
+                      {item.enabled ? "enabled" : "disabled"}
+                    </Pill>
+                  </div>
                 </td>
                 <td>
                   <div className="row-actions">
                     <button type="button" className="small" onClick={() => setInspected(item)}>
                       Stats
+                    </button>
+                    <button type="button" className="small" onClick={() => setRerolling(item)}>
+                      Reroll
                     </button>
                     <button
                       type="button"
@@ -195,6 +228,17 @@ export function Profiles() {
           onClose={() => setDeleting(null)}
           onDeleted={() => {
             setDeleting(null);
+            void reload();
+          }}
+        />
+      ) : null}
+      {rerolling ? (
+        <ProfileReroll
+          profile={rerolling}
+          onClose={() => setRerolling(null)}
+          onIssued={(issue) => {
+            setRerolling(null);
+            setIssued(issue);
             void reload();
           }}
         />

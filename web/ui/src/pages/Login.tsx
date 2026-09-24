@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { ApiError, api } from "../api";
 import { describe, type Problem } from "../problem";
-import { Banner } from "../tiles";
+import { Banner, Footer } from "../tiles";
 
 // A refused sign in says the same thing whichever half was wrong.
 function describeSignIn(error: unknown): Problem {
@@ -80,6 +80,7 @@ export function Login({ onSignedIn }: { onSignedIn: (user: string) => void }) {
         </button>
       </form>
       <p className="auth-footnote">Credentials are pre-set on the panel host</p>
+      <Footer />
     </main>
   );
 }

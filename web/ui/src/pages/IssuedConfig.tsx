@@ -1,16 +1,35 @@
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 
-import type { Profile } from "../api";
+import type { Issued, Profile } from "../api";
 import { stamp } from "../format";
+import { amneziaKey, fillConfig, type KeyPair } from "../keys";
 
 export interface Issue {
   profile: Profile;
   config: string | null;
+  amnezia: { key: string; name: string } | null;
   link: string | null;
 }
 
-type Protocol = "awg" | "xray";
+type Protocol = "awg" | "amnezia" | "xray";
+
+export async function issueOf(answer: Issued, pair: KeyPair | null): Promise<Issue> {
+  const template = pair ? answer.amnezia_template : null;
+  return {
+    profile: answer.profile,
+    config:
+      pair && answer.config_template ? fillConfig(answer.config_template, pair.privateKey) : null,
+    amnezia:
+      pair && template
+        ? {
+            key: await amneziaKey(template, pair.privateKey),
+            name: (JSON.parse(template) as { description: string }).description,
+          }
+        : null,
+    link: answer.link,
+  };
+}
 
 function Segments<T extends string>({
   value,
@@ -66,13 +85,21 @@ function save(name: string, text: string) {
 // generated in this tab and is not stored by the panel. Closing the dialog
 // loses it, and the only way back is to issue the profile again.
 export function IssuedConfig({ issue, onClose }: { issue: Issue; onClose: () => void }) {
-  const { profile, config, link } = issue;
+  const { profile, config, amnezia, link } = issue;
   const [protocol, setProtocol] = useState<Protocol>(config ? "awg" : "xray");
   const [view, setView] = useState<"qr" | "text">("qr");
   const [image, setImage] = useState("");
 
-  const text = (protocol === "awg" ? config : link) ?? "";
-  const file = `${profile.name}.${protocol === "awg" ? "conf" : "txt"}`;
+  const texts: Record<Protocol, string | null> = {
+    awg: config,
+    amnezia: amnezia?.key ?? null,
+    xray: link,
+  };
+  const text = texts[protocol] ?? "";
+  const file =
+    protocol === "amnezia"
+      ? (amnezia?.name ?? "")
+      : `${profile.name}.${protocol === "awg" ? "conf" : "txt"}`;
 
   useEffect(() => {
     if (text) {
@@ -84,18 +111,21 @@ export function IssuedConfig({ issue, onClose }: { issue: Issue; onClose: () => 
   if (config) {
     issued.push(["awg", "AmneziaWG"]);
   }
+  if (amnezia) {
+    issued.push(["amnezia", "Amnezia key"]);
+  }
   if (link) {
     issued.push(["xray", "Xray"]);
   }
 
   const endpoint =
-    protocol === "awg"
-      ? /^Endpoint = (.*)$/m.exec(text)?.[1]
-      : /@([^?]+)\?/.exec(text)?.[1];
+    protocol === "xray"
+      ? /@([^?]+)\?/.exec(text)?.[1]
+      : /^Endpoint = (.*)$/m.exec(config ?? "")?.[1];
   const details =
-    protocol === "awg"
-      ? [file, profile.peer?.assigned_ip, endpoint]
-      : [profile.name, profile.xray?.inbound, endpoint];
+    protocol === "xray"
+      ? [profile.name, profile.xray?.inbound, endpoint]
+      : [file, profile.peer?.assigned_ip, endpoint];
 
   return (
     <div className="scrim">
@@ -105,7 +135,10 @@ export function IssuedConfig({ issue, onClose }: { issue: Issue; onClose: () => 
             <h2>{profile.name}</h2>
             <p>
               Created on {profile.node ?? "-"} &middot; {stamp(profile.created_at, true)} &middot;{" "}
-              {issued.map(([, label]) => label).join(" + ")}
+              {issued
+                .filter(([key]) => key !== "amnezia")
+                .map(([, label]) => label)
+                .join(" + ")}
             </p>
           </div>
           <button type="button" className="modal-close" aria-label="Close" onClick={onClose}>
@@ -114,7 +147,7 @@ export function IssuedConfig({ issue, onClose }: { issue: Issue; onClose: () => 
         </div>
 
         <p className="notice">
-          {protocol === "awg"
+          {protocol !== "xray"
             ? "This is the only time this configuration can be taken. The private key was generated in your browser and the panel never saw it."
             : "This is the only time this link can be taken. The client id was generated in your browser and the panel never stores it."}
         </p>
@@ -135,9 +168,13 @@ export function IssuedConfig({ issue, onClose }: { issue: Issue; onClose: () => 
           <div className="qr-view">
             {image ? <img src={image} alt="QR code" width={264} height={264} /> : null}
             <span className="qr-caption">
-              {protocol === "awg"
-                ? "Scan with the AmneziaVPN or AmneziaWG app"
-                : "Scan with a VLESS client: v2rayNG, Hiddify or Streisand"}
+              {
+                {
+                  awg: "Scan with the AmneziaVPN or AmneziaWG app",
+                  amnezia: "Scan with the AmneziaVPN app",
+                  xray: "Scan with a VLESS client: v2rayNG, Hiddify or Streisand",
+                }[protocol]
+              }
             </span>
             <span className="key">{details.filter(Boolean).join(" \u00b7 ")}</span>
           </div>
@@ -153,15 +190,21 @@ export function IssuedConfig({ issue, onClose }: { issue: Issue; onClose: () => 
                 Copy
               </button>
             </div>
-            <Highlighted text={text} />
+            {protocol === "amnezia" ? (
+              <pre className="text-view-body">{text}</pre>
+            ) : (
+              <Highlighted text={text} />
+            )}
           </div>
         )}
 
         <div className="modal-footer spread">
           <div className="modal-footer-group">
-            <button type="button" className="secondary" onClick={() => save(file, text)}>
-              Download .{protocol === "awg" ? "conf" : "txt"}
-            </button>
+            {protocol === "amnezia" ? null : (
+              <button type="button" className="secondary" onClick={() => save(file, text)}>
+                Download .{protocol === "awg" ? "conf" : "txt"}
+              </button>
+            )}
             <button
               type="button"
               className="secondary"

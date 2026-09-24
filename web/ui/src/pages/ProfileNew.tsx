@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 
 import { api, type Agent, type Inbound, type Interface, type ProfileCreate } from "../api";
 import { Choice, Field } from "../fields";
-import { fillConfig, generateKeyPair } from "../keys";
+import { generateKeyPair } from "../keys";
 import { describe, type Problem } from "../problem";
 import { Banner } from "../tiles";
-import type { Issue } from "./IssuedConfig";
+import { type Issue, issueOf } from "./IssuedConfig";
 
 function Option({
   title,
@@ -122,14 +122,7 @@ export function ProfileNew({
     }
     try {
       const answer = await api.createProfile(body);
-      onIssued({
-        profile: answer.profile,
-        config:
-          pair && answer.config_template
-            ? fillConfig(answer.config_template, pair.privateKey)
-            : null,
-        link: answer.link,
-      });
+      onIssued(await issueOf(answer, pair));
     } catch (error) {
       setProblem(describe(error, "Could not create the profile"));
     } finally {

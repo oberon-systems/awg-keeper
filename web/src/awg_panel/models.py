@@ -42,6 +42,8 @@ class Interface(SQLModel, table=True):
     pool: str | None = None
     server_public_key: str
     endpoint_host: str | None = None
+    # The server name the Amnezia key carries; the profile name when unset.
+    label: str | None = None
     dns: str | None = None
     mtu: int | None = None
     # What the client puts in AllowedIPs: full or split tunnel, per interface.

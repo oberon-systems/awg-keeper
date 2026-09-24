@@ -31,7 +31,13 @@ export interface Profile {
 export interface Issued {
   profile: Profile;
   config_template: string | null;
+  amnezia_template: string | null;
   link: string | null;
+}
+
+export interface ProfileReissue {
+  awg?: { public_key: string };
+  xray?: { id: string };
 }
 
 export interface ProfileCreate {
@@ -119,6 +125,7 @@ export interface AgentInterface {
   address: string | null;
   pool: string | null;
   endpoint_host: string | null;
+  label: string | null;
   dns: string | null;
   mtu: number | null;
   client_allowed_ips: string | null;
@@ -186,6 +193,7 @@ export interface InterfaceUpdate {
   address?: string | null;
   pool?: string | null;
   endpoint_host?: string | null;
+  label?: string | null;
   dns?: string | null;
   mtu?: number | null;
   client_allowed_ips?: string | null;
@@ -273,6 +281,10 @@ export const api = {
   profiles: () => call<Profile[]>("GET", "/profiles"),
   inbounds: () => call<Inbound[]>("GET", "/inbounds"),
   createProfile: (body: ProfileCreate) => call<Issued>("POST", "/profiles", body),
+  setProfileEnabled: (id: number, enabled: boolean) =>
+    call<Profile>("PATCH", `/profiles/${id}`, { enabled }),
+  reissueProfile: (id: number, body: ProfileReissue) =>
+    call<Issued>("POST", `/profiles/${id}/reissue`, body),
   profileStats: (id: number, period: Period) =>
     call<ProfileStats>("GET", `/profiles/${id}/stats?period=${period}`),
   ownStats: (period: Period) => call<OwnStats>("GET", `/stats/me?period=${period}`),

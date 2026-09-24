@@ -5,6 +5,7 @@ import { Dashboard } from "./pages/Dashboard";
 import { Login } from "./pages/Login";
 import { OwnStats } from "./pages/OwnStats";
 import { Profiles } from "./pages/Profiles";
+import { Footer } from "./tiles";
 
 export function App() {
   return window.location.pathname === "/stats" ? <OwnStats /> : <Panel />;
@@ -77,6 +78,7 @@ function Panel() {
       <main className="flush">
         {tab === "dashboard" ? <Dashboard /> : <Profiles />}
       </main>
+      <Footer />
     </>
   );
 }

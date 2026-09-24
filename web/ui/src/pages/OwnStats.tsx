@@ -4,7 +4,7 @@ import { api, type OwnStats as Own, type Period, type ProfileStats as Stats } fr
 import { Chart, PERIODS, PROTOCOLS, Tile } from "../charts";
 import { age, bytes, duration, stamp } from "../format";
 import { describe, type Problem } from "../problem";
-import { Banner, Pill } from "../tiles";
+import { Banner, Footer, Pill } from "../tiles";
 
 function NotRecognised({ source }: { source: string }) {
   return (
@@ -131,9 +131,6 @@ export function OwnStats() {
             </button>
           </nav>
         </div>
-        <a className="chrome-signout" href="/">
-          Sign in
-        </a>
       </header>
 
       {own && !stats ? (
@@ -213,6 +210,7 @@ export function OwnStats() {
           ) : null}
         </main>
       )}
+      <Footer />
     </>
   );
 }
