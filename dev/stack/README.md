@@ -32,11 +32,14 @@ running.
 ```text
 panel http://127.0.0.1:8000     admin / admin
 agent http://127.0.0.1:8081/v1/health
+
+stats http://127.0.0.1:8000/stats                   not recognised, as from outside the tunnel
+stats http://127.0.0.1:8002/stats   bob-phone, as from 10.8.0.3 in the tunnel
 ```
 
 The panel is published on port 8000. When that port is taken on the host,
 pick another one: `make kickstart LISTEN_PORT=8090`, or export `LISTEN_PORT`
-before running it.
+before running it. `STATS_PORT` does the same for port 8002.
 
 Once both answer, it seeds the panel: awg0 and reality-443 get an endpoint
 host and are enabled, and three profiles are issued on them - `alice-laptop`
@@ -45,6 +48,14 @@ reality-8443 stay as discovered, disabled, which is the real behaviour: the
 panel refuses to issue on anything without an endpoint host. The seed is
 `bin/seed.py`, run through the panel's own service layer inside its
 container.
+
+`/stats` shows a profile only to a request that comes from that profile's
+tunnel address, which a browser on the host never has. So the stand serves it
+twice: on the panel's own port it answers "We don't recognise this
+connection", and on port 8002 an nginx in front of the panel sets
+`X-Forwarded-For: 10.8.0.3`, the address `bob-phone` was given. The panel
+believes that header from the proxy's fixed address alone, through
+`FORWARDED_ALLOW_IPS` in `stand.env`.
 
 ## Commands
 
@@ -64,12 +75,13 @@ There is no `clean`. `down` is the whole of it.
 
 ## What is running
 
-Two containers on a network of their own, `172.31.0.0/24`:
+Three containers on a network of their own, `172.31.0.0/24`:
 
 ```text
-  127.0.0.1:8000 -> panel ---- http ----> agent -> /host/bin/awg
-  127.0.0.1:8081 --------------------^            /host/bin/xray
-                                                  /host/bin/ip
+  127.0.0.1:8002 -> tunnel -v
+  127.0.0.1:8000 -------> panel ---- http ----> agent -> /host/bin/awg
+  127.0.0.1:8081 --------------------------^            /host/bin/xray
+                                                        /host/bin/ip
 ```
 
 The panel is built from `web/`, the same image a deployment runs. The agent
@@ -81,7 +93,8 @@ Every setting is in `stand.env`, committed and fixed. The compose file reads
 it with `format: raw`, which matters: compose interpolates an env file by
 default, and the argon2id password hash in there is full of dollar signs it
 would otherwise read as variables. Nothing else in the compose file is
-interpolated, so there is no `.env` beside it either.
+interpolated but the two ports, so there is no `.env` beside it either, and
+the one dollar sign in the proxy's inline config is written `$$`.
 
 The panel's database is inside its container rather than on a volume, so
 every run starts on an empty schema that `alembic upgrade head` builds at

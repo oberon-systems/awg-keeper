@@ -4,11 +4,13 @@ set -euo pipefail
 stack="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # The host port the panel is published on; compose reads it from here.
 export LISTEN_PORT="${LISTEN_PORT:-8000}"
+# The same panel behind a proxy that makes the browser look like bob-phone.
+export STATS_PORT="${STATS_PORT:-8002}"
 panel="http://127.0.0.1:$LISTEN_PORT"
 agent="http://127.0.0.1:8081"
 
-# No --env-file and no .env beside the compose file: the only thing compose
-# substitutes is LISTEN_PORT from this environment, and nothing it can mangle.
+# No --env-file and no .env beside the compose file: the only things compose
+# substitutes are the two ports from this environment, and nothing it can mangle.
 compose() {
     docker compose --project-directory "$stack" "$@"
 }
@@ -64,6 +66,9 @@ kickstart() {
 
 panel $panel     admin / admin
 agent $agent/v1/health
+
+stats $panel/stats                   not recognised, as from outside the tunnel
+stats http://127.0.0.1:$STATS_PORT/stats   bob-phone, as from 10.8.0.3 in the tunnel
 
 awg0 and reality-443 are enabled and carry three profiles: alice-laptop
 (AmneziaWG), carol (Xray) and bob-phone (both). awg1 and reality-8443 come up

@@ -8,9 +8,9 @@
 # A real deployment runs the agent on the host it tunnels for; see
 # web/docker-compose.yaml for the shape that deploys.
 #
-# Only LISTEN_PORT is interpolated, from the environment kickstart.sh sets;
-# there is no .env beside it and no --env-file anywhere. The one env file
-# below is read raw.
+# Only LISTEN_PORT and STATS_PORT are interpolated, from the environment
+# kickstart.sh sets; there is no .env beside it and no --env-file anywhere. The
+# one env file below is read raw.
 name: awg-keeper-stand
 
 services:
@@ -37,6 +37,21 @@ services:
       agent:
         condition: service_healthy
 
+  # /stats knows a caller by its tunnel address, which a browser on the host
+  # never has. This proxy says the caller is bob-phone, the second peer seeded.
+  tunnel:
+    image: nginx:stable-alpine
+    configs:
+      - source: tunnel
+        target: /etc/nginx/conf.d/default.conf
+    networks:
+      stand:
+        ipv4_address: 172.31.0.10
+    ports:
+      - "127.0.0.1:${STATS_PORT:?run through kickstart.sh}:8000"
+    depends_on:
+      - panel
+
   agent:
     build:
       context: ../..
@@ -52,6 +67,18 @@ services:
       # Published so the agent API can be poked with curl directly, which is
       # how you tell a panel bug from an agent bug.
       - "127.0.0.1:8081:8081"
+
+configs:
+  tunnel:
+    content: |
+      server {
+        listen 8000;
+        location / {
+          proxy_pass http://panel:8000;
+          proxy_set_header Host $$host;
+          proxy_set_header X-Forwarded-For 10.8.0.3;
+        }
+      }
 
 networks:
   stand:
