@@ -1,0 +1,74 @@
+{
+  "id": "2b547759-e639-8091-8008-b08c726bc269",
+  "name": "QR code",
+  "type": "group",
+  "x": 3668,
+  "y": 2702,
+  "width": 264,
+  "height": 264,
+  "rotation": 0,
+  "selrect": {
+    "x": 3668,
+    "y": 2702,
+    "width": 264,
+    "height": 264,
+    "x1": 3668,
+    "y1": 2702,
+    "x2": 3932,
+    "y2": 2966
+  },
+  "points": [
+    {
+      "x": 3668,
+      "y": 2702
+    },
+    {
+      "x": 3932,
+      "y": 2702
+    },
+    {
+      "x": 3932,
+      "y": 2966
+    },
+    {
+      "x": 3668,
+      "y": 2966
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "2b547759-e639-8091-8008-b08c726bc268",
+  "frameId": "2b547759-e639-8091-8008-b08c726bc268",
+  "flipX": false,
+  "flipY": false,
+  "svgAttrs": {},
+  "layoutItemHSizing": "fix",
+  "proportionLock": true,
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
+  "layoutItemVSizing": "fix",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "svgDefs": {},
+  "strokes": [],
+  "proportion": 1,
+  "fills": [],
+  "shapes": [
+    "2b547759-e639-8091-8008-b08c726bc26a",
+    "2b547759-e639-8091-8008-b08c726bc26b",
+    "2b547759-e639-8091-8008-b08c726bc26c"
+  ]
+}

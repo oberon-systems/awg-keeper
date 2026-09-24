@@ -1,0 +1,70 @@
+{
+  "id": "2b547759-e639-8091-8008-b08bf13f23c1",
+  "name": "Knob",
+  "type": "circle",
+  "x": 4156,
+  "y": 1619,
+  "width": 12,
+  "height": 12,
+  "rotation": 0,
+  "selrect": {
+    "x": 4156,
+    "y": 1619,
+    "width": 12,
+    "height": 12,
+    "x1": 4156,
+    "y1": 1619,
+    "x2": 4168,
+    "y2": 1631
+  },
+  "points": [
+    {
+      "x": 4156,
+      "y": 1619
+    },
+    {
+      "x": 4168,
+      "y": 1619
+    },
+    {
+      "x": 4168,
+      "y": 1631
+    },
+    {
+      "x": 4156,
+      "y": 1631
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "2b547759-e639-8091-8008-b08bf1274d18",
+  "frameId": "2b547759-e639-8091-8008-b08bf1274d18",
+  "flipX": null,
+  "flipY": null,
+  "proportionLock": false,
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "strokes": [],
+  "proportion": 1,
+  "fills": [
+    {
+      "fillColor": "#ffffff",
+      "fillOpacity": 1
+    }
+  ],
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9"
+}

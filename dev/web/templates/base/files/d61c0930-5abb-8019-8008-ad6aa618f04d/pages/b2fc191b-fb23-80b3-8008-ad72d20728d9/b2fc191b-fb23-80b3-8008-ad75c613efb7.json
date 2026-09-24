@@ -2,36 +2,36 @@
   "id": "b2fc191b-fb23-80b3-8008-ad75c613efb7",
   "name": "Label",
   "type": "text",
-  "x": 9017.5,
+  "x": 9025,
   "y": 417,
   "width": 38,
   "height": 16,
   "rotation": 0,
   "selrect": {
-    "x": 9017.5,
+    "x": 9025,
     "y": 417,
     "width": 38,
     "height": 16,
-    "x1": 9017.5,
+    "x1": 9025,
     "y1": 417,
-    "x2": 9055.5,
+    "x2": 9063,
     "y2": 433
   },
   "points": [
     {
-      "x": 9017.5,
+      "x": 9025,
       "y": 417
     },
     {
-      "x": 9055.5,
+      "x": 9063,
       "y": 417
     },
     {
-      "x": 9055.5,
+      "x": 9063,
       "y": 433
     },
     {
-      "x": 9017.5,
+      "x": 9025,
       "y": 433
     }
   ],
@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "y": 432.19999998807907,
+      "x": 9025,
+      "y": 432.2727279663086,
+      "width": 37.7613639831543,
+      "height": 15.272727966308594,
+      "x1": 0,
+      "y1": 0,
+      "x2": 37.7613639831543,
+      "y2": 15.272727966308594,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "600",
-      "y1": -0.800000011920929,
-      "width": 37.79999923706055,
       "textDecoration": "none",
       "letterSpacing": "normal",
-      "x": 9017.5,
-      "x1": 0,
-      "y2": 15.199999988079071,
       "fills": [
         {
           "fillColor": "#b00020",
           "fillOpacity": 1
         }
       ],
-      "x2": 37.79999923706055,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
-      "height": 16,
       "text": "Delete"
     }
   ]

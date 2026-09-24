@@ -2,37 +2,37 @@
   "id": "b2fc191b-fb23-80b3-8008-ad7372392e90",
   "name": "Segment Xray",
   "type": "frame",
-  "x": 3574.0000000000005,
-  "y": 219,
+  "x": 3677,
+  "y": 219.0000000000001,
   "width": 54,
   "height": 28,
   "rotation": 0,
   "selrect": {
-    "x": 3574.0000000000005,
-    "y": 219,
+    "x": 3677,
+    "y": 219.0000000000001,
     "width": 54,
     "height": 28,
-    "x1": 3574.0000000000005,
-    "y1": 219,
-    "x2": 3628.0000000000005,
-    "y2": 247
+    "x1": 3677,
+    "y1": 219.0000000000001,
+    "x2": 3731,
+    "y2": 247.0000000000001
   },
   "points": [
     {
-      "x": 3574.0000000000005,
-      "y": 219
+      "x": 3677,
+      "y": 219.0000000000001
     },
     {
-      "x": 3628.0000000000005,
-      "y": 219
+      "x": 3731,
+      "y": 219.0000000000001
     },
     {
-      "x": 3628.0000000000005,
-      "y": 247
+      "x": 3731,
+      "y": 247.0000000000001
     },
     {
-      "x": 3574.0000000000005,
-      "y": 247
+      "x": 3677,
+      "y": 247.0000000000001
     }
   ],
   "transform": {
@@ -86,12 +86,7 @@
       "actionType": "navigate",
       "destination": "46010db4-1c0d-8067-8008-aeee1520be3a",
       "positionRelativeTo": null,
-      "preserveScroll": false,
-      "animation": {
-        "animationType": "dissolve",
-        "duration": 150,
-        "easing": "ease-out"
-      }
+      "preserveScroll": false
     }
   ],
   "constraintsH": "left",
@@ -100,6 +95,7 @@
   "layoutAlignContent": "stretch",
   "strokes": [],
   "proportion": 1,
+  "shadow": [],
   "r4": 6,
   "fills": [],
   "shapes": [

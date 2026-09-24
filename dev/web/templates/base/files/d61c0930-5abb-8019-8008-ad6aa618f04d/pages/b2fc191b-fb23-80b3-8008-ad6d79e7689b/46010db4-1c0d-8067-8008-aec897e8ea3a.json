@@ -114,18 +114,19 @@
       }
     ]
   },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
       "x": 3528,
-      "y": 148,
-      "width": 142.85000610351562,
-      "height": 24,
+      "y": 147.99999928474426,
+      "width": 142.852294921875,
+      "height": 24.727272033691406,
       "x1": 0,
-      "y1": 0,
-      "x2": 142.85000610351562,
-      "y2": 24,
+      "y1": -0.7272727489471436,
+      "x2": 142.852294921875,
+      "y2": 23.999999284744263,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "20px",
@@ -142,6 +143,5 @@
       "fontFamily": "\"Inter Tight\"",
       "text": "Configure awg1"
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b"
+  ]
 }

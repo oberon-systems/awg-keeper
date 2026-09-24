@@ -86,12 +86,7 @@
       "actionType": "navigate",
       "destination": "b2fc191b-fb23-80b3-8008-ad73734e02b9",
       "positionRelativeTo": null,
-      "preserveScroll": false,
-      "animation": {
-        "animationType": "dissolve",
-        "duration": 150,
-        "easing": "ease-out"
-      }
+      "preserveScroll": false
     }
   ],
   "constraintsH": "left",
@@ -100,21 +95,7 @@
   "layoutAlignContent": "stretch",
   "strokes": [],
   "proportion": 1,
-  "shadow": [
-    {
-      "id": "b2fc191b-fb23-80b3-8008-ad73722b380c",
-      "style": "drop-shadow",
-      "color": {
-        "opacity": 0.12,
-        "color": "#1a1d23"
-      },
-      "offsetX": 0,
-      "offsetY": 1,
-      "blur": 2,
-      "spread": 0,
-      "hidden": false
-    }
-  ],
+  "shadow": [],
   "r4": 6,
   "fills": [],
   "shapes": [

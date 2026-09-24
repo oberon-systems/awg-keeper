@@ -1,0 +1,74 @@
+{
+  "id": "2b547759-e639-8091-8008-b08ced15d0c7",
+  "name": "GitHub mark",
+  "type": "group",
+  "x": 2214,
+  "y": 856,
+  "width": 16,
+  "height": 16,
+  "rotation": 0,
+  "selrect": {
+    "x": 2214,
+    "y": 856,
+    "width": 16,
+    "height": 16,
+    "x1": 2214,
+    "y1": 856,
+    "x2": 2230,
+    "y2": 872
+  },
+  "points": [
+    {
+      "x": 2214,
+      "y": 856
+    },
+    {
+      "x": 2230,
+      "y": 856
+    },
+    {
+      "x": 2230,
+      "y": 872
+    },
+    {
+      "x": 2214,
+      "y": 872
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "2b547759-e639-8091-8008-b08ced11e525",
+  "frameId": "2b547759-e639-8091-8008-b08ced11e525",
+  "flipX": false,
+  "flipY": false,
+  "svgAttrs": {
+    "width": "16",
+    "height": "16"
+  },
+  "proportionLock": false,
+  "pageId": "b2fc191b-fb23-80b3-8008-ad772ce3497e",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "svgDefs": {},
+  "strokes": [],
+  "proportion": 1,
+  "fills": [],
+  "shapes": [
+    "2b547759-e639-8091-8008-b08ced160894",
+    "2b547759-e639-8091-8008-b08ced16533d"
+  ]
+}

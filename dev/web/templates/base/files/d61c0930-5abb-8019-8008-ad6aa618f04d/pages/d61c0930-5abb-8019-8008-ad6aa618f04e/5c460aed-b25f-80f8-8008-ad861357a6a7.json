@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "y": 303.3000011444092,
+      "x": 3624,
+      "y": 303.2272732257843,
+      "width": 281.30682373046875,
+      "height": 17.454545974731445,
+      "x1": 0,
+      "y1": -0.7272727489471436,
+      "x2": 281.30682373046875,
+      "y2": 16.7272732257843,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "14px",
       "fontWeight": "400",
-      "y1": 0,
-      "width": 281.3125,
       "textDecoration": "none",
       "letterSpacing": "normal",
-      "x": 3624,
-      "x1": 0,
-      "y2": 16.80000114440918,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
-      "x2": 281.3125,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
-      "height": 16.80000114440918,
       "text": "Sign in to manage AmneziaWG and Xray nodes"
     }
   ]

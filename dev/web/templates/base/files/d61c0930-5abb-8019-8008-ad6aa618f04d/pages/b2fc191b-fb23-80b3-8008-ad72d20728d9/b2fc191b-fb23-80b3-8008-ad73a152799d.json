@@ -88,11 +88,11 @@
   "proportion": 1,
   "shadow": [
     {
-      "id": "b2fc191b-fb23-80b3-8008-ad73a1603361",
+      "id": "b2fc191b-fb23-80b3-8008-ad73722b380c",
       "style": "drop-shadow",
       "color": {
-        "opacity": 0.12,
-        "color": "#1a1d23"
+        "color": "#1a1d23",
+        "opacity": 0.12
       },
       "offsetX": 0,
       "offsetY": 1,

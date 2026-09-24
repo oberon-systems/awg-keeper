@@ -1,0 +1,147 @@
+{
+  "id": "2b547759-e639-8091-8008-b08c726bc266",
+  "name": "Key",
+  "type": "text",
+  "x": 3598,
+  "y": 3014,
+  "width": 404,
+  "height": 15,
+  "rotation": 0,
+  "selrect": {
+    "x": 3598,
+    "y": 3014,
+    "width": 404,
+    "height": 15,
+    "x1": 3598,
+    "y1": 3014,
+    "x2": 4002,
+    "y2": 3029
+  },
+  "points": [
+    {
+      "x": 3598,
+      "y": 3014
+    },
+    {
+      "x": 4002,
+      "y": 3014
+    },
+    {
+      "x": 4002,
+      "y": 3029
+    },
+    {
+      "x": 3598,
+      "y": 3029
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "2b547759-e639-8091-8008-b08c726bc25b",
+  "frameId": "2b547759-e639-8091-8008-b08c726bc25b",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-width",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-jetbrains-mono",
+                "fontSize": "12",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#4b5563",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "JetBrains Mono",
+                "text": "ams-1 Amsterdam \u00b7 10.8.0.15/32 \u00b7 ams-1.example.net:51820"
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-jetbrains-mono",
+            "fontSize": "12",
+            "fontWeight": "400",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "regular",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#4b5563",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "JetBrains Mono"
+          }
+        ]
+      }
+    ]
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 3598,
+      "y": 3028.5454545021057,
+      "width": 403.2045593261719,
+      "height": 16,
+      "x1": 0,
+      "y1": -1.454545497894287,
+      "x2": 403.2045593261719,
+      "y2": 14.545454502105713,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#4b5563",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"JetBrains Mono\"",
+      "text": "ams-1 Amsterdam \u00b7 10.8.0.15/32 \u00b7 ams-1.example.net:51820"
+    }
+  ]
+}

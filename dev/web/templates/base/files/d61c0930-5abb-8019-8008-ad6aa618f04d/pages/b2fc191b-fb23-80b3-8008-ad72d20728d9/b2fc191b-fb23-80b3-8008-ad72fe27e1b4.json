@@ -2,36 +2,36 @@
   "id": "b2fc191b-fb23-80b3-8008-ad72fe27e1b4",
   "name": "Text",
   "type": "text",
-  "x": 942,
+  "x": 922,
   "y": 536,
-  "width": 54,
+  "width": 53,
   "height": 16,
   "rotation": 0,
   "selrect": {
-    "x": 942,
+    "x": 922,
     "y": 536,
-    "width": 54,
+    "width": 53,
     "height": 16,
-    "x1": 942,
+    "x1": 922,
     "y1": 536,
-    "x2": 996,
+    "x2": 975,
     "y2": 552
   },
   "points": [
     {
-      "x": 942,
+      "x": 922,
       "y": 536
     },
     {
-      "x": 996,
+      "x": 975,
       "y": 536
     },
     {
-      "x": 996,
+      "x": 975,
       "y": 552
     },
     {
-      "x": 942,
+      "x": 922,
       "y": 552
     }
   ],
@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "y": 551.1999999880791,
+      "x": 922,
+      "y": 551.2727279663086,
+      "width": 52.97727966308594,
+      "height": 15.272727966308594,
+      "x1": 0,
+      "y1": 0,
+      "x2": 52.97727966308594,
+      "y2": 15.272727966308594,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "400",
-      "y1": -0.800000011920929,
-      "width": 53.025001525878906,
       "textDecoration": "none",
       "letterSpacing": "normal",
-      "x": 942,
-      "x1": 0,
-      "y2": 15.199999988079071,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
-      "x2": 53.025001525878906,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
-      "height": 16,
       "text": "MacBook"
     }
   ]

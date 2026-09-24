@@ -86,12 +86,7 @@
       "actionType": "navigate",
       "destination": "b2fc191b-fb23-80b3-8008-ad73a2a916e7",
       "positionRelativeTo": null,
-      "preserveScroll": false,
-      "animation": {
-        "animationType": "dissolve",
-        "duration": 150,
-        "easing": "ease-out"
-      }
+      "preserveScroll": false
     }
   ],
   "constraintsH": "left",

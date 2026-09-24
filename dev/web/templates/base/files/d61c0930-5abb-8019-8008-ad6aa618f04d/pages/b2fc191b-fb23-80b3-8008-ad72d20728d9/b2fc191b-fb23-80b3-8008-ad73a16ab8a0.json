@@ -2,36 +2,36 @@
   "id": "b2fc191b-fb23-80b3-8008-ad73a16ab8a0",
   "name": "Segment Xray",
   "type": "frame",
-  "x": 5114,
+  "x": 5217,
   "y": 219.00000000000045,
   "width": 54,
   "height": 28,
   "rotation": 0,
   "selrect": {
-    "x": 5114,
+    "x": 5217,
     "y": 219.00000000000045,
     "width": 54,
     "height": 28,
-    "x1": 5114,
+    "x1": 5217,
     "y1": 219.00000000000045,
-    "x2": 5168,
+    "x2": 5271,
     "y2": 247.00000000000045
   },
   "points": [
     {
-      "x": 5114,
+      "x": 5217,
       "y": 219.00000000000045
     },
     {
-      "x": 5168,
+      "x": 5271,
       "y": 219.00000000000045
     },
     {
-      "x": 5168,
+      "x": 5271,
       "y": 247.00000000000045
     },
     {
-      "x": 5114,
+      "x": 5217,
       "y": 247.00000000000045
     }
   ],
@@ -86,12 +86,7 @@
       "actionType": "navigate",
       "destination": "46010db4-1c0d-8067-8008-aeee172383ac",
       "positionRelativeTo": null,
-      "preserveScroll": false,
-      "animation": {
-        "animationType": "dissolve",
-        "duration": 150,
-        "easing": "ease-out"
-      }
+      "preserveScroll": false
     }
   ],
   "constraintsH": "left",
@@ -100,6 +95,7 @@
   "layoutAlignContent": "stretch",
   "strokes": [],
   "proportion": 1,
+  "shadow": [],
   "r4": 6,
   "fills": [],
   "shapes": [

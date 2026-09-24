@@ -3,36 +3,36 @@
   "name": "Title",
   "type": "text",
   "x": 2097,
-  "y": 429.5,
+  "y": 393.5,
   "width": 326,
   "height": 24,
   "rotation": 0,
   "selrect": {
     "x": 2097,
-    "y": 429.5,
+    "y": 393.5,
     "width": 326,
     "height": 24,
     "x1": 2097,
-    "y1": 429.5,
+    "y1": 393.5,
     "x2": 2423,
-    "y2": 453.5
+    "y2": 417.5
   },
   "points": [
     {
       "x": 2097,
-      "y": 429.5
+      "y": 393.5
     },
     {
       "x": 2423,
-      "y": 429.5
+      "y": 393.5
     },
     {
       "x": 2423,
-      "y": 453.5
+      "y": 417.5
     },
     {
       "x": 2097,
-      "y": 453.5
+      "y": 417.5
     }
   ],
   "transform": {
@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "y": 453.5,
+      "x": 2097,
+      "y": 417.49999928474426,
+      "width": 325.04547119140625,
+      "height": 24.727272033691406,
+      "x1": 0,
+      "y1": -0.7272727489471436,
+      "x2": 325.04547119140625,
+      "y2": 23.999999284744263,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "20px",
       "fontWeight": "700",
-      "y1": 0,
-      "width": 325.0500183105469,
       "textDecoration": "none",
       "letterSpacing": "normal",
-      "x": 2097,
-      "x1": 0,
-      "y2": 24,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
-      "x2": 325.0500183105469,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
-      "height": 24,
       "text": "We don't recognise this connection"
     }
   ]

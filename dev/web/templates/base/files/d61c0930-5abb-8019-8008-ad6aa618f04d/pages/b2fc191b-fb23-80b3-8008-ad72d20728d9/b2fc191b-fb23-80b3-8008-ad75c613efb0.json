@@ -2,36 +2,36 @@
   "id": "b2fc191b-fb23-80b3-8008-ad75c613efb0",
   "name": "Cell",
   "type": "frame",
-  "x": 8812,
+  "x": 8762,
   "y": 415.5,
   "width": 110,
   "height": 19,
   "rotation": 0,
   "selrect": {
-    "x": 8812,
+    "x": 8762,
     "y": 415.5,
     "width": 110,
     "height": 19,
-    "x1": 8812,
+    "x1": 8762,
     "y1": 415.5,
-    "x2": 8922,
+    "x2": 8872,
     "y2": 434.5
   },
   "points": [
     {
-      "x": 8812,
+      "x": 8762,
       "y": 415.5
     },
     {
-      "x": 8922,
+      "x": 8872,
       "y": 415.5
     },
     {
-      "x": 8922,
+      "x": 8872,
       "y": 434.5
     },
     {
-      "x": 8812,
+      "x": 8762,
       "y": 434.5
     }
   ],
@@ -66,29 +66,30 @@
   "layoutWrapType": "nowrap",
   "layout": "flex",
   "hideInViewer": true,
-  "layoutAlignItems": "start",
+  "layoutAlignItems": "center",
   "layoutPaddingType": "simple",
   "r2": 0,
   "layoutItemHSizing": "fix",
   "proportionLock": false,
   "layoutGap": {
     "rowGap": 2,
-    "columnGap": 0
+    "columnGap": 8
   },
   "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
   "layoutItemVSizing": "auto",
   "r3": 0,
-  "layoutJustifyContent": "center",
+  "layoutJustifyContent": "start",
   "constraintsV": "top",
   "constraintsH": "left",
   "r1": 0,
-  "layoutFlexDir": "column",
+  "layoutFlexDir": "row",
   "layoutAlignContent": "stretch",
   "strokes": [],
   "proportion": 1,
   "r4": 0,
   "fills": [],
   "shapes": [
-    "b2fc191b-fb23-80b3-8008-ad75c613efb8"
+    "b2fc191b-fb23-80b3-8008-ad75c613efb8",
+    "2b547759-e639-8091-8008-b08bdf482994"
   ]
 }

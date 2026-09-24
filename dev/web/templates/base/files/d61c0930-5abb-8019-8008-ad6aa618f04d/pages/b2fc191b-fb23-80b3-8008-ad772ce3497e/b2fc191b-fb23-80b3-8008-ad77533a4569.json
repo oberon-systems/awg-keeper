@@ -3,36 +3,36 @@
   "name": "Glyph",
   "type": "text",
   "x": 2256.5,
-  "y": 378,
+  "y": 342,
   "width": 7,
   "height": 27,
   "rotation": 0,
   "selrect": {
     "x": 2256.5,
-    "y": 378,
+    "y": 342,
     "width": 7,
     "height": 27,
     "x1": 2256.5,
-    "y1": 378,
+    "y1": 342,
     "x2": 2263.5,
-    "y2": 405
+    "y2": 369
   },
   "points": [
     {
       "x": 2256.5,
-      "y": 378
+      "y": 342
     },
     {
       "x": 2263.5,
-      "y": 378
+      "y": 342
     },
     {
       "x": 2263.5,
-      "y": 405
+      "y": 369
     },
     {
       "x": 2256.5,
-      "y": 405
+      "y": 369
     }
   ],
   "transform": {
@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "y": 404.3999988436699,
+      "x": 2256.5,
+      "y": 368.1818218231201,
+      "width": 6.8977274894714355,
+      "height": 26.181821823120117,
+      "x1": 0,
+      "y1": 0,
+      "x2": 6.8977274894714355,
+      "y2": 26.181821823120117,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "22px",
       "fontWeight": "700",
-      "y1": -0.800000011920929,
-      "width": 6.900000095367432,
       "textDecoration": "none",
       "letterSpacing": "normal",
-      "x": 2256.5,
-      "x1": 0,
-      "y2": 26.39999884366989,
       "fills": [
         {
           "fillColor": "#8a5a00",
           "fillOpacity": 1
         }
       ],
-      "x2": 6.900000095367432,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
-      "height": 27.19999885559082,
       "text": "!"
     }
   ]

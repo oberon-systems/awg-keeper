@@ -1,0 +1,99 @@
+{
+  "id": "2b547759-e639-8091-8008-b08c726c0032",
+  "name": "Badge enabled",
+  "type": "frame",
+  "x": 4178,
+  "y": 2933.5,
+  "width": 60,
+  "height": 19,
+  "rotation": 0,
+  "selrect": {
+    "x": 4178,
+    "y": 2933.5,
+    "width": 60,
+    "height": 19,
+    "x1": 4178,
+    "y1": 2933.5,
+    "x2": 4238,
+    "y2": 2952.5
+  },
+  "points": [
+    {
+      "x": 4178,
+      "y": 2933.5
+    },
+    {
+      "x": 4238,
+      "y": 2933.5
+    },
+    {
+      "x": 4238,
+      "y": 2952.5
+    },
+    {
+      "x": 4178,
+      "y": 2952.5
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "2b547759-e639-8091-8008-b08c726c0026",
+  "frameId": "2b547759-e639-8091-8008-b08c726c0026",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "layoutGapType": "multiple",
+  "layoutPadding": {
+    "p1": 2,
+    "p2": 8,
+    "p3": 2,
+    "p4": 8
+  },
+  "layoutWrapType": "nowrap",
+  "layout": "flex",
+  "hideInViewer": true,
+  "layoutAlignItems": "center",
+  "layoutPaddingType": "simple",
+  "r2": 10,
+  "layoutItemHSizing": "auto",
+  "proportionLock": false,
+  "layoutGap": {
+    "rowGap": 0,
+    "columnGap": 0
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
+  "layoutItemVSizing": "auto",
+  "r3": 10,
+  "layoutJustifyContent": "start",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 10,
+  "layoutFlexDir": "row",
+  "layoutAlignContent": "stretch",
+  "strokes": [],
+  "proportion": 1,
+  "r4": 10,
+  "fills": [
+    {
+      "fillColor": "#e4f5ea",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "2b547759-e639-8091-8008-b08c726c0034"
+  ]
+}

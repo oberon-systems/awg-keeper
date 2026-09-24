@@ -2,24 +2,24 @@
   "id": "b2fc191b-fb23-80b3-8008-ad731970371f",
   "name": "Cell",
   "type": "frame",
-  "x": 2762,
+  "x": 2712,
   "y": 371,
-  "width": 166,
+  "width": 216,
   "height": 14,
   "rotation": 0,
   "selrect": {
-    "x": 2762,
+    "x": 2712,
     "y": 371,
-    "width": 166,
+    "width": 216,
     "height": 14,
-    "x1": 2762,
+    "x1": 2712,
     "y1": 371,
     "x2": 2928,
     "y2": 385
   },
   "points": [
     {
-      "x": 2762,
+      "x": 2712,
       "y": 371
     },
     {
@@ -31,7 +31,7 @@
       "y": 385
     },
     {
-      "x": 2762,
+      "x": 2712,
       "y": 385
     }
   ],
@@ -76,7 +76,7 @@
     "columnGap": 0
   },
   "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
-  "layoutItemVSizing": "auto",
+  "layoutItemVSizing": "fix",
   "r3": 0,
   "layoutJustifyContent": "center",
   "constraintsV": "top",
