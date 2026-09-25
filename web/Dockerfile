@@ -1,6 +1,6 @@
 # The interface is built by node and served by the panel: one image, one port,
 # no second web server to configure.
-FROM node:22-alpine AS ui
+FROM node:25-alpine AS ui
 
 WORKDIR /ui
 # From the lockfile, so the image is the same one twice. The interface is a
