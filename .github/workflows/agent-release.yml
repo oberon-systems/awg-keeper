@@ -47,7 +47,7 @@ jobs:
       # One cache scope per distribution: the two images share no layers, and a
       # shared scope would have them evict each other on every run.
       - name: Build the zipapp
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: ./agent
           file: ./agent/packaging/Dockerfile.${{ matrix.distro }}
