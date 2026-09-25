@@ -10,8 +10,8 @@ the access off, reissue it, or take it away - from a browser, without editing
 configs on the server by hand.
 
 The Agent needs no root and no Linux capabilities. It expects the AmneziaWG
-interfaces to be set up already, and manages their peers through the
-interfaces' control sockets.
+interfaces to be set up already, and manages their peers and obfuscation
+through the interfaces' control sockets.
 
 ## Demo
 
@@ -26,6 +26,11 @@ and the stats.
   `vpn://` key or a `vless://` link, each with a QR code.
 - Private keys are generated in your browser and never stored on the server.
 - Turn a profile off and on, or reissue it with new keys on the same address.
+- Edit a profile: its name, note, DNS, MTU and allowed IPs, and add or take
+  away its AmneziaWG or Xray access. A profile whose config went stale is
+  marked for a reroll.
+- Change an interface's AmneziaWG 3.1 obfuscation from the Panel, with every
+  value generated in the browser on request.
 - Traffic and sessions per profile, and a `/stats` page where users see their
   own.
 - Health of every VPN host at a glance.
@@ -40,7 +45,7 @@ and the stats.
 
 The **Panel** is a container image with the web UI and the list of profiles.
 The **Agent** is a small service on the VPN host that adds and removes peers
-and Xray clients when the Panel asks. It does not set up the VPN itself:
+and Xray clients, and changes an interface's obfuscation, when the Panel asks. It does not set up the VPN itself:
 interfaces, Xray inbounds and firewall rules stay yours.
 
 ## Documentation

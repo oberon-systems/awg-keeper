@@ -3,15 +3,16 @@
 What has to be set up on the server before you install awg-keeper.
 
 awg-keeper does not build your VPN. The Agent runs without root and without
-any Linux capabilities: it only adds and removes peers on AmneziaWG interfaces
-that already exist, and clients on Xray inbounds that are already configured.
-Everything on this page is yours to prepare.
+any Linux capabilities: it adds and removes peers on AmneziaWG interfaces that
+already exist, changes their obfuscation, and manages clients on Xray inbounds
+that are already configured. Everything on this page is yours to prepare.
 
 - [Server](#server)
 - [AmneziaWG](#amneziawg)
 - [Routing and firewall](#routing-and-firewall)
 - [Xray](#xray)
 - [Panel access](#panel-access)
+- [Client apps](#client-apps)
 
 ## Server
 
@@ -21,7 +22,9 @@ Everything on this page is yours to prepare.
 
 ## AmneziaWG
 
-Install `amneziawg-tools` and `amneziawg-go`. Each interface runs on
+Install `amneziawg-tools` and `amneziawg-go`, 3.1 or newer for the AmneziaWG
+3.1 obfuscation: header ranges, header protection and the timer ranges. Each
+interface runs on
 `amneziawg-go`, which opens a control socket,
 `/run/amneziawg/<interface>.sock`, that only root may use. The Agent package
 puts a socket proxy in front of it for every interface in
@@ -52,8 +55,14 @@ H4 = 1517982439
 sudo systemctl enable --now awg-quick@awg0
 ```
 
-Leave the peers to the Agent. It keeps your `[Interface]` section as it is and
-rewrites the peers below it, so peers added by hand disappear.
+Leave the peers to the Agent. It keeps your `[Interface]` section and rewrites
+the peers below it, so peers added by hand disappear. The obfuscation lines of
+`[Interface]` are the one exception: once you change the obfuscation in the
+Panel, the Agent writes the new values over them.
+
+The example uses the older obfuscation. Starting with it is fine: you can move
+the interface to the 3.1 set from the Panel later, see
+[Change the obfuscation](04-usage.md#change-the-obfuscation).
 
 ## Routing and firewall
 
@@ -71,6 +80,10 @@ with `awg0` as the tunnel and `eth0` as the internet side:
 # input: clients reach the listen port
 udp dport 51820 accept
 
+# forward: keep TCP segments small enough for the tunnel, first
+iifname "awg0" tcp flags syn / syn,rst tcp option maxseg size set rt mtu
+oifname "awg0" tcp flags syn / syn,rst tcp option maxseg size set rt mtu
+
 # forward: from the tunnel out, and the replies back
 iifname "awg0" oifname "eth0" accept
 ct state established,related accept
@@ -81,6 +94,10 @@ oifname "eth0" ip saddr 10.8.0.0/24 masquerade
 
 If clients should not reach each other, drop `iifname "awg0" oifname "awg0"`
 in the forward chain before the other rules.
+
+The MSS clamp matters because the tunnel MTU is smaller than the internet
+side's. Without it, a large TCP answer can be dropped on its way into the
+tunnel, and some sites load halfway or not at all.
 
 ## Xray
 
@@ -156,3 +173,17 @@ filters input, allow that network to reach the port.
 Users open their stats page, `/stats`, through the VPN. Their traffic to the
 Panel's domain must go through the tunnel and reach the reverse proxy, and the
 firewall must let it.
+
+## Client apps
+
+The obfuscation has to match on both ends, so a client app must understand
+every value the interface uses:
+
+- the older set (`Jc`-`Jmax`, `S1`, `S2`, single `H1`-`H4`): any AmneziaWG or
+  AmneziaVPN app;
+- the AmneziaWG 3.1 set (header ranges, `HeaderProtectionKey`, the timer
+  ranges): [AmneziaVPN](https://amnezia.org/) 5.0.1.5 or newer, or an AmneziaWG
+  app with 3.1 support.
+
+An app too old for the interface imports the config and never completes a
+handshake.
