@@ -1,3 +1,5 @@
+## awg-keeper-agent-v0.5.1 (2026-09-25)
+
 ## awg-keeper-agent-v0.5.0 (2026-09-25)
 
 ### Features
