@@ -49,3 +49,23 @@ sub-project tag: awg-keeper-web-v0.5.0
 
 - [x] ci/cd
   - github action for build and push the image by changing sub-project tag (uwe cache)
+
+## Pre-production features
+
+- [ ] **agent**: added multi-agent support: registration, lease etc
+
+- [ ] **web**: at first run use admin/admin and require password change, store encrypted passwords in db
+
+- [ ] **web**: auth: added RBAC with admin, manager, reader and users groups
+
+- [ ] **base**: on stats page able to user to sign-in with email at first, then should be able to reroll profiles
+
+## Production Hardening
+
+- [ ] resource quotas
+
+- [ ] users connections security audit
+
+- [ ] alerting
+
+- [ ] monitoring
