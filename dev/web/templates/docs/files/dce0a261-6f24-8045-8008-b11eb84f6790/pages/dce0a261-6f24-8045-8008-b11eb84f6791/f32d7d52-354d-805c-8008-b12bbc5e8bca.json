@@ -1,0 +1,461 @@
+{
+  "id": "f32d7d52-354d-805c-8008-b12bbc5e8bca",
+  "name": "Text",
+  "type": "text",
+  "x": 38,
+  "y": 1841,
+  "width": 332.00000000000006,
+  "height": 72,
+  "rotation": 0,
+  "selrect": {
+    "x": 38,
+    "y": 1841,
+    "width": 332.00000000000006,
+    "height": 72,
+    "x1": 38,
+    "y1": 1841,
+    "x2": 370.00000000000006,
+    "y2": 1913
+  },
+  "points": [
+    {
+      "x": 38,
+      "y": 1841
+    },
+    {
+      "x": 370.00000000000006,
+      "y": 1841
+    },
+    {
+      "x": 370.00000000000006,
+      "y": 1913
+    },
+    {
+      "x": 38,
+      "y": 1913
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f32d7d52-354d-805c-8008-b12bbc50ca0e",
+  "frameId": "f32d7d52-354d-805c-8008-b12bbc50ca0e",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-height",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.6",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.6",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "15",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": "Profiles with AmneziaWG, Xray or both, issued as a "
+              },
+              {
+                "lineHeight": "1.6",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-jetbrains-mono",
+                "fontSize": "14",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "JetBrains Mono",
+                "text": ".conf"
+              },
+              {
+                "lineHeight": "1.6",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "15",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": ", an Amnezia "
+              },
+              {
+                "lineHeight": "1.6",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-jetbrains-mono",
+                "fontSize": "14",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "JetBrains Mono",
+                "text": "vpn://"
+              },
+              {
+                "lineHeight": "1.6",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "15",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": " key or a "
+              },
+              {
+                "lineHeight": "1.6",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-jetbrains-mono",
+                "fontSize": "14",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "JetBrains Mono",
+                "text": "vless://"
+              },
+              {
+                "lineHeight": "1.6",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "15",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": " link, each with a QR code."
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-inter-tight",
+            "fontSize": "15",
+            "fontWeight": "400",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "regular",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#1a1d23",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Inter Tight"
+          }
+        ]
+      }
+    ]
+  },
+  "layoutItemHSizing": "fill",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 38,
+      "y": 1862.09091091156,
+      "width": 328.82958984375,
+      "height": 18.181819915771484,
+      "x1": 0,
+      "y1": 2.909090995788574,
+      "x2": 328.82958984375,
+      "y2": 21.09091091156006,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "Profiles with AmneziaWG, Xray or both, issued as a "
+    },
+    {
+      "x": 38,
+      "y": 1886.818187713623,
+      "width": 42,
+      "height": 18.909095764160156,
+      "x1": 0,
+      "y1": 26.90909194946289,
+      "x2": 42,
+      "y2": 45.81818771362305,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"JetBrains Mono\"",
+      "text": ".conf"
+    },
+    {
+      "x": 80,
+      "y": 1886.0909118652344,
+      "width": 86,
+      "height": 18.181819915771484,
+      "x1": 42,
+      "y1": 26.90909194946289,
+      "x2": 128,
+      "y2": 45.090911865234375,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": ", an Amnezia "
+    },
+    {
+      "x": 166,
+      "y": 1886.818187713623,
+      "width": 50.40910339355469,
+      "height": 18.909095764160156,
+      "x1": 128,
+      "y1": 26.90909194946289,
+      "x2": 178.4091033935547,
+      "y2": 45.81818771362305,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"JetBrains Mono\"",
+      "text": "vpn://"
+    },
+    {
+      "x": 216.4091033935547,
+      "y": 1886.0909118652344,
+      "width": 57.3863525390625,
+      "height": 18.181819915771484,
+      "x1": 178.4091033935547,
+      "y1": 26.90909194946289,
+      "x2": 235.7954559326172,
+      "y2": 45.090911865234375,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": " key or a "
+    },
+    {
+      "x": 273.7954559326172,
+      "y": 1886.818187713623,
+      "width": 67.20454406738281,
+      "height": 18.909095764160156,
+      "x1": 235.7954559326172,
+      "y1": 26.90909194946289,
+      "x2": 303,
+      "y2": 45.81818771362305,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"JetBrains Mono\"",
+      "text": "vless://"
+    },
+    {
+      "x": 341,
+      "y": 1886.0909118652344,
+      "width": 3.522735595703125,
+      "height": 18.181819915771484,
+      "x1": 303,
+      "y1": 26.90909194946289,
+      "x2": 306.5227355957031,
+      "y2": 45.090911865234375,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": " "
+    },
+    {
+      "x": 38,
+      "y": 1910.0909118652344,
+      "width": 164.88636779785156,
+      "height": 18.181819915771484,
+      "x1": 0,
+      "y1": 50.90909194946289,
+      "x2": 164.88636779785156,
+      "y2": 69.09091186523438,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "link, each with a QR code."
+    }
+  ],
+  "pageId": "dce0a261-6f24-8045-8008-b11eb84f6791"
+}

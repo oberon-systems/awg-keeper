@@ -1,0 +1,486 @@
+{
+  "id": "f32d7d52-354d-805c-8008-b12ba17aaf11",
+  "name": "Paragraph",
+  "type": "text",
+  "x": 2026,
+  "y": 451.00000000000006,
+  "width": 768,
+  "height": 71.99999999999994,
+  "rotation": 0,
+  "selrect": {
+    "x": 2026,
+    "y": 451.00000000000006,
+    "width": 768,
+    "height": 71.99999999999994,
+    "x1": 2026,
+    "y1": 451.00000000000006,
+    "x2": 2794,
+    "y2": 523
+  },
+  "points": [
+    {
+      "x": 2026,
+      "y": 451.00000000000006
+    },
+    {
+      "x": 2794,
+      "y": 451.00000000000006
+    },
+    {
+      "x": 2794,
+      "y": 523
+    },
+    {
+      "x": 2026,
+      "y": 523
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f32d7d52-354d-805c-8008-b12ba0e2b0f3",
+  "frameId": "f32d7d52-354d-805c-8008-b12ba0e2b0f3",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-height",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.6",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.6",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "15",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": "Install "
+              },
+              {
+                "lineHeight": "1.6",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-jetbrains-mono",
+                "fontSize": "14",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "JetBrains Mono",
+                "text": "amneziawg-tools"
+              },
+              {
+                "lineHeight": "1.6",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "15",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": " and "
+              },
+              {
+                "lineHeight": "1.6",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-jetbrains-mono",
+                "fontSize": "14",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "JetBrains Mono",
+                "text": "amneziawg-go"
+              },
+              {
+                "lineHeight": "1.6",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "15",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": ". Each interface runs on "
+              },
+              {
+                "lineHeight": "1.6",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-jetbrains-mono",
+                "fontSize": "14",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "JetBrains Mono",
+                "text": "amneziawg-go"
+              },
+              {
+                "lineHeight": "1.6",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "15",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": ", which opens a control socket that only root may use. The Agent package puts a socket proxy in front of it, and that is how the Agent manages the interface without root."
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-inter-tight",
+            "fontSize": "15",
+            "fontWeight": "400",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "regular",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#1a1d23",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Inter Tight"
+          }
+        ]
+      }
+    ]
+  },
+  "layoutItemHSizing": "fill",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 2026,
+      "y": 472.0909109115601,
+      "width": 40.18182373046875,
+      "height": 18.181819915771484,
+      "x1": 0,
+      "y1": 2.909090995788574,
+      "x2": 40.18182373046875,
+      "y2": 21.09091091156006,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "Install "
+    },
+    {
+      "x": 2066.1818237304688,
+      "y": 472.8181829452515,
+      "width": 126,
+      "height": 18.90909194946289,
+      "x1": 40.18182373046875,
+      "y1": 2.909090995788574,
+      "x2": 166.18182373046875,
+      "y2": 21.818182945251465,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"JetBrains Mono\"",
+      "text": "amneziawg-tools"
+    },
+    {
+      "x": 2192.1818237304688,
+      "y": 472.0909109115601,
+      "width": 31.284088134765625,
+      "height": 18.181819915771484,
+      "x1": 166.18182373046875,
+      "y1": 2.909090995788574,
+      "x2": 197.46591186523438,
+      "y2": 21.09091091156006,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": " and "
+    },
+    {
+      "x": 2223.4659118652344,
+      "y": 472.8181829452515,
+      "width": 100.80682373046875,
+      "height": 18.90909194946289,
+      "x1": 197.46591186523438,
+      "y1": 2.909090995788574,
+      "x2": 298.2727355957031,
+      "y2": 21.818182945251465,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"JetBrains Mono\"",
+      "text": "amneziawg-go"
+    },
+    {
+      "x": 2324.272735595703,
+      "y": 472.0909109115601,
+      "width": 154.32955932617188,
+      "height": 18.181819915771484,
+      "x1": 298.2727355957031,
+      "y1": 2.909090995788574,
+      "x2": 452.602294921875,
+      "y2": 21.09091091156006,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": ". Each interface runs on "
+    },
+    {
+      "x": 2478.602294921875,
+      "y": 472.8181829452515,
+      "width": 100.806884765625,
+      "height": 18.90909194946289,
+      "x1": 452.602294921875,
+      "y1": 2.909090995788574,
+      "x2": 553.4091796875,
+      "y2": 21.818182945251465,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"JetBrains Mono\"",
+      "text": "amneziawg-go"
+    },
+    {
+      "x": 2579.4091796875,
+      "y": 472.0909109115601,
+      "width": 198.27264404296875,
+      "height": 18.181819915771484,
+      "x1": 553.4091796875,
+      "y1": 2.909090995788574,
+      "x2": 751.6818237304688,
+      "y2": 21.09091091156006,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": ", which opens a control socket "
+    },
+    {
+      "x": 2026,
+      "y": 496.09091186523443,
+      "width": 744.1136474609375,
+      "height": 18.181819915771484,
+      "x1": 0,
+      "y1": 26.90909194946289,
+      "x2": 744.1136474609375,
+      "y2": 45.090911865234375,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "that only root may use. The Agent package puts a socket proxy in front of it, and that is how the Agent manages the "
+    },
+    {
+      "x": 2026,
+      "y": 520.0909118652344,
+      "width": 141.727294921875,
+      "height": 18.181819915771484,
+      "x1": 0,
+      "y1": 50.90909194946289,
+      "x2": 141.727294921875,
+      "y2": 69.09091186523438,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "interface without root."
+    }
+  ],
+  "pageId": "dce0a261-6f24-8045-8008-b11eb84f6791"
+}

@@ -1,0 +1,248 @@
+{
+  "id": "f32d7d52-354d-805c-8008-b12bbc242123",
+  "name": "Paragraph",
+  "type": "text",
+  "x": 20,
+  "y": 1531,
+  "width": 350,
+  "height": 120,
+  "rotation": 0,
+  "selrect": {
+    "x": 20,
+    "y": 1531,
+    "width": 350,
+    "height": 120,
+    "x1": 20,
+    "y1": 1531,
+    "x2": 370,
+    "y2": 1651
+  },
+  "points": [
+    {
+      "x": 20,
+      "y": 1531
+    },
+    {
+      "x": 370,
+      "y": 1531
+    },
+    {
+      "x": 370,
+      "y": 1651
+    },
+    {
+      "x": 20,
+      "y": 1651
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f32d7d52-354d-805c-8008-b12bbbe8d29b",
+  "frameId": "f32d7d52-354d-805c-8008-b12bbbe8d29b",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-height",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.6",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.6",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "15",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": "You already run a VPN server. awg-keeper is what you use to give people access to it: create a profile for a person or a device, show them a QR code, turn the access off, reissue it, or take it away - from a browser, without editing configs on the server by hand."
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-inter-tight",
+            "fontSize": "15",
+            "fontWeight": "400",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "regular",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#1a1d23",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Inter Tight"
+          }
+        ]
+      }
+    ]
+  },
+  "layoutItemHSizing": "fill",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 20,
+      "y": 1552.09091091156,
+      "width": 323.7386474609375,
+      "height": 18.181819915771484,
+      "x1": 0,
+      "y1": 2.909090995788574,
+      "x2": 323.7386474609375,
+      "y2": 21.09091091156006,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "You already run a VPN server. awg-keeper is what "
+    },
+    {
+      "x": 20,
+      "y": 1576.0909118652344,
+      "width": 347.477294921875,
+      "height": 18.181819915771484,
+      "x1": 0,
+      "y1": 26.90909194946289,
+      "x2": 347.477294921875,
+      "y2": 45.090911865234375,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "you use to give people access to it: create a profile for "
+    },
+    {
+      "x": 20,
+      "y": 1600.0909118652344,
+      "width": 340.0113830566406,
+      "height": 18.181819915771484,
+      "x1": 0,
+      "y1": 50.90909194946289,
+      "x2": 340.0113830566406,
+      "y2": 69.09091186523438,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "a person or a device, show them a QR code, turn the "
+    },
+    {
+      "x": 20,
+      "y": 1624.0909118652344,
+      "width": 347.0340881347656,
+      "height": 18.18181610107422,
+      "x1": 0,
+      "y1": 74.90909576416016,
+      "x2": 347.0340881347656,
+      "y2": 93.09091186523438,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "access off, reissue it, or take it away - from a browser, "
+    },
+    {
+      "x": 20,
+      "y": 1648.0909118652344,
+      "width": 293.102294921875,
+      "height": 18.18181610107422,
+      "x1": 0,
+      "y1": 98.90909576416016,
+      "x2": 293.102294921875,
+      "y2": 117.09091186523438,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "15px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "without editing configs on the server by hand."
+    }
+  ],
+  "pageId": "dce0a261-6f24-8045-8008-b11eb84f6791"
+}

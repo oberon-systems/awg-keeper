@@ -1,0 +1,116 @@
+{
+  "id": "f32d7d52-354d-805c-8008-b12bd59ddd1a",
+  "name": "Content",
+  "type": "frame",
+  "x": 5050,
+  "y": 0,
+  "width": 880,
+  "height": 533,
+  "rotation": 0,
+  "selrect": {
+    "x": 5050,
+    "y": 0,
+    "width": 880,
+    "height": 533,
+    "x1": 5050,
+    "y1": 0,
+    "x2": 5930,
+    "y2": 533
+  },
+  "points": [
+    {
+      "x": 5050,
+      "y": 0
+    },
+    {
+      "x": 5930,
+      "y": 0
+    },
+    {
+      "x": 5930,
+      "y": 533
+    },
+    {
+      "x": 5050,
+      "y": 533
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "f32d7d52-354d-805c-8008-b12bd623106f",
+  "frameId": "f32d7d52-354d-805c-8008-b12bd623106f",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "layoutGapType": "multiple",
+  "layoutPadding": {
+    "p1": 32,
+    "p2": 56,
+    "p3": 40,
+    "p4": 56
+  },
+  "layoutWrapType": "nowrap",
+  "layout": "flex",
+  "hideInViewer": true,
+  "layoutAlignItems": "start",
+  "layoutPaddingType": "simple",
+  "r2": 0,
+  "showContent": true,
+  "layoutItemHSizing": "fix",
+  "proportionLock": false,
+  "layoutGap": {
+    "rowGap": 16,
+    "columnGap": 16
+  },
+  "pageId": "dce0a261-6f24-8045-8008-b11eb84f6791",
+  "layoutItemVSizing": "auto",
+  "r3": 0,
+  "layoutJustifyContent": "start",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "layoutFlexDir": "column",
+  "layoutAlignContent": "stretch",
+  "strokes": [
+    {
+      "strokeColor": "#d9dce1",
+      "strokeOpacity": 1,
+      "strokeAlignment": "inner",
+      "strokeWidth": 1
+    }
+  ],
+  "proportion": 1,
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#ffffff",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "f32d7d52-354d-805c-8008-b12bea8521c0",
+    "f32d7d52-354d-805c-8008-b12bea645693",
+    "f32d7d52-354d-805c-8008-b12bea5c635e",
+    "f32d7d52-354d-805c-8008-b12bea36b304",
+    "f32d7d52-354d-805c-8008-b12bea2f7928",
+    "f32d7d52-354d-805c-8008-b12bea0a169a",
+    "f32d7d52-354d-805c-8008-b12be9ff9dac",
+    "f32d7d52-354d-805c-8008-b12bd5d7cc8a",
+    "f32d7d52-354d-805c-8008-b12bd5d14179",
+    "f32d7d52-354d-805c-8008-b12bd5b110bb"
+  ]
+}
