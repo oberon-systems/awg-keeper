@@ -1,11 +1,11 @@
 # Runtime dependencies of the panel. Pinned: the artifact is a container image,
 # and an unpinned rebuild of the same tag would not be the same image.
-alembic==1.19.1
+alembic==1.20.0
 argon2-cffi==25.1.0
 fastapi==0.141.1
 httpx==0.28.1
 itsdangerous==2.2.0
 pydantic==2.13.5
 pydantic-settings==2.15.0
-sqlmodel==0.0.42
-uvicorn==0.52.4
+sqlmodel==0.0.45
+uvicorn==0.53.0
