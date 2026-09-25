@@ -1033,13 +1033,20 @@ tr.clickable {
   outline-offset: -1px;
 }
 
-.profiles-table th:nth-child(1) { width: 16.7%; }
-.profiles-table th:nth-child(2) { width: 8%; }
-.profiles-table th:nth-child(3) { width: 21.8%; }
-.profiles-table th:nth-child(4) { width: 16.7%; }
-.profiles-table th:nth-child(5) { width: 10.2%; }
-.profiles-table th:nth-child(6) { width: 8%; }
-.profiles-table th:nth-child(7) { width: 15.7%; }
+.panel table.profiles-table {
+  table-layout: auto;
+}
+
+.profiles-table th:nth-child(6),
+.profiles-table th:nth-child(7) {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.profiles-table .status-cell,
+.profiles-table .row-actions {
+  white-space: nowrap;
+}
 
 .status-cell {
   display: flex;
