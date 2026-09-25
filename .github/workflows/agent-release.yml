@@ -33,7 +33,7 @@ jobs:
             packager: deb
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Derive the version from the tag
         id: version
