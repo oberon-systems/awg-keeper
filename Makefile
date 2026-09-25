@@ -8,7 +8,7 @@ export PRE_COMMIT_HOME := $(CURDIR)/.pre-commit
 
 .DEFAULT_GOAL := shell
 
-.PHONY: help install lint test secrets kickstart clean shell
+.PHONY: help install lint test secrets kickstart docs docs-build clean shell
 
 help:  ## Show the available targets
 	@echo "awg-keeper"
@@ -37,6 +37,12 @@ secrets:  ## Mint the panel's secrets for a new deployment
 
 kickstart:  ## Bring up the whole product locally over a fake awg/xray host
 	$(MAKE) -C dev/stack kickstart
+
+docs:  ## Serve the documentation site on http://127.0.0.1:8003, reloading on edits
+	$(VENV)/bin/mkdocs serve --dev-addr 127.0.0.1:8003
+
+docs-build:  ## Build the documentation site into site/, as the Pages workflow does
+	$(VENV)/bin/mkdocs build
 
 clean:  ## Remove the virtualenv and the hook environments
 	rm -rf $(VENV) .pre-commit

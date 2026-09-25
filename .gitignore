@@ -34,3 +34,6 @@ agent.env
 *.sqlite*
 *.db
 /profiles/
+
+# MkDocs output
+site/

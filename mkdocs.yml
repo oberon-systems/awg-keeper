@@ -1,0 +1,31 @@
+# The documentation site: docs/ rendered with MkDocs' own readthedocs theme,
+# restyled after the panel. .github/workflows/docs.yml publishes it to Pages.
+site_name: awg-keeper
+site_url: https://oberon-systems.github.io/awg-keeper/
+repo_url: https://github.com/oberon-systems/awg-keeper
+edit_uri: blob/main/docs/
+
+docs_dir: docs
+site_dir: site
+strict: true
+
+# No nav: the pages are listed in file name order, which is why they are
+# numbered. The README is the home page, added by the hook. docs/.theme is
+# not published: MkDocs skips every path that starts with a dot.
+theme:
+  name: readthedocs
+  custom_dir: docs/.theme
+  collapse_navigation: false
+  navigation_depth: 2
+  # The code blocks are plain, as in the mockup, and nothing loads from a CDN.
+  highlightjs: false
+
+extra_css:
+  - assets/fonts.css
+  - assets/awg.css
+
+extra_javascript:
+  - assets/awg.js
+
+hooks:
+  - docs/.theme/hooks.py

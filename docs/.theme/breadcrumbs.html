@@ -1,0 +1,10 @@
+{#- The path and the edit link above the page, as in the mockup. #}
+<div class="awg-crumbs" role="navigation" aria-label="breadcrumbs navigation">
+  <span class="awg-path">
+    <a href="{{ nav.homepage.url|url }}">Docs</a>
+    {%- if page and not page.is_homepage %}<span class="awg-sep">/</span>{{ page.title }}{%- endif %}
+  </span>
+  {%- if page and page.edit_url %}
+  <a class="awg-edit" href="{{ page.edit_url }}">Edit on GitHub</a>
+  {%- endif %}
+</div>
