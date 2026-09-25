@@ -1,3 +1,9 @@
+## awg-keeper-web-v0.6.0 (2026-09-25)
+
+### Features
+
+- **web**: issue amnezia keys, toggle and reroll profiles
+
 ## awg-keeper-web-v0.5.0 (2026-09-23)
 
 ### Features
