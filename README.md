@@ -54,6 +54,7 @@ interfaces, Xray inbounds and firewall rules stay yours.
 - [Installation](docs/02-installation.md) - the Agent package and the Panel container.
 - [Configuration](docs/03-configuration.md) - every setting of both.
 - [Usage](docs/04-usage.md) - interfaces, profiles, issued configs and stats.
+- [Phone setup](docs/05-clients.md) - putting a profile on Android or iPhone.
 - [Design](DESIGN.md) - architecture and threat model.
 - [Roadmap](ROADMAP.md) - what is built and what is next.
 - [Contributing](CONTRIBUTING.md) - working on the code.
