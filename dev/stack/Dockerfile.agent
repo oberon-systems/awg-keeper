@@ -4,7 +4,7 @@
 #
 # The build context is the repository root, because the fake host is built
 # here from the agent's own test fixtures.
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
