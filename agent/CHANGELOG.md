@@ -1,3 +1,15 @@
+## awg-keeper-agent-v0.5.0 (2026-09-25)
+
+### Features
+
+- **agent**: set amneziawg 3.1 obfuscation, rename xray clients
+
+### Build
+
+- **deps**: fit eslint 10 and python 3.14
+- **deps**: Update uv-build requirement in /agent (#13)
+- **deps**: Bump the pip group across 3 directories with 4 updates (#12)
+
 ## awg-keeper-agent-v0.4.0 (2026-09-23)
 
 ### Features
