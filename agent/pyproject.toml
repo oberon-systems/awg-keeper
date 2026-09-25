@@ -2,7 +2,7 @@
 name = "awg-keeper-agent"
 version = "0.4.0"
 description = "Host-side executor for awg-keeper: AmneziaWG peers and Xray users"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 authors = [
     { name = "zombig", email = "me@zombig.name" }
 ]
@@ -18,8 +18,9 @@ classifiers = [
     "Environment :: No Input/Output (Daemon)",
     "Framework :: FastAPI",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "License :: OSI Approved :: MIT License",
     "Operating System :: POSIX :: Linux",
     "Topic :: System :: Networking",

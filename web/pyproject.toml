@@ -2,7 +2,7 @@
 name = "awg-keeper-panel"
 version = "0.6.0"
 description = "Panel for awg-keeper: the web UI, the database and the source of truth"
-requires-python = ">=3.11"
+requires-python = ">=3.14"
 authors = [
     { name = "zombig", email = "me@zombig.name" }
 ]
@@ -23,6 +23,7 @@ classifiers = [
     "Environment :: Web Environment",
     "Framework :: FastAPI",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
     "License :: OSI Approved :: MIT License",
     "Operating System :: POSIX :: Linux",
     "Topic :: System :: Networking",

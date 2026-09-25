@@ -28,7 +28,7 @@ A client/server toolset for managing user profiles for AmneziaWG and Xray + Real
 
 ## Tech
 
-- Python 3.11+ (EL10 and Debian 13 both ship ≥3.12)
+- Python: the Agent 3.12+ (the Python EL10 and Debian 13 ship), the Panel 3.14 (its image)
 - FastAPI + Pydantic v2, SQLAlchemy + Alembic, SQLite (WAL)
 - SPA: TypeScript + Vite, built into the Panel image and served as static files
 

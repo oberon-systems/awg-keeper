@@ -13,7 +13,7 @@ and releases.
 
 ## Setup
 
-You need Python 3.11 or newer, Docker and git.
+You need Python 3.12 or newer, Docker and git.
 
 ```bash
 make install

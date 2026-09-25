@@ -1,4 +1,4 @@
-target-version = "py311"
+target-version = "py312"
 line-length = 88
 # Each component lives under a src root of its own, so isort is told where the
 # first-party `awg_agent` and `awg_panel` packages are. Setting this replaces
