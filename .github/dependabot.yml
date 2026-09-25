@@ -1,0 +1,52 @@
+# Weekly update pull requests for every dependency the repository pins: the
+# Python requirements of both components and the tooling, the interface's npm
+# packages, the base images and the GitHub Actions. Minor and patch updates of
+# one ecosystem come as a single pull request.
+version: 2
+
+updates:
+  - package-ecosystem: pip
+    directories:
+      - "/"
+      - "/agent"
+      - "/web"
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "[build][deps]"
+    groups:
+      pip:
+        update-types: [minor, patch]
+
+  - package-ecosystem: npm
+    directory: "/web/ui"
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "[build][deps]"
+    groups:
+      npm:
+        update-types: [minor, patch]
+
+  - package-ecosystem: docker
+    directories:
+      - "/web"
+      - "/agent/packaging"
+      - "/dev/stack"
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "[build][deps]"
+    groups:
+      docker:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "[build][deps]"
+    groups:
+      github-actions:
+        update-types: [minor, patch]
