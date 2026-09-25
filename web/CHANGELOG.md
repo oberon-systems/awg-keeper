@@ -1,3 +1,22 @@
+## awg-keeper-web-v0.7.0 (2026-09-25)
+
+### Features
+
+- **web**: edit profiles and obfuscation, mark rerolls
+
+### Build
+
+- **deps**: fit eslint 10 and python 3.14
+- **web**: bump version 0.5.0 -> 0.6.0
+- **deps**: Update uv-build requirement in /web
+- **deps**: Bump the pip group across 3 directories with 4 updates (#12)
+- **deps**: Bump vite from 6.4.3 to 8.3.0 in /web/ui (#11)
+- **deps**: Bump eslint from 9.39.5 to 10.11.0 in /web/ui
+- **deps**: Bump @vitejs/plugin-react from 4.7.0 to 6.1.1 in /web/ui
+- **deps**: Bump the npm group in /web/ui with 6 updates
+- **deps**: Bump node from 22-alpine to 25-alpine in /web
+- **deps**: Bump the docker group across 2 directories with 1 update
+
 ## awg-keeper-web-v0.6.0 (2026-09-25)
 
 ### Features
