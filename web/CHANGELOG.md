@@ -1,3 +1,9 @@
+## awg-keeper-web-v0.7.1 (2026-09-25)
+
+### Bug Fixes
+
+- **web**: size the profile status and actions by content
+
 ## awg-keeper-web-v0.7.0 (2026-09-25)
 
 ### Features
