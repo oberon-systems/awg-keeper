@@ -68,6 +68,14 @@ class XrayUserCreate(BaseModel):
     level: int = Field(default=0, ge=0)
 
 
+class XrayUserRename(BaseModel):
+    """The new email tag of a client; its id and flow stay."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    email: str
+
+
 class XrayTransport(BaseModel):
     """What a client link needs from an inbound; never the Reality private key."""
 

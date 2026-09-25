@@ -148,3 +148,98 @@ def test_a_failing_binary_becomes_a_command_error(
     with pytest.raises(CommandError) as caught:
         awg.show(settings, "awg0")
     assert "Operation not permitted" in caught.value.stderr
+
+
+HEADER_KEY = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+V31 = {
+    "s1": "40",
+    "s2": "120",
+    "s3": "24",
+    "s4": "16",
+    "h1": "100000-199999",
+    "h2": "200000-299999",
+    "h3": "300000-399999",
+    "h4": "400000",
+    "header-protection-key": HEADER_KEY,
+    "content-padding-addition": "2-10",
+    "random-trailers": "on",
+}
+
+
+def test_probe_reads_the_31_fields_but_never_the_key(
+    settings: Settings, host: Path
+) -> None:
+    awg.set_obfuscation(settings, "awg0", V31)
+    found, _ = awg.probe(settings)
+    assert found[0].obfuscation["content-padding-addition"] == "2-10"
+    assert found[0].obfuscation["random-trailers"] == "on"
+    assert "header-protection-key" not in found[0].obfuscation
+    assert "disable-cookies" not in found[0].obfuscation
+
+
+def test_obfuscation_carries_the_key(settings: Settings) -> None:
+    awg.set_obfuscation(settings, "awg0", V31)
+    found = awg.obfuscation(settings, "awg0")
+    assert found["header-protection-key"] == HEADER_KEY
+    assert found["h1"] == "100000-199999"
+    assert found["jc"] == OBFUSCATION["jc"]
+
+
+def test_the_key_goes_through_stdin_never_argv(settings: Settings, host: Path) -> None:
+    awg.set_obfuscation(settings, "awg0", V31)
+    sets = [line for line in argv_log(host) if line[:1] == ["set"]]
+    assert len(sets) == 1
+    assert sets[0][-2:] == ["header-protection-key", "/dev/stdin"]
+    assert HEADER_KEY not in "\t".join(sets[0])
+
+
+def test_an_unchanged_set_touches_nothing(settings: Settings, host: Path) -> None:
+    awg.set_obfuscation(settings, "awg0", {"jc": OBFUSCATION["jc"]})
+    assert not [line for line in argv_log(host) if line[:1] == ["set"]]
+
+
+@pytest.mark.parametrize(
+    "broken",
+    [
+        {**V31, "h2": "150000-250000"},
+        {**V31, "s4": "11"},
+        {**V31, "random-trailers": "yes"},
+        {**V31, "i1": "<b 0xc0ff><c>"},
+        {**V31, "rekey-timeout": "9-3"},
+        {"h1": "100000"},
+        {"itime": "60"},
+    ],
+)
+def test_a_set_awg_would_refuse_is_refused_before_it(
+    settings: Settings, host: Path, broken: dict[str, str]
+) -> None:
+    with pytest.raises(ValueError):
+        awg.set_obfuscation(settings, "awg0", broken)
+    assert not [line for line in argv_log(host) if line[:1] == ["set"]]
+
+
+def test_persist_moves_only_the_obfuscation_lines(settings: Settings) -> None:
+    target = settings.awg_conf_dir / "awg0.conf"
+    target.write_text(
+        "[Interface]\n"
+        "Address = 10.8.0.1/24\n"
+        "ListenPort = 51820\n"
+        "PrivateKey = kept\n"
+        "MTU = 1280\n"
+        "Jc = 3\n"
+        "S1 = 99\n"
+        "\n"
+        "[Peer]\n"
+        f"PublicKey = {KEY_A}\n"
+        "AllowedIPs = 10.8.0.2/32\n",
+        encoding="utf-8",
+    )
+    awg.set_obfuscation(settings, "awg0", V31)
+    written = target.read_text(encoding="utf-8")
+    for line in ("Address = 10.8.0.1/24", "PrivateKey = kept", "MTU = 1280"):
+        assert f"{line}\n" in written
+    assert f"Jc = {OBFUSCATION['jc']}\n" in written
+    assert "S1 = 40\n" in written and "S1 = 99" not in written
+    assert f"HeaderProtectionKey = {HEADER_KEY}\n" in written
+    assert "ContentPaddingAddition = 2-10\n" in written
+    assert written.count("[Peer]") == 1

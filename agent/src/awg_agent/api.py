@@ -25,6 +25,7 @@ from awg_agent.models import (
     XrayStats,
     XrayUser,
     XrayUserCreate,
+    XrayUserRename,
 )
 
 LOG = logging.getLogger(__name__)
@@ -127,6 +128,21 @@ def remove_peer(request: Request, iface: str, public_key: str) -> Response:
     return Response(status_code=204)
 
 
+@private.get("/awg/{iface}/obfuscation")
+def show_obfuscation(request: Request, iface: str) -> dict[str, str]:
+    """Every obfuscation value, the header protection key included."""
+    return awg.obfuscation(settings_of(request), iface)
+
+
+@private.patch("/awg/{iface}/obfuscation")
+def set_obfuscation(
+    request: Request, iface: str, body: dict[str, str | int]
+) -> dict[str, str]:
+    """Change obfuscation values on the live interface and persist them."""
+    values = {name: str(value) for name, value in body.items()}
+    return awg.set_obfuscation(settings_of(request), iface, values)
+
+
 @private.get("/xray/stats")
 def xray_stats(request: Request) -> XrayStats:
     """Traffic counters and online addresses per Xray client."""
@@ -156,6 +172,14 @@ def add_user(request: Request, inbound: str, body: XrayUserCreate) -> XrayUser:
 def show_user(request: Request, inbound: str, email: str) -> XrayUser:
     """One client, by email tag."""
     return xray.show_user(settings_of(request), inbound, email)
+
+
+@private.patch("/xray/{inbound}/users/{email}")
+def rename_user(
+    request: Request, inbound: str, email: str, body: XrayUserRename
+) -> XrayUser:
+    """Give one client a new email tag."""
+    return xray.rename_user(settings_of(request), inbound, email, body.email)
 
 
 @private.delete("/xray/{inbound}/users/{email}", status_code=204)

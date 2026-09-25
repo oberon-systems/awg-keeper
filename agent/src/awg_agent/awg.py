@@ -21,27 +21,31 @@ LOG = logging.getLogger(__name__)
 NONE = "(none)"
 OFF = "off"
 
-OBFUSCATION_FIELDS = (
-    "jc",
-    "jmin",
-    "jmax",
-    "s1",
-    "s2",
-    "s3",
-    "s4",
-    "h1",
-    "h2",
-    "h3",
-    "h4",
-    "i1",
-    "i2",
-    "i3",
-    "i4",
-    "i5",
-)
-UNSET = frozenset({"", "0", "(null)", NONE})
-# What `awg show` reports for a header nobody set: plain WireGuard's message types.
-DEFAULT_HEADERS = {"h1": "1", "h2": "2", "h3": "3", "h4": "4"}
+# The order of `awg show <iface> dump`, in the names `awg set` takes.
+OBFUSCATION_FIELDS = validate.OBFUSCATION
+# `awg show <iface>` spells the 3.1 ones out, and masks the key.
+SHOWN = {name.replace("-", " "): name for name in OBFUSCATION_FIELDS}
+# The [Interface] keys awg-quick reads the same values from.
+CONFIG_KEYS = {
+    **{name: name.upper() for name in ("s1", "s2", "s3", "s4", "h1", "h2", "h3", "h4")},
+    **{name: name.upper() for name in validate.SIGNATURES},
+    "jc": "Jc",
+    "jmin": "Jmin",
+    "jmax": "Jmax",
+    **{
+        name: "".join(part.title() for part in name.split("-"))
+        for name in (validate.HEADER_PROTECTION, *validate.RANGES, *validate.SWITCHES)
+    },
+}
+UNSET = frozenset({"", "0", "(null)", "(hidden)", NONE})
+# What awg reports for a value nobody set: plain WireGuard's.
+DEFAULTS = {
+    "h1": "1",
+    "h2": "2",
+    "h3": "3",
+    "h4": "4",
+    **{name: OFF for name in validate.SWITCHES},
+}
 
 
 class UnknownPeer(LookupError):
@@ -115,16 +119,65 @@ def _obfuscation(settings: Settings, name: str) -> dict[str, str]:
         return {}
     found = {}
     for line in shown.splitlines():
-        field, _, value = line.strip().partition(": ")
-        if field == "peer":
+        label, _, value = line.strip().partition(": ")
+        if label == "peer":
             break
-        value = value.strip()
-        if field not in OBFUSCATION_FIELDS or value in UNSET:
-            continue
-        if DEFAULT_HEADERS.get(field) == value:
-            continue
-        found[field] = value
-    return found
+        field = SHOWN.get(label)
+        if field and field != validate.HEADER_PROTECTION:
+            found[field] = value.strip()
+    return _set(found)
+
+
+def _set(found: dict[str, str]) -> dict[str, str]:
+    return {
+        name: value
+        for name, value in found.items()
+        if value not in UNSET and DEFAULTS.get(name) != value
+    }
+
+
+def obfuscation(settings: Settings, iface: str) -> dict[str, str]:
+    """Every obfuscation value of the interface, the header protection key included."""
+    name = validate.interface(iface, settings.interfaces)
+    dump = run([settings.awg_bin, "show", name, "dump"], settings.command_timeout)
+    lines = dump.splitlines()
+    head = lines[0].split("\t") if lines else []
+    # Private key, public key and port first, fwmark last.
+    return _set(dict(zip(OBFUSCATION_FIELDS, head[3:-1], strict=False)))
+
+
+def set_obfuscation(
+    settings: Settings, iface: str, values: dict[str, str]
+) -> dict[str, str]:
+    """Change obfuscation values on the live interface and persist them.
+
+    A value can be changed but not removed: `awg set` has no way to unset one.
+    """
+    name = validate.interface(iface, settings.interfaces)
+    current = obfuscation(settings, name)
+    asked = {field: str(value).strip() for field, value in values.items()}
+    if all(current.get(field) == value for field, value in asked.items()):
+        return current
+    merged = validate.obfuscation({**current, **asked})
+    changed = {
+        field: merged[field]
+        for field in OBFUSCATION_FIELDS
+        if field in asked and current.get(field) != merged[field]
+    }
+    if not changed:
+        return current
+
+    argv = [settings.awg_bin, "set", name]
+    secret = changed.pop(validate.HEADER_PROTECTION, None)
+    for field, value in changed.items():
+        argv += [field, value]
+    if secret:
+        # awg reads the key from a file, as it does the private one.
+        argv += [validate.HEADER_PROTECTION, "/dev/stdin"]
+    run(argv, settings.command_timeout, stdin=f"{secret}\n" if secret else None)
+
+    persist(settings, name)
+    return obfuscation(settings, name)
 
 
 def _addresses(settings: Settings, name: str) -> list[str]:
@@ -306,6 +359,20 @@ def remove_peer(settings: Settings, iface: str, public_key: str) -> None:
     persist(settings, name)
 
 
+def _key(line: str) -> str:
+    return line.partition("=")[0].strip()
+
+
+def _head(kept: str, shown: str) -> str:
+    """Put the obfuscation lines awg shows into the file's own head."""
+    keys = set(CONFIG_KEYS.values())
+    fresh = [line for line in shown.splitlines() if _key(line) in keys]
+    if not fresh:
+        return kept
+    lines = [line for line in kept.splitlines() if _key(line) not in keys]
+    return "\n".join([*lines, *fresh]) + "\n"
+
+
 def _split(config: str) -> tuple[str, str]:
     lines = config.splitlines(keepends=True)
     for index, line in enumerate(lines):
@@ -318,7 +385,8 @@ def persist(settings: Settings, iface: str) -> Path | None:
     """Write the peers awg shows into the interface file, so they survive a reboot.
 
     The file's own [Interface] section is kept: `awg showconf` knows nothing of
-    Address, DNS, MTU or PostUp, and awg-quick needs every one of them.
+    Address, DNS, MTU or PostUp, and awg-quick needs every one of them. Only
+    its obfuscation lines follow the live interface.
     """
     name = validate.interface(iface, settings.interfaces)
     directory = settings.awg_conf_dir
@@ -333,7 +401,8 @@ def persist(settings: Settings, iface: str) -> Path | None:
         shown = run([settings.awg_bin, "showconf", name], settings.command_timeout)
         head, peers = _split(shown)
         if target.exists():
-            head, _ = _split(target.read_text(encoding="utf-8"))
+            kept, _ = _split(target.read_text(encoding="utf-8"))
+            head = _head(kept, head)
         config = head.rstrip("\n") + "\n" + (f"\n{peers}" if peers else "")
         staging.write_text(config, encoding="utf-8")
         os.chmod(staging, 0o600)

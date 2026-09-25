@@ -54,7 +54,25 @@ if os.environ.get("FAKE_AWG_FAIL"):
 FIELDS = (
     "jc", "jmin", "jmax", "s1", "s2", "s3", "s4",
     "h1", "h2", "h3", "h4", "i1", "i2", "i3", "i4", "i5",
+    "header-protection-key", "content-padding-addition", "rekey-after-time",
+    "rekey-timeout", "reject-after-time", "keepalive-timeout",
+    "max-handshake-attempts", "random-trailers", "disable-cookies",
 )
+KEYS = {"jc": "Jc", "jmin": "Jmin", "jmax": "Jmax"}
+
+
+def unset(name):
+    if name in ("h1", "h2", "h3", "h4"):
+        return name[1]
+    if name[0] == "i" and len(name) == 2:
+        return "(null)"
+    if name == "header-protection-key":
+        return "(none)"
+    return "off" if name in ("random-trailers", "disable-cookies") else "0"
+
+
+def conf_key(name):
+    return KEYS.get(name) or "".join(part.title() for part in name.split("-"))
 
 
 def save():
@@ -80,8 +98,10 @@ elif len(argv) == 2 and argv[0] == "show":
     print("  private key: (hidden)")
     print("  listening port: %d" % iface["listen_port"])
     for name in FIELDS:
-        if name in iface.get("obfuscation", {}):
-            print("  %s: %s" % (name, iface["obfuscation"][name]))
+        value = iface.get("obfuscation", {}).get(name, unset(name))
+        if name == "header-protection-key" and value != "(none)":
+            value = "(hidden)"
+        print("  %s: %s" % (name.replace("-", " "), value))
     for key, peer in iface["peers"].items():
         print("")
         print("peer: %s" % key)
@@ -89,11 +109,7 @@ elif len(argv) == 2 and argv[0] == "show":
 elif len(argv) == 3 and argv[0] == "show" and argv[2] == "dump":
     iface = state[argv[1]]
     obfuscation = iface.get("obfuscation", {})
-    defaults = {"h1": "1", "h2": "2", "h3": "3", "h4": "4"}
-    columns = [
-        obfuscation.get(name, defaults.get(name, "(null)" if name[0] == "i" else "0"))
-        for name in FIELDS
-    ]
+    columns = [obfuscation.get(name, unset(name)) for name in FIELDS]
     head = ["(none)", iface["public_key"], str(iface["listen_port"]), *columns]
     print("\\t".join([*head, iface.get("fwmark", "off")]))
     for key, peer in iface["peers"].items():
@@ -111,6 +127,8 @@ elif argv[:1] == ["showconf"]:
     iface = state[argv[1]]
     print("[Interface]")
     print("ListenPort = %d" % iface["listen_port"])
+    for name, value in iface.get("obfuscation", {}).items():
+        print("%s = %s" % (conf_key(name), value))
     for key, peer in iface["peers"].items():
         print("")
         print("[Peer]")
@@ -129,6 +147,17 @@ elif argv[:1] == ["set"] and argv[2] == "peer":
                 peer["allowed_ips"] = value
             elif name == "persistent-keepalive":
                 peer["keepalive"] = int(value)
+    save()
+elif argv[:1] == ["set"]:
+    iface = state[argv[1]]
+    rest = argv[2:]
+    for name, value in zip(rest[::2], rest[1::2]):
+        if name not in FIELDS:
+            sys.stderr.write("Invalid argument: %s\\n" % name)
+            sys.exit(1)
+        if name == "header-protection-key":
+            value = (sys.stdin if value == "/dev/stdin" else open(value)).read().strip()
+        iface.setdefault("obfuscation", {})[name] = value
     save()
 else:
     sys.stderr.write("awg: unknown command %s\\n" % argv)

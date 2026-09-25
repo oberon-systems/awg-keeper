@@ -294,6 +294,38 @@ def remove_user(settings: Settings, tag: str, address: str) -> None:
         raise CommandError([str(settings.xray_config)], f"unwritable: {exc}") from exc
 
 
+def rename_user(settings: Settings, tag: str, address: str, renamed: str) -> XrayUser:
+    """Give a client a new email tag, keeping its id, flow and level."""
+    name = validate.inbound(tag)
+    wanted = validate.email(address)
+    fresh = validate.email(renamed)
+
+    document = _document(settings)
+    inbound = _inbound(document, name)
+    clients = _clients(inbound)
+    client = next((item for item in clients if item.get("email") == wanted), None)
+    if client is None:
+        raise UnknownUser(wanted)
+    if fresh == wanted:
+        return _user(client)
+    if any(item.get("email") == fresh for item in clients):
+        raise DuplicateUser(fresh)
+
+    protocol = inbound.get("protocol", "")
+    _call_remove(settings, name, wanted)
+    try:
+        _call_add(settings, name, protocol, {**client, "email": fresh})
+    except CommandError:
+        _call_add(settings, name, protocol, client)
+        raise
+    client["email"] = fresh
+    try:
+        _write(settings, document)
+    except OSError as exc:
+        raise CommandError([str(settings.xray_config)], f"unwritable: {exc}") from exc
+    return _user(client)
+
+
 def _call_add(
     settings: Settings,
     tag: str,

@@ -24,7 +24,12 @@ class CommandError(RuntimeError):
         self.stderr = stderr
 
 
-def run(argv: list[str], timeout: float = 10.0, secret: str | None = None) -> str:
+def run(
+    argv: list[str],
+    timeout: float = 10.0,
+    secret: str | None = None,
+    stdin: str | None = None,
+) -> str:
     """Run a command and return its stdout, raising CommandError otherwise."""
     # The secret still reaches the process; only the log and the error lose it.
     shown = [("***" if secret and item == secret else item) for item in argv]
@@ -34,6 +39,7 @@ def run(argv: list[str], timeout: float = 10.0, secret: str | None = None) -> st
             argv,
             capture_output=True,
             check=False,
+            input=stdin,
             text=True,
             timeout=timeout,
         )

@@ -183,10 +183,17 @@ migration later, even though v1 accepts a single agent.
 
 ### Obfuscation parameters
 
-`Jc`, `Jmin`, `Jmax`, `S1`, `S2`, `H1`–`H4` (plus `I1`–`I5`/`Itime` on newer
-builds) must be **identical** on both ends. They are stored per interface and
-emitted into every client config. A config missing them looks correct and never
-completes a handshake — this is the single most common failure.
+`Jc`, `Jmin`, `Jmax`, `S1`–`S4`, `H1`–`H4` (numbers or `a-b` ranges), `I1`–`I5`
+and the AmneziaWG 3.1 set (`HeaderProtectionKey`, `ContentPaddingAddition`, the
+timer ranges, `RandomTrailers`, `DisableCookies`) must be **identical** on both
+ends. They are stored per interface and emitted into every client config. A
+config missing them looks correct and never completes a handshake — this is the
+single most common failure.
+
+The Panel edits them through the agent, which applies them live with one
+`awg set` and writes them into the `[Interface]` head of the file; the header
+protection key goes to awg on stdin, never in argv. A value can be changed, not
+removed. Every profile issued before the change needs a reroll.
 
 ### IP allocation
 
@@ -205,6 +212,9 @@ with a new profile.
 | GET    | `/state`                | actual peers, users, stats        |
 | PUT    | `/awg/{iface}/peers`    | full desired peer set, idempotent |
 | PUT    | `/xray/{inbound}/users` | full desired user set, idempotent |
+| GET    | `/awg/{iface}/obfuscation` | every obfuscation value, the key included |
+| PATCH  | `/awg/{iface}/obfuscation` | change values live and persist them |
+| PATCH  | `/xray/{inbound}/users/{email}` | rename a client, id kept |
 
 **Panel** (`/api/v1`, session cookie): `auth/*`, `profiles`, `profiles/{id}/awg`,
 `profiles/{id}/xray`, `nodes`, `nodes/{id}/drift`, `audit`, `stats`.

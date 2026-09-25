@@ -162,3 +162,27 @@ def test_removing_an_absent_user_leaves_xray_alone(
     with pytest.raises(xray.UnknownUser):
         xray.remove_user(settings, "vless-in", "absent@node")
     assert argv_log(host, "xray") == []
+
+
+def test_a_rename_keeps_the_id_and_moves_the_tag(
+    settings: Settings, host: Path
+) -> None:
+    user = xray.rename_user(settings, "vless-in", "one@node", "two@node")
+    assert (user.email, user.id) == ("two@node", UUID_A)
+    saved = json.loads(settings.xray_config.read_text(encoding="utf-8"))
+    assert saved["inbounds"][0]["settings"]["clients"][0]["email"] == "two@node"
+    calls = [argv[1] for argv in argv_log(host, "xray") if argv[0] == "api"]
+    assert calls == ["rmu", "adu"]
+    payload = json.loads((host / "adu.json").read_text(encoding="utf-8"))
+    assert payload["inbounds"][0]["settings"]["clients"][0]["id"] == UUID_A
+
+
+def test_a_rename_onto_a_taken_tag_is_refused(settings: Settings) -> None:
+    xray.add_user(settings, "vless-in", UUID_B, "two@node")
+    with pytest.raises(xray.DuplicateUser):
+        xray.rename_user(settings, "vless-in", "one@node", "two@node")
+
+
+def test_a_rename_of_an_unknown_client_is_refused(settings: Settings) -> None:
+    with pytest.raises(xray.UnknownUser):
+        xray.rename_user(settings, "vless-in", "nobody@node", "two@node")
