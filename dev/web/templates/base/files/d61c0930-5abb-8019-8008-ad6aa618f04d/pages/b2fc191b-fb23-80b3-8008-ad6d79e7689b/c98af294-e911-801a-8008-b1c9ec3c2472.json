@@ -1,0 +1,147 @@
+{
+  "id": "c98af294-e911-801a-8008-b1c9ec3c2472",
+  "name": "Title",
+  "type": "text",
+  "x": 8248,
+  "y": 526,
+  "width": 126,
+  "height": 24,
+  "rotation": 0,
+  "selrect": {
+    "x": 8248,
+    "y": 526,
+    "width": 126,
+    "height": 24,
+    "x1": 8248,
+    "y1": 526,
+    "x2": 8374,
+    "y2": 550
+  },
+  "points": [
+    {
+      "x": 8248,
+      "y": 526
+    },
+    {
+      "x": 8374,
+      "y": 526
+    },
+    {
+      "x": 8374,
+      "y": 550
+    },
+    {
+      "x": 8248,
+      "y": 550
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "c98af294-e911-801a-8008-b1c9ec3c2470",
+  "frameId": "c98af294-e911-801a-8008-b1c9ec3c2470",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-width",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "20",
+                "fontWeight": "700",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "700",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": "Are you sure?"
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-inter-tight",
+            "fontSize": "20",
+            "fontWeight": "700",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "700",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#1a1d23",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Inter Tight"
+          }
+        ]
+      }
+    ]
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 8248,
+      "y": 549.9999992847443,
+      "width": 125.88636779785156,
+      "height": 24.727272033691406,
+      "x1": 0,
+      "y1": -0.7272727489471436,
+      "x2": 125.88636779785156,
+      "y2": 23.999999284744263,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "20px",
+      "fontWeight": "700",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "Are you sure?"
+    }
+  ]
+}

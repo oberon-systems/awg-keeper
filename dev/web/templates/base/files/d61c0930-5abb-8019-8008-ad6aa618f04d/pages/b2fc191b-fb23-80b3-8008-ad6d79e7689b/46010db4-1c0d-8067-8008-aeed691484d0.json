@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 4652,
       "y": 1603.199999988079,
-      "width": 78.57500457763672,
-      "height": 16,
-      "x1": 0,
-      "y1": -0.800000011920929,
-      "x2": 78.57500457763672,
-      "y2": 15.199999988079071,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "500",
+      "y1": -0.800000011920929,
+      "width": 78.57500457763672,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 4652,
+      "x1": 0,
+      "y2": 15.199999988079071,
       "fills": [
         {
           "fillColor": "#2f6feb",
           "fillOpacity": 1
         }
       ],
+      "x2": 78.57500457763672,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 16,
       "text": "\u2190 Dashboard"
     }
   ]

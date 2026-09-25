@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 3832,
       "y": 2604.2727279663086,
-      "width": 65.88636779785156,
-      "height": 15.272727966308594,
-      "x1": 0,
-      "y1": 0,
-      "x2": 65.88636779785156,
-      "y2": 15.272727966308594,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "500",
+      "y1": 0,
+      "width": 65.88636779785156,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 3832,
+      "x1": 0,
+      "y2": 15.272727966308594,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 65.88636779785156,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.272727966308594,
       "text": "Xray clients"
     }
   ]

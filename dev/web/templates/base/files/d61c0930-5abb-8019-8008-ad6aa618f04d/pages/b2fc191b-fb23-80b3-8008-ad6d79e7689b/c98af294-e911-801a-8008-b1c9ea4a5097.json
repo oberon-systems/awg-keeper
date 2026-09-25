@@ -1,0 +1,147 @@
+{
+  "id": "c98af294-e911-801a-8008-b1c9ea4a5097",
+  "name": "Label",
+  "type": "text",
+  "x": 7732,
+  "y": 88,
+  "width": 79,
+  "height": 16,
+  "rotation": 0,
+  "selrect": {
+    "x": 7732,
+    "y": 88,
+    "width": 79,
+    "height": 16,
+    "x1": 7732,
+    "y1": 88,
+    "x2": 7811,
+    "y2": 104
+  },
+  "points": [
+    {
+      "x": 7732,
+      "y": 88
+    },
+    {
+      "x": 7811,
+      "y": 88
+    },
+    {
+      "x": 7811,
+      "y": 104
+    },
+    {
+      "x": 7732,
+      "y": 104
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "c98af294-e911-801a-8008-b1c9ea4a5096",
+  "frameId": "c98af294-e911-801a-8008-b1c9ea4a5096",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-width",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "13",
+                "fontWeight": "500",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "500",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#2f6feb",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": "\u2190 Dashboard"
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-inter-tight",
+            "fontSize": "13",
+            "fontWeight": "500",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "500",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#2f6feb",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Inter Tight"
+          }
+        ]
+      }
+    ]
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 7732,
+      "y": 103.2727279663086,
+      "width": 78.51136779785156,
+      "height": 15.272727966308594,
+      "x1": 0,
+      "y1": 0,
+      "x2": 78.51136779785156,
+      "y2": 15.272727966308594,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "13px",
+      "fontWeight": "500",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#2f6feb",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "\u2190 Dashboard"
+    }
+  ]
+}

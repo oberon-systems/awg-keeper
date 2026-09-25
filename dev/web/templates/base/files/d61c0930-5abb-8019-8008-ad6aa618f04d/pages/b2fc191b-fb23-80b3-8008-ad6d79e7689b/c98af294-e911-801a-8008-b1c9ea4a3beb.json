@@ -1,0 +1,150 @@
+{
+  "id": "c98af294-e911-801a-8008-b1c9ea4a3beb",
+  "name": "Section Junk packets",
+  "type": "text",
+  "x": 8088,
+  "y": 244.00000000000003,
+  "width": 83,
+  "height": 13.999999999999972,
+  "rotation": 0,
+  "selrect": {
+    "x": 8088,
+    "y": 244.00000000000003,
+    "width": 83,
+    "height": 13.999999999999972,
+    "x1": 8088,
+    "y1": 244.00000000000003,
+    "x2": 8171,
+    "y2": 258
+  },
+  "points": [
+    {
+      "x": 8088,
+      "y": 244.00000000000003
+    },
+    {
+      "x": 8171,
+      "y": 244.00000000000003
+    },
+    {
+      "x": 8171,
+      "y": 258
+    },
+    {
+      "x": 8088,
+      "y": 258
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "c98af294-e911-801a-8008-b1c9ea49ccbc",
+  "frameId": "c98af294-e911-801a-8008-b1c9ea49ccbc",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-width",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "11",
+                "fontWeight": "600",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0.4",
+                "fills": [
+                  {
+                    "fillColor": "#6b7280",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": "JUNK PACKETS"
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-inter-tight",
+            "fontSize": "11",
+            "fontWeight": "600",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0.4",
+            "fills": [
+              {
+                "fillColor": "#6b7280",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Inter Tight"
+          }
+        ]
+      }
+    ]
+  },
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 8088,
+      "y": 257.09091114997864,
+      "width": 82.80682373046875,
+      "height": 13.818183898925781,
+      "x1": 0,
+      "y1": -0.7272727489471436,
+      "x2": 82.80682373046875,
+      "y2": 13.090911149978638,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "11px",
+      "fontWeight": "600",
+      "textDecoration": "none",
+      "letterSpacing": "0.4px",
+      "fills": [
+        {
+          "fillColor": "#6b7280",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "JUNK PACKETS"
+    }
+  ],
+  "layoutItemMargin": {
+    "m3": 2
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b"
+}

@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 1592,
       "y": 1003.8000001907349,
-      "width": 25.3125,
-      "height": 12.800000190734863,
-      "x1": 0,
-      "y1": 0,
-      "x2": 25.3125,
-      "y2": 12.800000190734863,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "11px",
       "fontWeight": "600",
+      "y1": 0,
+      "width": 25.3125,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 1592,
+      "x1": 0,
+      "y2": 12.800000190734863,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 25.3125,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 12.800000190734863,
       "text": "TIME"
     }
   ]

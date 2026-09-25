@@ -1,0 +1,172 @@
+{
+  "id": "c98af294-e911-801a-8008-b1ca1d75e49c",
+  "name": "Text",
+  "type": "text",
+  "x": 2002,
+  "y": 2085,
+  "width": 516,
+  "height": 32,
+  "rotation": 0,
+  "selrect": {
+    "x": 2002,
+    "y": 2085,
+    "width": 516,
+    "height": 32,
+    "x1": 2002,
+    "y1": 2085,
+    "x2": 2518,
+    "y2": 2117
+  },
+  "points": [
+    {
+      "x": 2002,
+      "y": 2085
+    },
+    {
+      "x": 2518,
+      "y": 2085
+    },
+    {
+      "x": 2518,
+      "y": 2117
+    },
+    {
+      "x": 2002,
+      "y": 2117
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "c98af294-e911-801a-8008-b1ca1d75e48d",
+  "frameId": "c98af294-e911-801a-8008-b1ca1d75e48d",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-height",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "13",
+                "fontWeight": "500",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "500",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#8a5a00",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": "Name and note are saved at once. Added access shows its config once, after saving. DNS, MTU and allowed IPs reach the device only after a reroll."
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-inter-tight",
+            "fontSize": "13",
+            "fontWeight": "500",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "500",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#8a5a00",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Inter Tight"
+          }
+        ]
+      }
+    ]
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 2002,
+      "y": 2100.2727279663086,
+      "width": 515.5454711914062,
+      "height": 15.272727966308594,
+      "x1": 0,
+      "y1": 0,
+      "x2": 515.5454711914062,
+      "y2": 15.272727966308594,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "13px",
+      "fontWeight": "500",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#8a5a00",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "Name and note are saved at once. Added access shows its config once, after saving. DNS, "
+    },
+    {
+      "x": 2002,
+      "y": 2115.863639831543,
+      "width": 317.2840881347656,
+      "height": 15.27272891998291,
+      "x1": 0,
+      "y1": 15.590910911560059,
+      "x2": 317.2840881347656,
+      "y2": 30.86363983154297,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "13px",
+      "fontWeight": "500",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#8a5a00",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "MTU and allowed IPs reach the device only after a reroll."
+    }
+  ]
+}

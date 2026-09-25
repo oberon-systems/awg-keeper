@@ -1,0 +1,73 @@
+{
+  "id": "c98af294-e911-801a-8008-b1c9733c527b",
+  "name": "Spacer",
+  "type": "frame",
+  "x": 6668,
+  "y": 1395.0000000000005,
+  "width": 381,
+  "height": 10,
+  "rotation": 0,
+  "selrect": {
+    "x": 6668,
+    "y": 1395.0000000000005,
+    "width": 381,
+    "height": 10,
+    "x1": 6668,
+    "y1": 1395.0000000000005,
+    "x2": 7049,
+    "y2": 1405.0000000000005
+  },
+  "points": [
+    {
+      "x": 6668,
+      "y": 1395.0000000000005
+    },
+    {
+      "x": 7049,
+      "y": 1395.0000000000005
+    },
+    {
+      "x": 7049,
+      "y": 1405.0000000000005
+    },
+    {
+      "x": 6668,
+      "y": 1405.0000000000005
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "c98af294-e911-801a-8008-b1c8e0370e57",
+  "frameId": "c98af294-e911-801a-8008-b1c8e0370e57",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "hideInViewer": true,
+  "r2": 0,
+  "layoutItemHSizing": "fill",
+  "proportionLock": false,
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "r3": 0,
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "strokes": [],
+  "proportion": 1,
+  "r4": 0,
+  "fills": [],
+  "shapes": []
+}

@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 5008,
       "y": 1319.199999988079,
-      "width": 325.3374938964844,
-      "height": 16,
-      "x1": 0,
-      "y1": -0.800000011920929,
-      "x2": 325.3374938964844,
-      "y2": 15.199999988079071,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "400",
+      "y1": -0.800000011920929,
+      "width": 325.3374938964844,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 5008,
+      "x1": 0,
+      "y2": 15.199999988079071,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 325.3374938964844,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 16,
       "text": "Created on ams-1 \u00b7 22.09.2026, 14:35 \u00b7 AmneziaWG + Xray"
     }
   ]

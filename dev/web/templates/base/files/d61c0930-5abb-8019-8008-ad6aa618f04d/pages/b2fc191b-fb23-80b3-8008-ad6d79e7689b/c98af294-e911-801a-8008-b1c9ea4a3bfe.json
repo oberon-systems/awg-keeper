@@ -1,0 +1,142 @@
+{
+  "id": "c98af294-e911-801a-8008-b1c9ea4a3bfe",
+  "name": "Healthcheck log",
+  "type": "frame",
+  "x": 7732,
+  "y": 636,
+  "width": 1376,
+  "height": 551,
+  "rotation": 0,
+  "selrect": {
+    "x": 7732,
+    "y": 636,
+    "width": 1376,
+    "height": 551,
+    "x1": 7732,
+    "y1": 636,
+    "x2": 9108,
+    "y2": 1187
+  },
+  "points": [
+    {
+      "x": 7732,
+      "y": 636
+    },
+    {
+      "x": 9108,
+      "y": 636
+    },
+    {
+      "x": 9108,
+      "y": 1187
+    },
+    {
+      "x": 7732,
+      "y": 1187
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "c98af294-e911-801a-8008-b1c9ea49ccb2",
+  "frameId": "c98af294-e911-801a-8008-b1c9ea49ccb2",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "layoutGapType": "multiple",
+  "layoutPadding": {
+    "p1": 0,
+    "p2": 0,
+    "p3": 0,
+    "p4": 0
+  },
+  "layoutWrapType": "nowrap",
+  "layout": "flex",
+  "hideInViewer": true,
+  "layoutAlignItems": "start",
+  "layoutPaddingType": "simple",
+  "r2": 12,
+  "layoutItemHSizing": "fill",
+  "proportionLock": false,
+  "layoutGap": {
+    "rowGap": 0,
+    "columnGap": 0
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "layoutItemVSizing": "auto",
+  "r3": 12,
+  "layoutJustifyContent": "start",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 12,
+  "layoutFlexDir": "column",
+  "layoutAlignContent": "stretch",
+  "strokes": [
+    {
+      "strokeColor": "#d9dce1",
+      "strokeOpacity": 1,
+      "strokeAlignment": "inner",
+      "strokeWidth": 1
+    }
+  ],
+  "proportion": 1,
+  "shadow": [
+    {
+      "id": "b2fc191b-fb23-80b3-8008-ad71b130fba0",
+      "style": "drop-shadow",
+      "color": {
+        "opacity": 0.05,
+        "color": "#1a1d23"
+      },
+      "offsetX": 0,
+      "offsetY": 1,
+      "blur": 3,
+      "spread": 0,
+      "hidden": false
+    }
+  ],
+  "r4": 12,
+  "fills": [
+    {
+      "fillColor": "#ffffff",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "c98af294-e911-801a-8008-b1c9ea4a3c04",
+    "c98af294-e911-801a-8008-b1c9ea4a3c05",
+    "c98af294-e911-801a-8008-b1c9ea4a3c06",
+    "c98af294-e911-801a-8008-b1c9ea4a3c07",
+    "c98af294-e911-801a-8008-b1c9ea4a3c08",
+    "c98af294-e911-801a-8008-b1c9ea4a3c09",
+    "c98af294-e911-801a-8008-b1c9ea4a3c0a",
+    "c98af294-e911-801a-8008-b1c9ea4a3c0b",
+    "c98af294-e911-801a-8008-b1c9ea4a3c0c",
+    "c98af294-e911-801a-8008-b1c9ea4a3c0d",
+    "c98af294-e911-801a-8008-b1c9ea4a3c0e",
+    "c98af294-e911-801a-8008-b1c9ea4a3c0f",
+    "c98af294-e911-801a-8008-b1c9ea4a3c10",
+    "c98af294-e911-801a-8008-b1c9ea4a3c11",
+    "c98af294-e911-801a-8008-b1c9ea4a3c12",
+    "c98af294-e911-801a-8008-b1c9ea4a3c13",
+    "c98af294-e911-801a-8008-b1c9ea4a3c14",
+    "c98af294-e911-801a-8008-b1c9ea4a3c15",
+    "c98af294-e911-801a-8008-b1c9ea4a3c16",
+    "c98af294-e911-801a-8008-b1c9ea4a3c17",
+    "c98af294-e911-801a-8008-b1c9ea4a3c18",
+    "c98af294-e911-801a-8008-b1c9ea4a3c19"
+  ]
+}

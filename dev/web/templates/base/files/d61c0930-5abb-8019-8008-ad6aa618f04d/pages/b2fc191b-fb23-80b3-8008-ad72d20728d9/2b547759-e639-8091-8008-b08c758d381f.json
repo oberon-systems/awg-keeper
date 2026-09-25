@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 4652,
       "y": 2524.3636391162872,
-      "width": 83.3522720336914,
-      "height": 29.090911865234375,
-      "x1": 0,
-      "y1": -0.7272727489471436,
-      "x2": 83.3522720336914,
-      "y2": 28.36363911628723,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "24px",
       "fontWeight": "700",
+      "y1": -0.7272727489471436,
+      "width": 83.3522720336914,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 4652,
+      "x1": 0,
+      "y2": 28.36363911628723,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
+      "x2": 83.3522720336914,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 29.090911865234375,
       "text": "Profiles"
     }
   ]

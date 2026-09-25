@@ -115,84 +115,84 @@
     ]
   },
   "layoutItemHSizing": "fill",
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 3090,
       "y": 1353.1999998092651,
-      "width": 253,
-      "height": 15.199999809265137,
-      "x1": 0,
-      "y1": 0,
-      "x2": 253,
-      "y2": 15.199999809265137,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "12px",
       "fontWeight": "400",
+      "y1": 0,
+      "width": 253,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 3090,
+      "x1": 0,
+      "y2": 15.199999809265137,
       "fills": [
         {
           "fillColor": "#ffffff",
           "fillOpacity": 1
         }
       ],
+      "x2": 253,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.199999809265137,
       "text": "Read from awg1 on the host. The agent reports it "
     },
     {
-      "x": 3090,
       "y": 1369.3999996185303,
-      "width": 212.96250915527344,
-      "height": 15.19999885559082,
-      "x1": 0,
-      "y1": 16.200000762939453,
-      "x2": 212.96250915527344,
-      "y2": 31.399999618530273,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "12px",
       "fontWeight": "400",
+      "y1": 16.200000762939453,
+      "width": 212.96250915527344,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 3090,
+      "x1": 0,
+      "y2": 31.399999618530273,
       "fills": [
         {
           "fillColor": "#ffffff",
           "fillOpacity": 1
         }
       ],
+      "x2": 212.96250915527344,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.19999885559082,
       "text": "on every healthcheck, so change it in the "
     },
     {
-      "x": 3090,
       "y": 1385.6000022888184,
-      "width": 132.9499969482422,
-      "height": 15.200000762939453,
-      "x1": 0,
-      "y1": 32.400001525878906,
-      "x2": 132.9499969482422,
-      "y2": 47.60000228881836,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "12px",
       "fontWeight": "400",
+      "y1": 32.400001525878906,
+      "width": 132.9499969482422,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 3090,
+      "x1": 0,
+      "y2": 47.60000228881836,
       "fills": [
         {
           "fillColor": "#ffffff",
           "fillOpacity": 1
         }
       ],
+      "x2": 132.9499969482422,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.200000762939453,
       "text": "interface config on ams-1."
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b"
+  ]
 }

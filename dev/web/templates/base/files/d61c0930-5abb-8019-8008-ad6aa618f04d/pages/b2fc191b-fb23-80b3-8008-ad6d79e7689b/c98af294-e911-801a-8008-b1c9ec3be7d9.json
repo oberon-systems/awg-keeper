@@ -1,0 +1,121 @@
+{
+  "id": "c98af294-e911-801a-8008-b1c9ec3be7d9",
+  "name": "No button",
+  "type": "frame",
+  "x": 8467,
+  "y": 621,
+  "width": 50,
+  "height": 35,
+  "rotation": 0,
+  "selrect": {
+    "x": 8467,
+    "y": 621,
+    "width": 50,
+    "height": 35,
+    "x1": 8467,
+    "y1": 621,
+    "x2": 8517,
+    "y2": 656
+  },
+  "points": [
+    {
+      "x": 8467,
+      "y": 621
+    },
+    {
+      "x": 8517,
+      "y": 621
+    },
+    {
+      "x": 8517,
+      "y": 656
+    },
+    {
+      "x": 8467,
+      "y": 656
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "c98af294-e911-801a-8008-b1c9ec3be7d6",
+  "frameId": "c98af294-e911-801a-8008-b1c9ec3be7d6",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "layoutGapType": "multiple",
+  "layoutPadding": {
+    "p1": 9,
+    "p2": 16,
+    "p3": 9,
+    "p4": 16
+  },
+  "layoutWrapType": "nowrap",
+  "layout": "flex",
+  "hideInViewer": true,
+  "layoutAlignItems": "center",
+  "layoutPaddingType": "simple",
+  "r2": 6,
+  "layoutItemHSizing": "auto",
+  "proportionLock": false,
+  "layoutGap": {
+    "rowGap": 0,
+    "columnGap": 0
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "layoutItemVSizing": "auto",
+  "r3": 6,
+  "layoutJustifyContent": "start",
+  "constraintsV": "top",
+  "interactions": [
+    {
+      "eventType": "click",
+      "actionType": "navigate",
+      "destination": "46010db4-1c0d-8067-8008-aec86fd072fb",
+      "positionRelativeTo": null,
+      "preserveScroll": false,
+      "animation": {
+        "animationType": "dissolve",
+        "duration": 150,
+        "easing": "ease-out"
+      }
+    }
+  ],
+  "constraintsH": "left",
+  "r1": 6,
+  "layoutFlexDir": "row",
+  "layoutAlignContent": "stretch",
+  "strokes": [
+    {
+      "strokeStyle": "solid",
+      "strokeColor": "#d9dce1",
+      "strokeOpacity": 1,
+      "strokeAlignment": "inner",
+      "strokeWidth": 1
+    }
+  ],
+  "proportion": 1,
+  "r4": 6,
+  "fills": [
+    {
+      "fillColor": "#ffffff",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "c98af294-e911-801a-8008-b1c9ec3be7db"
+  ]
+}

@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 3132,
       "y": 1683.8000011444092,
-      "width": 74.92500305175781,
-      "height": 16.80000114440918,
-      "x1": 0,
-      "y1": 0,
-      "x2": 74.92500305175781,
-      "y2": 16.80000114440918,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "14px",
       "fontWeight": "600",
+      "y1": 0,
+      "width": 74.92500305175781,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 3132,
+      "x1": 0,
+      "y2": 16.80000114440918,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
+      "x2": 74.92500305175781,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 16.80000114440918,
       "text": "alice-laptop"
     }
   ]

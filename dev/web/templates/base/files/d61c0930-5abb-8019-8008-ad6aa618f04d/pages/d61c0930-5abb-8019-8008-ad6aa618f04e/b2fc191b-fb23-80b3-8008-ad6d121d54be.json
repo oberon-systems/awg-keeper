@@ -120,28 +120,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 2096,
       "y": 360.2727279663086,
-      "width": 139.4204559326172,
-      "height": 15.272727966308594,
-      "x1": 0,
-      "y1": 0,
-      "x2": 139.4204559326172,
-      "y2": 15.272727966308594,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "500",
+      "y1": 0,
+      "width": 139.4204559326172,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 2096,
+      "x1": 0,
+      "y2": 15.272727966308594,
       "fills": [
         {
           "fillColor": "#b00020",
           "fillOpacity": 1
         }
       ],
+      "x2": 139.4204559326172,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.272727966308594,
       "text": "Wrong user or password"
     }
   ]

@@ -119,53 +119,53 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 5022,
       "y": 2567.272727966309,
-      "width": 612.1931762695312,
-      "height": 15.272727966308594,
-      "x1": 0,
-      "y1": 0,
-      "x2": 612.1931762695312,
-      "y2": 15.272727966308594,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "500",
+      "y1": 0,
+      "width": 612.1931762695312,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 5022,
+      "x1": 0,
+      "y2": 15.272727966308594,
       "fills": [
         {
           "fillColor": "#8a5a00",
           "fillOpacity": 1
         }
       ],
+      "x2": 612.1931762695312,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.272727966308594,
       "text": "This is the only time this configuration can be taken. The private key was generated in your browser and the "
     },
     {
-      "x": 5022,
       "y": 2582.8636398315434,
-      "width": 105.85228729248047,
-      "height": 15.27272891998291,
-      "x1": 0,
-      "y1": 15.590910911560059,
-      "x2": 105.85228729248047,
-      "y2": 30.86363983154297,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "500",
+      "y1": 15.590910911560059,
+      "width": 105.85228729248047,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 5022,
+      "x1": 0,
+      "y2": 30.86363983154297,
       "fills": [
         {
           "fillColor": "#8a5a00",
           "fillOpacity": 1
         }
       ],
+      "x2": 105.85228729248047,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.27272891998291,
       "text": "panel never saw it."
     }
   ]

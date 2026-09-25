@@ -115,59 +115,59 @@
     ]
   },
   "layoutItemHSizing": "fill",
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 3090,
       "y": 3123.199999809265,
-      "width": 210.625,
-      "height": 15.199999809265137,
-      "x1": 0,
-      "y1": 0,
-      "x2": 210.625,
-      "y2": 15.199999809265137,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "12px",
       "fontWeight": "400",
+      "y1": 0,
+      "width": 210.625,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 3090,
+      "x1": 0,
+      "y2": 15.199999809265137,
       "fills": [
         {
           "fillColor": "#ffffff",
           "fillOpacity": 1
         }
       ],
+      "x2": 210.625,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.199999809265137,
       "text": "Read from config.json on ams-1. Change "
     },
     {
-      "x": 3090,
       "y": 3139.3999996185303,
-      "width": 224.9875030517578,
-      "height": 15.19999885559082,
-      "x1": 0,
-      "y1": 16.200000762939453,
-      "x2": 224.9875030517578,
-      "y2": 31.399999618530273,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "12px",
       "fontWeight": "400",
+      "y1": 16.200000762939453,
+      "width": 224.9875030517578,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 3090,
+      "x1": 0,
+      "y2": 31.399999618530273,
       "fills": [
         {
           "fillColor": "#ffffff",
           "fillOpacity": 1
         }
       ],
+      "x2": 224.9875030517578,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.19999885559082,
       "text": "serverNames in the Xray config on the host."
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b"
+  ]
 }

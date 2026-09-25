@@ -1,0 +1,99 @@
+{
+  "id": "c98af294-e911-801a-8008-b1ca78d87b92",
+  "name": "Badge reissue needed",
+  "type": "frame",
+  "x": 1076,
+  "y": 652.5,
+  "width": 43,
+  "height": 19,
+  "rotation": 0,
+  "selrect": {
+    "x": 1076,
+    "y": 652.5,
+    "width": 43,
+    "height": 19,
+    "x1": 1076,
+    "y1": 652.5,
+    "x2": 1119,
+    "y2": 671.5
+  },
+  "points": [
+    {
+      "x": 1076,
+      "y": 652.5
+    },
+    {
+      "x": 1119,
+      "y": 652.5
+    },
+    {
+      "x": 1119,
+      "y": 671.5
+    },
+    {
+      "x": 1076,
+      "y": 671.5
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "b2fc191b-fb23-80b3-8008-ad72ffe03d29",
+  "frameId": "b2fc191b-fb23-80b3-8008-ad72ffe03d29",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "layoutGapType": "multiple",
+  "layoutPadding": {
+    "p1": 2,
+    "p2": 8,
+    "p3": 2,
+    "p4": 8
+  },
+  "layoutWrapType": "nowrap",
+  "layout": "flex",
+  "hideInViewer": true,
+  "layoutAlignItems": "center",
+  "layoutPaddingType": "simple",
+  "r2": 10,
+  "layoutItemHSizing": "auto",
+  "proportionLock": false,
+  "layoutGap": {
+    "rowGap": 0,
+    "columnGap": 0
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
+  "layoutItemVSizing": "auto",
+  "r3": 10,
+  "layoutJustifyContent": "start",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 10,
+  "layoutFlexDir": "row",
+  "layoutAlignContent": "stretch",
+  "strokes": [],
+  "proportion": 1,
+  "r4": 10,
+  "fills": [
+    {
+      "fillColor": "#fff4db",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "c98af294-e911-801a-8008-b1ca78d87b93"
+  ]
+}

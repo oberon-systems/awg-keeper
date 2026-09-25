@@ -1,0 +1,77 @@
+{
+  "id": "c98af294-e911-801a-8008-b1ca1d75e488",
+  "name": "Scrim",
+  "type": "rect",
+  "x": 1540,
+  "y": 1200,
+  "width": 1440,
+  "height": 1164,
+  "rotation": 0,
+  "selrect": {
+    "x": 1540,
+    "y": 1200,
+    "width": 1440,
+    "height": 1164,
+    "x1": 1540,
+    "y1": 1200,
+    "x2": 2980,
+    "y2": 2364
+  },
+  "points": [
+    {
+      "x": 1540,
+      "y": 1200
+    },
+    {
+      "x": 2980,
+      "y": 1200
+    },
+    {
+      "x": 2980,
+      "y": 2364
+    },
+    {
+      "x": 1540,
+      "y": 2364
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "c98af294-e911-801a-8008-b1ca1d75e486",
+  "frameId": "c98af294-e911-801a-8008-b1ca1d75e486",
+  "flipX": null,
+  "flipY": null,
+  "layoutItemAbsolute": true,
+  "r2": 0,
+  "layoutItemHSizing": "fix",
+  "proportionLock": false,
+  "pageId": "b2fc191b-fb23-80b3-8008-ad72d20728d9",
+  "layoutItemVSizing": "fix",
+  "r3": 0,
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "strokes": [],
+  "proportion": 1,
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#0f1115",
+      "fillOpacity": 0.45
+    }
+  ]
+}

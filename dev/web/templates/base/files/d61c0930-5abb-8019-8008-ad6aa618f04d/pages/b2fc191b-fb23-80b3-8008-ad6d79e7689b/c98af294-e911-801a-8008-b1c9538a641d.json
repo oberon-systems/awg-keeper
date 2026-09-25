@@ -1,0 +1,150 @@
+{
+  "id": "c98af294-e911-801a-8008-b1c9538a641d",
+  "name": "Section Signature packets",
+  "type": "text",
+  "x": 6548,
+  "y": 996.0000000000002,
+  "width": 116,
+  "height": 14,
+  "rotation": 0,
+  "selrect": {
+    "x": 6548,
+    "y": 996.0000000000002,
+    "width": 116,
+    "height": 14,
+    "x1": 6548,
+    "y1": 996.0000000000002,
+    "x2": 6664,
+    "y2": 1010.0000000000002
+  },
+  "points": [
+    {
+      "x": 6548,
+      "y": 996.0000000000002
+    },
+    {
+      "x": 6664,
+      "y": 996.0000000000002
+    },
+    {
+      "x": 6664,
+      "y": 1010.0000000000002
+    },
+    {
+      "x": 6548,
+      "y": 1010.0000000000002
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "c98af294-e911-801a-8008-b1c972db49f6",
+  "frameId": "c98af294-e911-801a-8008-b1c972db49f6",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-width",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "11",
+                "fontWeight": "600",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0.4",
+                "fills": [
+                  {
+                    "fillColor": "#6b7280",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": "SIGNATURE PACKETS"
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-inter-tight",
+            "fontSize": "11",
+            "fontWeight": "600",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0.4",
+            "fills": [
+              {
+                "fillColor": "#6b7280",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Inter Tight"
+          }
+        ]
+      }
+    ]
+  },
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 6548,
+      "y": 1009.0909111499789,
+      "width": 115.6477279663086,
+      "height": 13.818183898925781,
+      "x1": 0,
+      "y1": -0.7272727489471436,
+      "x2": 115.6477279663086,
+      "y2": 13.090911149978638,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "11px",
+      "fontWeight": "600",
+      "textDecoration": "none",
+      "letterSpacing": "0.4px",
+      "fills": [
+        {
+          "fillColor": "#6b7280",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "SIGNATURE PACKETS"
+    }
+  ],
+  "layoutItemMargin": {
+    "m3": 2
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b"
+}

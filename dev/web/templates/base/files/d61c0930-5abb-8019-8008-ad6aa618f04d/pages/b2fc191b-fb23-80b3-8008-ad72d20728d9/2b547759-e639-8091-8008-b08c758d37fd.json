@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 5312,
       "y": 2784.0909111499786,
-      "width": 27.97727394104004,
-      "height": 13.818183898925781,
-      "x1": 0,
-      "y1": -0.7272727489471436,
-      "x2": 27.97727394104004,
-      "y2": 13.090911149978638,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "11px",
       "fontWeight": "600",
+      "y1": -0.7272727489471436,
+      "width": 27.97727394104004,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 5312,
+      "x1": 0,
+      "y2": 13.090911149978638,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 27.97727394104004,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 13.818183898925781,
       "text": "XRAY"
     }
   ]

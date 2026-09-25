@@ -2,36 +2,36 @@
   "id": "b2fc191b-fb23-80b3-8008-ad72fdfaa27d",
   "name": "Key",
   "type": "text",
-  "x": 692,
+  "x": 632,
   "y": 486.5,
   "width": 80,
   "height": 15,
   "rotation": 0,
   "selrect": {
-    "x": 692,
+    "x": 632,
     "y": 486.5,
     "width": 80,
     "height": 15,
-    "x1": 692,
+    "x1": 632,
     "y1": 486.5,
-    "x2": 772,
+    "x2": 712,
     "y2": 501.5
   },
   "points": [
     {
-      "x": 692,
+      "x": 632,
       "y": 486.5
     },
     {
-      "x": 772,
+      "x": 712,
       "y": 486.5
     },
     {
-      "x": 772,
+      "x": 712,
       "y": 501.5
     },
     {
-      "x": 692,
+      "x": 632,
       "y": 501.5
     }
   ],
@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "y": 501.69999998807907,
+      "x": 632,
+      "y": 501.0454545021057,
+      "width": 79.20454406738281,
+      "height": 16,
+      "x1": 0,
+      "y1": -1.454545497894287,
+      "x2": 79.20454406738281,
+      "y2": 14.545454502105713,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "12px",
       "fontWeight": "400",
-      "y1": -0.800000011920929,
-      "width": 79.2125015258789,
       "textDecoration": "none",
       "letterSpacing": "normal",
-      "x": 692,
-      "x1": 0,
-      "y2": 15.199999988079071,
       "fills": [
         {
           "fillColor": "#4b5563",
           "fillOpacity": 1
         }
       ],
-      "x2": 79.2125015258789,
       "direction": "ltr",
       "fontFamily": "\"JetBrains Mono\"",
-      "height": 16,
       "text": "alice-phone"
     }
   ]

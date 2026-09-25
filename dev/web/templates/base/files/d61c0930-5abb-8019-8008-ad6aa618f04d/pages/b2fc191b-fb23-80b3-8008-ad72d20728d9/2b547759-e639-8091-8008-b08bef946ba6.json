@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 4340,
       "y": 609.2727279663088,
-      "width": 32.6363639831543,
-      "height": 15.272727966308594,
-      "x1": 0,
-      "y1": 0,
-      "x2": 32.6363639831543,
-      "y2": 15.272727966308594,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "600",
+      "y1": 0,
+      "width": 32.6363639831543,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 4340,
+      "x1": 0,
+      "y2": 15.272727966308594,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
+      "x2": 32.6363639831543,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.272727966308594,
       "text": "Reroll"
     }
   ]

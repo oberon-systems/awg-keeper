@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 3598,
       "y": 3028.5454545021057,
-      "width": 403.2045593261719,
-      "height": 16,
-      "x1": 0,
-      "y1": -1.454545497894287,
-      "x2": 403.2045593261719,
-      "y2": 14.545454502105713,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "12px",
       "fontWeight": "400",
+      "y1": -1.454545497894287,
+      "width": 403.2045593261719,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 3598,
+      "x1": 0,
+      "y2": 14.545454502105713,
       "fills": [
         {
           "fillColor": "#4b5563",
           "fillOpacity": 1
         }
       ],
+      "x2": 403.2045593261719,
       "direction": "ltr",
       "fontFamily": "\"JetBrains Mono\"",
+      "height": 16,
       "text": "ams-1 Amsterdam \u00b7 10.8.0.15/32 \u00b7 ams-1.example.net:51820"
     }
   ]

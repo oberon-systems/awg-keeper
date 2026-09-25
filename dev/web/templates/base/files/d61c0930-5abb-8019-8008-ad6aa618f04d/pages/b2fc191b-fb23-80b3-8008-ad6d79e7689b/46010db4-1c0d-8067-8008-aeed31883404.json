@@ -115,59 +115,59 @@
     ]
   },
   "layoutItemHSizing": "fill",
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 3410,
       "y": 3123.199999809265,
-      "width": 248.16250610351562,
-      "height": 15.199999809265137,
-      "x1": 0,
-      "y1": 0,
-      "x2": 248.16250610351562,
-      "y2": 15.199999809265137,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "12px",
       "fontWeight": "400",
+      "y1": 0,
+      "width": 248.16250610351562,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 3410,
+      "x1": 0,
+      "y2": 15.199999809265137,
       "fills": [
         {
           "fillColor": "#ffffff",
           "fillOpacity": 1
         }
       ],
+      "x2": 248.16250610351562,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.199999809265137,
       "text": "Derived on the host from the Reality private key, "
     },
     {
-      "x": 3410,
       "y": 3139.3999996185303,
-      "width": 134.4875030517578,
-      "height": 15.19999885559082,
-      "x1": 0,
-      "y1": 16.200000762939453,
-      "x2": 134.4875030517578,
-      "y2": 31.399999618530273,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "12px",
       "fontWeight": "400",
+      "y1": 16.200000762939453,
+      "width": 134.4875030517578,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 3410,
+      "x1": 0,
+      "y2": 31.399999618530273,
       "fills": [
         {
           "fillColor": "#ffffff",
           "fillOpacity": 1
         }
       ],
+      "x2": 134.4875030517578,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.19999885559082,
       "text": "which never leaves ams-1."
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b"
+  ]
 }

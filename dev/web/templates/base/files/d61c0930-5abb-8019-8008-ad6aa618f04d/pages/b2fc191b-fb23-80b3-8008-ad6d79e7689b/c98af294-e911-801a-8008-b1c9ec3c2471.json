@@ -1,0 +1,199 @@
+{
+  "id": "c98af294-e911-801a-8008-b1c9ec3c2471",
+  "name": "Subtitle",
+  "type": "text",
+  "x": 8248,
+  "y": 554,
+  "width": 300,
+  "height": 47,
+  "rotation": 0,
+  "selrect": {
+    "x": 8248,
+    "y": 554,
+    "width": 300,
+    "height": 47,
+    "x1": 8248,
+    "y1": 554,
+    "x2": 8548,
+    "y2": 601
+  },
+  "points": [
+    {
+      "x": 8248,
+      "y": 554
+    },
+    {
+      "x": 8548,
+      "y": 554
+    },
+    {
+      "x": 8548,
+      "y": 601
+    },
+    {
+      "x": 8248,
+      "y": 601
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "c98af294-e911-801a-8008-b1c9ec3c2470",
+  "frameId": "c98af294-e911-801a-8008-b1c9ec3c2470",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-height",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "13",
+                "fontWeight": "400",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "regular",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#6b7280",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": "Save the obfuscation of awg1 on ams-1. The 6 profiles issued on it stop connecting until they are rerolled"
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-inter-tight",
+            "fontSize": "13",
+            "fontWeight": "400",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "regular",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#6b7280",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Inter Tight"
+          }
+        ]
+      }
+    ]
+  },
+  "layoutItemHSizing": "fix",
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "layoutItemVSizing": "fix",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 8248,
+      "y": 569.2727279663086,
+      "width": 258.31817626953125,
+      "height": 15.272727966308594,
+      "x1": 0,
+      "y1": 0,
+      "x2": 258.31817626953125,
+      "y2": 15.272727966308594,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "13px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#6b7280",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "Save the obfuscation of awg1 on ams-1. The 6 "
+    },
+    {
+      "x": 8248,
+      "y": 584.863639831543,
+      "width": 276.94317626953125,
+      "height": 15.27272891998291,
+      "x1": 0,
+      "y1": 15.590910911560059,
+      "x2": 276.94317626953125,
+      "y2": 30.86363983154297,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "13px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#6b7280",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "profiles issued on it stop connecting until they are "
+    },
+    {
+      "x": 8248,
+      "y": 600.4545478820801,
+      "width": 41.25,
+      "height": 15.272726058959961,
+      "x1": 0,
+      "y1": 31.181821823120117,
+      "x2": 41.25,
+      "y2": 46.45454788208008,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "13px",
+      "fontWeight": "400",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#6b7280",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "rerolled"
+    }
+  ]
+}

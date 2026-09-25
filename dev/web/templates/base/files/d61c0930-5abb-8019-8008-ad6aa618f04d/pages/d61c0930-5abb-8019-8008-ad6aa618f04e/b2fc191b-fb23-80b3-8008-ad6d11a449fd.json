@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 556,
       "y": 495.2272732257843,
-      "width": 93.68182373046875,
-      "height": 17.454545974731445,
-      "x1": 0,
-      "y1": -0.7272727489471436,
-      "x2": 93.68182373046875,
-      "y2": 16.7272732257843,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "14px",
       "fontWeight": "400",
+      "y1": -0.7272727489471436,
+      "width": 93.68182373046875,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 556,
+      "x1": 0,
+      "y2": 16.7272732257843,
       "fills": [
         {
           "fillColor": "#9aa1ac",
           "fillOpacity": 1
         }
       ],
+      "x2": 93.68182373046875,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 17.454545974731445,
       "text": "Enter password"
     }
   ]

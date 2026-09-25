@@ -119,53 +119,53 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 2060.795455932617,
       "y": 448.2272732257843,
-      "width": 398.39776611328125,
-      "height": 17.454545974731445,
-      "x1": 8.795455932617188,
-      "y1": -0.7272727489471436,
-      "x2": 407.19322204589844,
-      "y2": 16.7272732257843,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "14px",
       "fontWeight": "400",
+      "y1": -0.7272727489471436,
+      "width": 398.39776611328125,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 2060.795455932617,
+      "x1": 8.795455932617188,
+      "y2": 16.7272732257843,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 407.19322204589844,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 17.454545974731445,
       "text": "Stats are shown only for requests coming through the VPN tunnel. "
     },
     {
-      "x": 2085.3636360168457,
       "y": 465.0227279663086,
-      "width": 349.2727355957031,
-      "height": 17.454545974731445,
-      "x1": 33.3636360168457,
-      "y1": 16.06818199157715,
-      "x2": 382.6363716125488,
-      "y2": 33.522727966308594,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "14px",
       "fontWeight": "400",
+      "y1": 16.06818199157715,
+      "width": 349.2727355957031,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 2085.3636360168457,
+      "x1": 33.3636360168457,
+      "y2": 33.522727966308594,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 382.6363716125488,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 17.454545974731445,
       "text": "Turn on your AmneziaWG connection and reload the page."
     }
   ]

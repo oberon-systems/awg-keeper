@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 3662,
       "y": 281.1818218231201,
-      "width": 122.75,
-      "height": 26.181821823120117,
-      "x1": 0,
-      "y1": 0,
-      "x2": 122.75,
-      "y2": 26.181821823120117,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "22px",
       "fontWeight": "700",
+      "y1": 0,
+      "width": 122.75,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 3662,
+      "x1": 0,
+      "y2": 26.181821823120117,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
+      "x2": 122.75,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 26.181821823120117,
       "text": "awg-keeper"
     }
   ]
