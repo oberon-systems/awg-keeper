@@ -7,6 +7,7 @@ export interface Peer {
   interface_id: number;
   interface: string;
   enabled: boolean;
+  reroll: boolean;
 }
 
 export interface XrayClient {
@@ -21,6 +22,8 @@ export interface Profile {
   id: number;
   name: string;
   note: string | null;
+  dns: string | null;
+  mtu: number | null;
   enabled: boolean;
   created_at: string;
   node: string | null;
@@ -45,6 +48,17 @@ export interface ProfileCreate {
   note: string | null;
   awg?: { interface_id: number; public_key: string };
   xray?: { inbound_id: number; id: string };
+}
+
+// A half left out is kept; null takes it away; a new one was made in the browser.
+export interface ProfileEdit {
+  name: string;
+  note: string | null;
+  dns: string | null;
+  mtu: number | null;
+  allowed_ips: string | null;
+  awg?: { interface_id: number; public_key: string } | null;
+  xray?: { inbound_id: number; id: string } | null;
 }
 
 export interface Inbound {
@@ -200,6 +214,8 @@ export interface InterfaceUpdate {
   keepalive?: number | null;
 }
 
+export type Obfuscation = Record<string, string | number | boolean>;
+
 export interface InboundUpdate {
   enabled?: boolean;
   endpoint_host?: string | null;
@@ -276,6 +292,8 @@ export const api = {
     call<Check[]>("GET", `/agents/${nodeId}/checks?limit=${limit}`),
   updateInterface: (id: number, body: InterfaceUpdate) =>
     call<Agent>("PATCH", `/interfaces/${id}`, body),
+  setObfuscation: (id: number, obfuscation: Obfuscation) =>
+    call<Agent>("PATCH", `/interfaces/${id}/obfuscation`, { obfuscation }),
   updateInbound: (id: number, body: InboundUpdate) =>
     call<Agent>("PATCH", `/inbounds/${id}`, body),
   profiles: () => call<Profile[]>("GET", "/profiles"),
@@ -283,6 +301,8 @@ export const api = {
   createProfile: (body: ProfileCreate) => call<Issued>("POST", "/profiles", body),
   setProfileEnabled: (id: number, enabled: boolean) =>
     call<Profile>("PATCH", `/profiles/${id}`, { enabled }),
+  editProfile: (id: number, body: ProfileEdit) =>
+    call<Issued>("PUT", `/profiles/${id}`, body),
   reissueProfile: (id: number, body: ProfileReissue) =>
     call<Issued>("POST", `/profiles/${id}/reissue`, body),
   profileStats: (id: number, period: Period) =>

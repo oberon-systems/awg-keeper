@@ -7,6 +7,7 @@ address goes back in the pool.
 
 from __future__ import annotations
 
+import hashlib
 import logging
 import re
 import time
@@ -38,8 +39,10 @@ from awg_panel.schemas import (
     CheckRead,
     InboundUpdate,
     InterfaceUpdate,
+    ObfuscationUpdate,
     PeerRead,
     ProfileCreate,
+    ProfileEdit,
     ProfileIssued,
     ProfileRead,
     ProfileReissue,
@@ -88,10 +91,18 @@ def _read(session: Session, profile: Profile) -> ProfileRead:
     inbound = session.get(Inbound, client.inbound_id) if client else None
     owner: Interface | Inbound | None = interface or inbound
     node = session.get(Node, owner.node_id) if owner else None
+    stale = bool(
+        peer
+        and interface
+        and peer.issued_digest
+        and peer.issued_digest != _digest(interface, peer, profile)
+    )
     return ProfileRead(
         id=int(profile.id or 0),
         name=profile.name,
         note=profile.note,
+        dns=profile.dns,
+        mtu=profile.mtu,
         enabled=profile.enabled,
         created_at=_utc(profile.created_at) or profile.created_at,
         node=node.name if node else None,
@@ -104,6 +115,7 @@ def _read(session: Session, profile: Profile) -> ProfileRead:
             interface_id=peer.interface_id,
             interface=interface.name if interface else "",
             enabled=peer.enabled,
+            reroll=stale,
         ),
         xray=None
         if client is None
@@ -115,6 +127,30 @@ def _read(session: Session, profile: Profile) -> ProfileRead:
             enabled=client.enabled,
         ),
     )
+
+
+def _digest(interface: Interface, peer: AwgPeer, profile: Profile) -> str:
+    rendered = clientconf.render(interface, peer, profile)
+    return hashlib.sha256(rendered.encode()).hexdigest()
+
+
+def backfill_digests(session: Session) -> None:
+    """Take every config issued before digests were kept as matching the current one.
+
+    Run at start, so an upgrade does not flag every profile for a reroll.
+    """
+    peers = session.exec(select(AwgPeer).where(col(AwgPeer.issued_digest).is_(None)))
+    stamped = 0
+    for peer in peers.all():
+        interface = session.get(Interface, peer.interface_id)
+        profile = session.get(Profile, peer.profile_id)
+        if interface is not None and profile is not None:
+            peer.issued_digest = _digest(interface, peer, profile)
+            session.add(peer)
+            stamped += 1
+    if stamped:
+        LOG.info("%d issued configs recorded as current", stamped)
+    session.commit()
 
 
 def _peer_of(session: Session, profile: Profile) -> AwgPeer | None:
@@ -222,6 +258,7 @@ def create_profile(
             assigned_ip=pool.allocate(session, interface),
             allowed_ips=interface.client_allowed_ips,
         )
+        peer.issued_digest = _digest(interface, peer, profile)
         session.add(peer)
     client = None
     link = None
@@ -280,8 +317,8 @@ def _issued(
         return ProfileIssued(profile=_read(session, profile), link=link)
     return ProfileIssued(
         profile=_read(session, profile),
-        config_template=clientconf.render(interface, peer),
-        amnezia_template=amneziakey.render(interface, peer, profile.name),
+        config_template=clientconf.render(interface, peer, profile),
+        amnezia_template=amneziakey.render(interface, peer, profile.name, profile),
         link=link,
     )
 
@@ -372,6 +409,7 @@ def reissue_profile(
                 )
                 raise
         peer.public_key = body.awg.public_key
+        peer.issued_digest = _digest(_interface_of(session, peer), peer, profile)
         session.add(peer)
 
     link = None
@@ -391,6 +429,198 @@ def reissue_profile(
     session.refresh(profile)
     LOG.info("profile %s reissued", profile.name)
     return _issued(session, profile, peer, link)
+
+
+def _name_for_xray(session: Session, name: str, own: XrayClient | None) -> None:
+    if not EMAIL.match(name):
+        raise ValueError(
+            f"{name!r} cannot be an Xray email tag: use letters, digits "
+            "and . _ @ + -, starting with a letter or digit"
+        )
+    clash = session.exec(select(XrayClient).where(XrayClient.email == name)).first()
+    if clash is not None and clash is not own:
+        raise DuplicateProfile(name)
+
+
+def edit_profile(
+    session: Session,
+    settings: Settings,
+    profile_id: int,
+    body: ProfileEdit,
+) -> ProfileIssued:
+    """Rename, annotate and re-shape a profile; only an added half is rendered.
+
+    The client config changes only on the device's next import, so an edit that
+    changes what would be rendered leaves the peer flagged for a reroll.
+    """
+    profile = profile_of(session, profile_id)
+    peer = _peer_of(session, profile)
+    client = _client_of(session, profile)
+    given = body.model_fields_set
+    if body.awg is not None and peer is not None:
+        raise ValueError(f"{profile.name} has an AmneziaWG peer already; reroll it")
+    if body.xray is not None and client is not None:
+        raise ValueError(f"{profile.name} has an Xray client already; reroll it")
+    drop_peer = peer if "awg" in given and body.awg is None else None
+    drop_client = client if "xray" in given and body.xray is None else None
+    keep_peer = None if drop_peer else peer
+    keep_client = None if drop_client else client
+    if not (keep_peer or keep_client or body.awg or body.xray):
+        raise ValueError("a profile needs AmneziaWG, Xray or both")
+
+    name = body.name.strip()
+    if name != profile.name:
+        if session.exec(select(Profile).where(Profile.name == name)).first():
+            raise DuplicateProfile(name)
+    if (keep_client and name != keep_client.email) or body.xray is not None:
+        _name_for_xray(session, name, keep_client)
+
+    interface = (
+        _issuable_interface(session, body.awg.interface_id)
+        if body.awg is not None
+        else (_interface_of(session, keep_peer) if keep_peer else None)
+    )
+    inbound = (
+        _issuable_inbound(session, body.xray.inbound_id)
+        if body.xray is not None
+        else (session.get(Inbound, keep_client.inbound_id) if keep_client else None)
+    )
+    if interface and inbound and interface.node_id != inbound.node_id:
+        raise ValueError("the interface and the inbound are on different agents")
+    if body.awg is not None:
+        clash = select(AwgPeer).where(AwgPeer.public_key == body.awg.public_key)
+        if session.exec(clash).first() is not None:
+            raise DuplicateProfile(body.awg.public_key)
+
+    allowed = _clean(body.allowed_ips) if "allowed_ips" in given else None
+    for item in (allowed or "").split(","):
+        if item.strip():
+            ip_network(item.strip(), strict=False)
+
+    profile.name = name
+    profile.note = _clean(body.note)
+    profile.dns = _clean(body.dns)
+    profile.mtu = body.mtu
+    session.add(profile)
+    session.flush()
+
+    added_peer = None
+    if interface is not None and body.awg is not None:
+        added_peer = AwgPeer(
+            profile_id=int(profile.id or 0),
+            interface_id=int(interface.id or 0),
+            public_key=body.awg.public_key,
+            assigned_ip=pool.allocate(session, interface),
+            allowed_ips=interface.client_allowed_ips,
+            enabled=profile.enabled,
+        )
+    target = keep_peer or added_peer
+    if target is not None and interface is not None and "allowed_ips" in given:
+        target.allowed_ips = allowed or interface.client_allowed_ips
+    if added_peer is not None and interface is not None:
+        added_peer.issued_digest = _digest(interface, added_peer, profile)
+        session.add(added_peer)
+    added_client = None
+    link = None
+    if inbound is not None and body.xray is not None:
+        added_client = XrayClient(
+            profile_id=int(profile.id or 0),
+            inbound_id=int(inbound.id or 0),
+            email=name,
+            flow=inbound.flow,
+        )
+        session.add(added_client)
+        link = clientlink.render(inbound, str(body.xray.id), name)
+
+    owner: Interface | Inbound | None = interface or inbound
+    node = node_of(session, owner.node_id) if owner else None
+    undo: list[Any] = []
+    try:
+        if node is not None:
+            _push_edit(
+                settings,
+                node,
+                interface,
+                inbound,
+                keep_client,
+                name,
+                added_peer,
+                added_client,
+                str(body.xray.id) if body.xray is not None else "",
+                undo,
+            )
+            _drop_halves(session, settings, drop_peer, drop_client)
+    except agent.AgentError:
+        for step in reversed(undo):
+            step()
+        session.rollback()
+        raise
+
+    if keep_client is not None:
+        keep_client.email = name
+        session.add(keep_client)
+    session.commit()
+    session.refresh(profile)
+    LOG.info("profile %s edited", profile.name)
+    if added_peer is not None:
+        issued = _issued(session, profile, added_peer, link)
+        issued.profile = _read(session, profile)
+        return issued
+    return ProfileIssued(profile=_read(session, profile), link=link)
+
+
+def _push_edit(
+    settings: Settings,
+    node: Node,
+    interface: Interface | None,
+    inbound: Inbound | None,
+    client: XrayClient | None,
+    name: str,
+    peer: AwgPeer | None,
+    added: XrayClient | None,
+    identity: str,
+    undo: list[Any],
+) -> None:
+    if client is not None and inbound is not None and client.email != name:
+        old = client.email
+        agent.rename_user(settings, node, inbound.tag, old, name)
+        undo.append(lambda: agent.rename_user(settings, node, inbound.tag, name, old))
+    if peer is not None and interface is not None and peer.enabled:
+        agent.add_peer(
+            settings,
+            node,
+            interface.name,
+            peer.public_key,
+            [peer.assigned_ip],
+            interface.keepalive,
+        )
+        key = peer.public_key
+        undo.append(lambda: agent.remove_peer(settings, node, interface.name, key))
+    if added is not None and inbound is not None:
+        agent.add_user(settings, node, inbound.tag, identity, name, added.flow)
+        undo.append(lambda: agent.remove_user(settings, node, inbound.tag, name))
+
+
+def _drop_halves(
+    session: Session,
+    settings: Settings,
+    peer: AwgPeer | None,
+    client: XrayClient | None,
+) -> None:
+    # Last, and not undone: an Xray UUID is not kept, so a removal cannot be.
+    if peer is not None:
+        interface = _interface_of(session, peer)
+        node = node_of(session, interface.node_id)
+        if peer.enabled:
+            agent.remove_peer(settings, node, interface.name, peer.public_key)
+        pool.release(session, peer)
+        session.delete(peer)
+    if client is not None:
+        inbound = session.get(Inbound, client.inbound_id)
+        if inbound is not None:
+            node = node_of(session, inbound.node_id)
+            agent.remove_user(settings, node, inbound.tag, client.email)
+        session.delete(client)
 
 
 def delete_profile(session: Session, settings: Settings, profile_id: int) -> None:
@@ -437,7 +667,17 @@ OBFUSCATION_NAMES = {
     "i3": "I3",
     "i4": "I4",
     "i5": "I5",
+    "header-protection-key": "HeaderProtectionKey",
+    "content-padding-addition": "ContentPaddingAddition",
+    "rekey-after-time": "RekeyAfterTime",
+    "rekey-timeout": "RekeyTimeout",
+    "reject-after-time": "RejectAfterTime",
+    "keepalive-timeout": "KeepaliveTimeout",
+    "max-handshake-attempts": "MaxHandshakeAttempts",
+    "random-trailers": "RandomTrailers",
+    "disable-cookies": "DisableCookies",
 }
+AGENT_NAMES = {name: field for field, name in OBFUSCATION_NAMES.items()}
 REQUIRED_TO_ENABLE = ("address", "pool", "endpoint_host")
 # A vless:// link without any of these looks right and never connects.
 INBOUND_REQUIRED = ("endpoint_host", "public_key", "server_names", "short_id")
@@ -509,7 +749,23 @@ def _address(reported: list[str]) -> str | None:
     return str((ipv4 or found)[0]) if found else None
 
 
-def _discover(session: Session, node: Node, reported: list[dict[str, Any]]) -> None:
+def _full_obfuscation(
+    settings: Settings, node: Node, item: dict[str, Any], kept: dict[str, Any]
+) -> dict[str, Any]:
+    # Status leaves the header protection key out; this read carries it.
+    try:
+        return _obfuscation(agent.obfuscation(settings, node, item["name"]))
+    except agent.AgentError as exc:
+        if exc.status == 404:
+            return _obfuscation(item.get("obfuscation") or {})
+        name = item["name"]
+        LOG.warning("agent %s: obfuscation of %s kept: %s", node.name, name, exc)
+        return kept
+
+
+def _discover(
+    session: Session, settings: Settings, node: Node, reported: list[dict[str, Any]]
+) -> None:
     rows = {
         row.name: row
         for row in session.exec(select(Interface).where(Interface.node_id == node.id))
@@ -541,7 +797,8 @@ def _discover(session: Session, node: Node, reported: list[dict[str, Any]]) -> N
             )
         row.server_public_key = item["public_key"]
         row.listen_port = int(item.get("listen_port") or 0)
-        row.obfuscation = _obfuscation(item.get("obfuscation") or {})
+        kept = row.obfuscation or {}
+        row.obfuscation = _full_obfuscation(settings, node, item, kept)
         # An agent before 0.3.3 reports no address; what the operator typed stays.
         address = _address(item.get("addresses") or [])
         if address is not None:
@@ -680,7 +937,7 @@ def _probe(
             inbounds=inbounds,
         )
         node.last_seen = check.checked_at
-        _discover(session, node, interfaces)
+        _discover(session, settings, node, interfaces)
         _discover_inbounds(session, node, inbounds)
 
     _log_check(node, previous, check, announce)
@@ -912,6 +1169,44 @@ def update_interface(
         node.name,
         row.name,
         "enabled" if row.enabled else "disabled",
+    )
+    return next(item for item in list_agents(session, settings) if item.id == node.id)
+
+
+def set_interface_obfuscation(
+    session: Session,
+    settings: Settings,
+    interface_id: int,
+    body: ObfuscationUpdate,
+) -> AgentRead:
+    """Change the obfuscation on the live interface; every issued profile goes stale."""
+    row = session.get(Interface, interface_id)
+    if row is None:
+        raise UnknownInterface(str(interface_id))
+    node = node_of(session, row.node_id)
+
+    values = {}
+    for name, value in body.obfuscation.items():
+        field = AGENT_NAMES.get(name)
+        if field is None:
+            raise ValueError(f"{name} is not an obfuscation parameter")
+        if isinstance(value, bool):
+            value = "on" if value else "off"
+        values[field] = str(value).strip()
+    try:
+        applied = agent.set_obfuscation(settings, node, row.name, values)
+    except agent.AgentError as exc:
+        if exc.status == 422:
+            raise ValueError(exc.reason) from exc
+        raise
+
+    row.obfuscation = _obfuscation(applied)
+    session.add(row)
+    session.commit()
+    LOG.warning(
+        "agent %s: obfuscation of %s changed; profiles issued on it need a reroll",
+        node.name,
+        row.name,
     )
     return next(item for item in list_agents(session, settings) if item.id == node.id)
 

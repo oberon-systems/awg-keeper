@@ -10,6 +10,8 @@ export function Field({
   numeric,
   hint,
   locked,
+  placeholder,
+  mono,
 }: {
   label: string;
   value: string;
@@ -17,13 +19,17 @@ export function Field({
   numeric?: boolean;
   hint?: string;
   locked?: string;
+  placeholder?: string;
+  mono?: boolean;
 }) {
+  const kind = ["field-input", locked ? "locked" : "", mono ? "mono" : ""];
   return (
     <label className="field">
       {label}
-      <span className={locked ? "field-input locked" : "field-input"}>
+      <span className={kind.filter(Boolean).join(" ")}>
         <input
           value={value}
+          placeholder={placeholder}
           readOnly={Boolean(locked)}
           inputMode={numeric ? "numeric" : undefined}
           onChange={(event) => onChange(event.target.value)}

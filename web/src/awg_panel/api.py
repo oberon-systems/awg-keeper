@@ -26,8 +26,10 @@ from awg_panel.schemas import (
     InterfaceUpdate,
     LoginRequest,
     NodeRead,
+    ObfuscationUpdate,
     OwnStats,
     ProfileCreate,
+    ProfileEdit,
     ProfileIssued,
     ProfileRead,
     ProfileReissue,
@@ -169,6 +171,17 @@ def update_profile(
     )
 
 
+@private.put("/profiles/{profile_id}")
+def edit_profile(
+    request: Request,
+    profile_id: int,
+    body: ProfileEdit,
+    session: SessionDep,
+) -> ProfileIssued:
+    """Save the edit form; a half added here is rendered once, like a new one."""
+    return service.edit_profile(session, auth.settings_of(request), profile_id, body)
+
+
 @private.post("/profiles/{profile_id}/reissue")
 def reissue_profile(
     request: Request,
@@ -233,6 +246,19 @@ def update_interface(
 ) -> AgentRead:
     """Configure a discovered interface and enable or disable it."""
     return service.update_interface(
+        session, auth.settings_of(request), interface_id, body
+    )
+
+
+@private.patch("/interfaces/{interface_id}/obfuscation")
+def set_interface_obfuscation(
+    request: Request,
+    interface_id: int,
+    body: ObfuscationUpdate,
+    session: SessionDep,
+) -> AgentRead:
+    """Change the obfuscation on the live interface, through its agent."""
+    return service.set_interface_obfuscation(
         session, auth.settings_of(request), interface_id, body
     )
 

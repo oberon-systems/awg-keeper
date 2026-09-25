@@ -7,7 +7,7 @@ import { describe, type Problem } from "../problem";
 import { Banner } from "../tiles";
 import { type Issue, issueOf } from "./IssuedConfig";
 
-function Option({
+export function Option({
   title,
   hint,
   checked,

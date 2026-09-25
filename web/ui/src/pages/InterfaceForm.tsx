@@ -4,6 +4,7 @@ import { api, type AgentInterface } from "../api";
 import { Field } from "../fields";
 import { describe, type Problem } from "../problem";
 import { Banner } from "../tiles";
+import { ObfuscationForm, summary } from "./ObfuscationForm";
 
 function text(value: string | number | null): string {
   return value === null ? "" : String(value);
@@ -36,6 +37,7 @@ export function InterfaceForm({
   const [problem, setProblem] = useState<Problem | null>(null);
   const [detailShown, setDetailShown] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [obfuscating, setObfuscating] = useState(false);
 
   function ask(event: React.FormEvent) {
     event.preventDefault();
@@ -129,6 +131,23 @@ export function InterfaceForm({
           <Field label="Client allowed IPs" value={allowed} onChange={setAllowed} />
           <Field label="Keepalive" value={keepalive} onChange={setKeepalive} numeric />
         </div>
+        <div className="field">
+          Obfuscation
+          <span className="field-input summary-input">
+            <span>{summary(item.obfuscation)}</span>
+            <button
+              type="button"
+              className="secondary"
+              disabled={item.id === null}
+              onClick={() => setObfuscating(true)}
+            >
+              Edit
+            </button>
+          </span>
+          <span className="field-hint">
+            Opens its own dialog. The port is set on the host and is not edited here
+          </span>
+        </div>
 
         <Banner
           problem={problem}
@@ -145,6 +164,15 @@ export function InterfaceForm({
           </button>
         </div>
       </form>
+
+      {obfuscating ? (
+        <ObfuscationForm
+          item={item}
+          agent={agent}
+          onSaved={onSaved}
+          onClose={() => setObfuscating(false)}
+        />
+      ) : null}
 
       {confirming ? (
         <div className="scrim">

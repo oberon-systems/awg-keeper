@@ -71,6 +71,8 @@ class StubAgent:
         # What `awg show dump` would say per peer, and Xray's stats per email.
         self.counters: dict[str, dict[str, Any]] = {}
         self.xray_counts: dict[str, dict[str, Any]] = {}
+        # What GET /awg/{iface}/obfuscation answers; absent is an agent before it.
+        self.obfuscations: dict[str, dict[str, str]] = {}
 
     def add_peer(
         self,
@@ -178,6 +180,35 @@ class StubAgent:
         if email in self.users:
             self.users.remove(email)
 
+    def obfuscation(
+        self, settings: Settings, node: Node, interface: str
+    ) -> dict[str, str]:
+        """Stand in for GET /v1/awg/{iface}/obfuscation."""
+        if interface not in self.obfuscations:
+            raise agent.AgentError("gateway answered 404: Not Found", 404)
+        return dict(self.obfuscations[interface])
+
+    def set_obfuscation(
+        self, settings: Settings, node: Node, interface: str, values: dict[str, str]
+    ) -> dict[str, str]:
+        """Stand in for PATCH /v1/awg/{iface}/obfuscation."""
+        if self.fail:
+            raise agent.AgentError("the agent is unreachable")
+        self.calls.append(("set_obfuscation", node.name, interface, dict(values)))
+        merged = {**self.obfuscations.get(interface, {}), **values}
+        self.obfuscations[interface] = merged
+        return dict(merged)
+
+    def rename_user(
+        self, settings: Settings, node: Node, inbound: str, email: str, renamed: str
+    ) -> dict[str, Any]:
+        """Stand in for PATCH /v1/xray/{inbound}/users/{email}."""
+        if self.fail or self.fail_xray:
+            raise agent.AgentError("the agent is unreachable")
+        self.calls.append(("rename_user", node.name, inbound, email, renamed))
+        self.users = [renamed if item == email else item for item in self.users]
+        return {"email": renamed}
+
     def xray_stats(self, settings: Settings, node: Node) -> dict[str, Any]:
         """Stand in for GET /v1/xray/stats."""
         return {
@@ -251,6 +282,9 @@ def stub(monkeypatch: pytest.MonkeyPatch) -> StubAgent:
     monkeypatch.setattr(agent, "add_user", stand_in.add_user)
     monkeypatch.setattr(agent, "remove_user", stand_in.remove_user)
     monkeypatch.setattr(agent, "xray_stats", stand_in.xray_stats)
+    monkeypatch.setattr(agent, "obfuscation", stand_in.obfuscation)
+    monkeypatch.setattr(agent, "set_obfuscation", stand_in.set_obfuscation)
+    monkeypatch.setattr(agent, "rename_user", stand_in.rename_user)
     return stand_in
 
 

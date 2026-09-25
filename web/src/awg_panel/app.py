@@ -66,6 +66,7 @@ def _log_start(settings: Settings, engine: Engine) -> None:
     try:
         with Session(engine) as session:
             service.register_agents(session, settings)
+            service.backfill_digests(session)
             enabled = session.exec(
                 select(func.count())
                 .select_from(Interface)

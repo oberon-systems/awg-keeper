@@ -176,3 +176,25 @@ def remove_user(settings: Settings, node: Node, inbound: str, email: str) -> Non
         # The client is gone either way, which is what the caller wanted.
         if exc.status != 404:
             raise
+
+
+def obfuscation(settings: Settings, node: Node, interface: str) -> dict[str, str]:
+    """Every obfuscation value of an interface, the header protection key included."""
+    path = f"/v1/awg/{interface}/obfuscation"
+    return _call(settings, node, "GET", path, quiet=True) or {}
+
+
+def set_obfuscation(
+    settings: Settings, node: Node, interface: str, values: dict[str, str]
+) -> dict[str, str]:
+    """Change obfuscation values on the live interface; answers the full set."""
+    path = f"/v1/awg/{interface}/obfuscation"
+    return _call(settings, node, "PATCH", path, values) or {}
+
+
+def rename_user(
+    settings: Settings, node: Node, inbound: str, email: str, renamed: str
+) -> dict[str, Any]:
+    """Give one Xray client a new email tag; its UUID stays on the node."""
+    path = f"/v1/xray/{inbound}/users/{email}"
+    return _call(settings, node, "PATCH", path, {"email": renamed}) or {}

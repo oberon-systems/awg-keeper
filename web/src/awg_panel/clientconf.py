@@ -7,7 +7,7 @@ completes a handshake, so they are emitted for every profile.
 
 from __future__ import annotations
 
-from awg_panel.models import AwgPeer, Interface
+from awg_panel.models import AwgPeer, Interface, Profile
 
 PLACEHOLDER = "__PRIVATE_KEY__"
 
@@ -31,20 +31,39 @@ OBFUSCATION_ORDER = (
     "I4",
     "I5",
     "Itime",
+    "HeaderProtectionKey",
+    "ContentPaddingAddition",
+    "RekeyAfterTime",
+    "RekeyTimeout",
+    "RejectAfterTime",
+    "KeepaliveTimeout",
+    "MaxHandshakeAttempts",
+    "RandomTrailers",
+    "DisableCookies",
 )
 
 
-def render(interface: Interface, peer: AwgPeer) -> str:
+def dns(interface: Interface, profile: Profile | None = None) -> str | None:
+    """Pick the resolvers a client is told: the profile's, else the interface's."""
+    return (profile.dns if profile else None) or interface.dns
+
+
+def mtu(interface: Interface, profile: Profile | None = None) -> int | None:
+    """Pick the tunnel MTU a client is told: the profile's, else the interface's."""
+    return (profile.mtu if profile else None) or interface.mtu
+
+
+def render(interface: Interface, peer: AwgPeer, profile: Profile | None = None) -> str:
     """Build the .conf a client needs, with the private key left to the browser."""
     lines = [
         "[Interface]",
         f"PrivateKey = {PLACEHOLDER}",
         f"Address = {peer.assigned_ip}",
     ]
-    if interface.dns:
-        lines.append(f"DNS = {interface.dns}")
-    if interface.mtu:
-        lines.append(f"MTU = {interface.mtu}")
+    if servers := dns(interface, profile):
+        lines.append(f"DNS = {servers}")
+    if size := mtu(interface, profile):
+        lines.append(f"MTU = {size}")
 
     for name in OBFUSCATION_ORDER:
         value = interface.obfuscation.get(name)

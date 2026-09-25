@@ -38,6 +38,8 @@ class PeerRead(BaseModel):
     interface_id: int
     interface: str
     enabled: bool
+    # The config it was issued no longer matches what would be rendered now.
+    reroll: bool = False
 
 
 class XrayClientRead(BaseModel):
@@ -60,6 +62,8 @@ class ProfileRead(BaseModel):
     id: int
     name: str
     note: str | None = None
+    dns: str | None = None
+    mtu: int | None = None
     enabled: bool
     created_at: datetime
     node: str | None = None
@@ -124,6 +128,23 @@ class ProfileUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     enabled: bool
+
+
+class ProfileEdit(BaseModel):
+    """Everything the edit form holds. A half set to null is taken away.
+
+    A half left out is kept as it is; one given anew was generated in the browser.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    name: str = Field(min_length=1, max_length=64)
+    note: str | None = None
+    dns: str | None = None
+    mtu: int | None = Field(default=None, ge=576, le=65535)
+    allowed_ips: str | None = None
+    awg: AwgRequest | None = None
+    xray: XrayRequest | None = None
 
 
 class AwgReissue(BaseModel):
@@ -360,6 +381,14 @@ class InterfaceUpdate(BaseModel):
     mtu: int | None = Field(default=None, ge=576, le=65535)
     client_allowed_ips: str | None = None
     keepalive: int | None = Field(default=None, ge=0, le=65535)
+
+
+class ObfuscationUpdate(BaseModel):
+    """Obfuscation values to change, by their .conf names. Absent ones are kept."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    obfuscation: dict[str, bool | int | str]
 
 
 class InboundUpdate(BaseModel):

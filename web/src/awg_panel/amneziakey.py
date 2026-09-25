@@ -12,24 +12,26 @@ import json
 from typing import Any
 
 from awg_panel import clientconf
-from awg_panel.models import AwgPeer, Interface
+from awg_panel.models import AwgPeer, Interface, Profile
 
 CONTAINER = "amnezia-awg"
 # The app's own default for an AmneziaWG config that names no MTU.
 DEFAULT_MTU = 1376
 
 
-def render(interface: Interface, peer: AwgPeer, name: str) -> str:
+def render(
+    interface: Interface, peer: AwgPeer, name: str, profile: Profile | None = None
+) -> str:
     """Build the key document, with the private key left to the browser."""
     last_config: dict[str, Any] = {
-        "config": clientconf.render(interface, peer),
+        "config": clientconf.render(interface, peer, profile),
         "hostName": interface.endpoint_host,
         "port": interface.listen_port,
         "client_priv_key": clientconf.PLACEHOLDER,
         "client_ip": peer.assigned_ip,
         "server_pub_key": interface.server_public_key,
         "allowed_ips": [item.strip() for item in peer.allowed_ips.split(",")],
-        "mtu": str(interface.mtu or DEFAULT_MTU),
+        "mtu": str(clientconf.mtu(interface, profile) or DEFAULT_MTU),
     }
     if interface.keepalive:
         last_config["persistent_keep_alive"] = str(interface.keepalive)
@@ -55,9 +57,8 @@ def render(interface: Interface, peer: AwgPeer, name: str) -> str:
         "description": interface.label or name,
         "hostName": interface.endpoint_host,
     }
-    servers = [
-        item.strip() for item in (interface.dns or "").split(",") if item.strip()
-    ]
+    resolvers = clientconf.dns(interface, profile) or ""
+    servers = [item.strip() for item in resolvers.split(",") if item.strip()]
     if servers:
         document["dns1"] = servers[0]
         document["dns2"] = servers[1] if len(servers) > 1 else servers[0]

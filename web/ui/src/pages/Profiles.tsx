@@ -6,6 +6,7 @@ import { describe, type Problem } from "../problem";
 import { Banner, Pill, Stat, counted, type Part } from "../tiles";
 import { IssuedConfig, type Issue } from "./IssuedConfig";
 import { ProfileDelete } from "./ProfileDelete";
+import { ProfileEdit } from "./ProfileEdit";
 import { ProfileNew } from "./ProfileNew";
 import { ProfileReroll } from "./ProfileReroll";
 import { ProfileStats } from "./ProfileStats";
@@ -30,6 +31,7 @@ export function Profiles() {
   const [issued, setIssued] = useState<Issue | null>(null);
   const [deleting, setDeleting] = useState<Profile | null>(null);
   const [rerolling, setRerolling] = useState<Profile | null>(null);
+  const [editing, setEditing] = useState<Profile | null>(null);
   const [switching, setSwitching] = useState<number | null>(null);
   const [inspected, setInspected] = useState<Profile | null>(null);
 
@@ -186,10 +188,14 @@ export function Profiles() {
                     <Pill tone={item.enabled ? "ok" : "idle"}>
                       {item.enabled ? "enabled" : "disabled"}
                     </Pill>
+                    {item.peer?.reroll ? <Pill tone="warn">reroll</Pill> : null}
                   </div>
                 </td>
                 <td>
                   <div className="row-actions">
+                    <button type="button" className="small" onClick={() => setEditing(item)}>
+                      Edit
+                    </button>
                     <button type="button" className="small" onClick={() => setInspected(item)}>
                       Stats
                     </button>
@@ -239,6 +245,19 @@ export function Profiles() {
           onIssued={(issue) => {
             setRerolling(null);
             setIssued(issue);
+            void reload();
+          }}
+        />
+      ) : null}
+      {editing ? (
+        <ProfileEdit
+          profile={editing}
+          onClose={() => setEditing(null)}
+          onSaved={(issue) => {
+            setEditing(null);
+            if (issue) {
+              setIssued(issue);
+            }
             void reload();
           }}
         />

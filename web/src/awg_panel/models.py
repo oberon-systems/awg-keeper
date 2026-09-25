@@ -49,8 +49,8 @@ class Interface(SQLModel, table=True):
     # What the client puts in AllowedIPs: full or split tunnel, per interface.
     client_allowed_ips: str = "0.0.0.0/0"
     keepalive: int | None = 25
-    # Jc, Jmin, Jmax, S1, S2, H1-H4. Identical on both ends or the handshake
-    # never completes, which is the single most common failure.
+    # Jc..H4, I1-I5 and the AmneziaWG 3.1 set. Identical on both ends or the
+    # handshake never completes, which is the single most common failure.
     obfuscation: dict[str, Any] = Field(default_factory=dict, sa_column=Column(JSON))
 
 
@@ -103,6 +103,9 @@ class Profile(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str = Field(index=True, unique=True)
     note: str | None = None
+    # Over the interface's own, in the config the next issue renders.
+    dns: str | None = None
+    mtu: int | None = None
     enabled: bool = True
     created_at: datetime = Field(default_factory=_now)
 
@@ -119,6 +122,8 @@ class AwgPeer(SQLModel, table=True):
     assigned_ip: str
     allowed_ips: str = "0.0.0.0/0"
     enabled: bool = True
+    # What the last issued config rendered to, so a change since shows up.
+    issued_digest: str | None = None
     created_at: datetime = Field(default_factory=_now)
 
 
