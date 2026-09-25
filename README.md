@@ -13,6 +13,13 @@ The Agent needs no root and no Linux capabilities. It expects the AmneziaWG
 interfaces to be set up already, and manages their peers through the
 interfaces' control sockets.
 
+## Demo
+
+[![awg-keeper demo](https://img.youtube.com/vi/_-wSG0xLLyo/maxresdefault.jpg)](https://youtu.be/_-wSG0xLLyo)
+
+The dashboard, issuing a profile with its QR codes, turning access off, reroll
+and the stats.
+
 ## Features
 
 - Profiles with AmneziaWG, Xray or both, issued as a `.conf`, an Amnezia
