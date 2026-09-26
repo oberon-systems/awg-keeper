@@ -1,3 +1,9 @@
+## awg-keeper-agent-v0.5.3 (2026-09-26)
+
+### Bug Fixes
+
+- **agent**: send the whole inbound to adu, check what adu and rmu print
+
 ## awg-keeper-agent-v0.5.2 (2026-09-26)
 
 ### Bug Fixes
