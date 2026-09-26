@@ -1,3 +1,9 @@
+## awg-keeper-agent-v0.5.2 (2026-09-26)
+
+### Bug Fixes
+
+- **agent**: read the reality public key from xray 26
+
 ## awg-keeper-agent-v0.5.1 (2026-09-25)
 
 ## awg-keeper-agent-v0.5.0 (2026-09-25)

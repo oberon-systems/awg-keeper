@@ -1,3 +1,3 @@
 """Host-side executor for awg-keeper: AmneziaWG peers and Xray users."""
 
-__version__ = "0.5.1"
+__version__ = "0.5.2"
