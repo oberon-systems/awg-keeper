@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 7752,
       "y": 378.45454525947565,
-      "width": 68.32954406738281,
-      "height": 18.18181800842285,
-      "x1": 0,
-      "y1": -0.7272727489471436,
-      "x2": 68.32954406738281,
-      "y2": 17.454545259475708,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "15px",
       "fontWeight": "600",
+      "y1": -0.7272727489471436,
+      "width": 68.32954406738281,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 7752,
+      "x1": 0,
+      "y2": 17.454545259475708,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
+      "x2": 68.32954406738281,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 18.18181800842285,
       "text": "Interfaces"
     }
   ]

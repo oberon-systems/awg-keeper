@@ -121,28 +121,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 1988,
       "y": 1703.818182229996,
-      "width": 371.9659118652344,
-      "height": 14.545454978942871,
-      "x1": 0,
-      "y1": -0.7272727489471436,
-      "x2": 371.9659118652344,
-      "y2": 13.818182229995728,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "12px",
       "fontWeight": "400",
+      "y1": -0.7272727489471436,
+      "width": 371.9659118652344,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 1988,
+      "x1": 0,
+      "y2": 13.818182229995728,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 371.9659118652344,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 14.545454978942871,
       "text": "Empty takes the interface value. A change here needs the profile rerolled"
     }
   ]

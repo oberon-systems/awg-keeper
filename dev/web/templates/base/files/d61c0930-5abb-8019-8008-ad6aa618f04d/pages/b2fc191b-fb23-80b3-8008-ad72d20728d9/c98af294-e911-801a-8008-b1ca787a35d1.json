@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 1154.4999999999998,
       "y": 492.2727279663086,
-      "width": 22.363637924194336,
-      "height": 15.272727966308594,
-      "x1": 0,
-      "y1": 0,
-      "x2": 22.363637924194336,
-      "y2": 15.272727966308594,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "600",
+      "y1": 0,
+      "width": 22.363637924194336,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 1154.4999999999998,
+      "x1": 0,
+      "y2": 15.272727966308594,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
+      "x2": 22.363637924194336,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.272727966308594,
       "text": "Edit"
     }
   ]

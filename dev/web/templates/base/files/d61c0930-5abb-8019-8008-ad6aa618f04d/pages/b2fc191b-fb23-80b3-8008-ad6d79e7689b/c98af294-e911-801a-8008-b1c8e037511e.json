@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 7262,
       "y": 300.2727279663086,
-      "width": 120.5227279663086,
-      "height": 15.272727966308594,
-      "x1": 0,
-      "y1": 0,
-      "x2": 120.5227279663086,
-      "y2": 15.272727966308594,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "500",
+      "y1": 0,
+      "width": 120.5227279663086,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 7262,
+      "x1": 0,
+      "y2": 15.272727966308594,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 120.5227279663086,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.272727966308594,
       "text": "22.09.2026, 14:31:40"
     }
   ]

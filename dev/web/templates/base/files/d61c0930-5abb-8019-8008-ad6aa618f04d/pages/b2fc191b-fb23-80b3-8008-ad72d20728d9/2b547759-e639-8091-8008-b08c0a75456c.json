@@ -3,36 +3,36 @@
   "name": "Body",
   "type": "text",
   "x": 6708,
-  "y": 1605.0000000000002,
+  "y": 1462,
   "width": 344,
   "height": 32,
   "rotation": 0,
   "selrect": {
     "x": 6708,
-    "y": 1605.0000000000002,
+    "y": 1462,
     "width": 344,
     "height": 32,
     "x1": 6708,
-    "y1": 1605.0000000000002,
+    "y1": 1462,
     "x2": 7052,
-    "y2": 1637.0000000000002
+    "y2": 1494
   },
   "points": [
     {
       "x": 6708,
-      "y": 1605.0000000000002
+      "y": 1462
     },
     {
       "x": 7052,
-      "y": 1605.0000000000002
+      "y": 1462
     },
     {
       "x": 7052,
-      "y": 1637.0000000000002
+      "y": 1494
     },
     {
       "x": 6708,
-      "y": 1637.0000000000002
+      "y": 1494
     }
   ],
   "transform": {
@@ -87,7 +87,7 @@
                   }
                 ],
                 "fontFamily": "Inter Tight",
-                "text": "A new configuration will be issued. The current one stops working; the name, the address and the stats are kept."
+                "text": "Pick what to reissue. The chosen config stops working; the name, the address and the stats are kept."
               }
             ],
             "typographyRefId": null,
@@ -121,54 +121,54 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "y": 1620.2727279663088,
+      "x": 6708,
+      "y": 1477.2727279663086,
+      "width": 329.5113830566406,
+      "height": 15.272727966308594,
+      "x1": 0,
+      "y1": 0,
+      "x2": 329.5113830566406,
+      "y2": 15.272727966308594,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "400",
-      "y1": 0,
-      "width": 319.7159118652344,
       "textDecoration": "none",
       "letterSpacing": "normal",
-      "x": 6708,
-      "x1": 0,
-      "y2": 15.272727966308594,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
-      "x2": 319.7159118652344,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
-      "height": 15.272727966308594,
-      "text": "A new configuration will be issued. The current one stops "
+      "text": "Pick what to reissue. The chosen config stops working; the "
     },
     {
-      "y": 1635.8636398315432,
+      "x": 6708,
+      "y": 1492.863639831543,
+      "width": 230.45457458496094,
+      "height": 15.27272891998291,
+      "x1": 0,
+      "y1": 15.590910911560059,
+      "x2": 230.45457458496094,
+      "y2": 30.86363983154297,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "400",
-      "y1": 15.590910911560059,
-      "width": 302.375,
       "textDecoration": "none",
       "letterSpacing": "normal",
-      "x": 6708,
-      "x1": 0,
-      "y2": 30.86363983154297,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
-      "x2": 302.375,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
-      "height": 15.27272891998291,
-      "text": "working; the name, the address and the stats are kept."
+      "text": "name, the address and the stats are kept."
     }
   ]
 }

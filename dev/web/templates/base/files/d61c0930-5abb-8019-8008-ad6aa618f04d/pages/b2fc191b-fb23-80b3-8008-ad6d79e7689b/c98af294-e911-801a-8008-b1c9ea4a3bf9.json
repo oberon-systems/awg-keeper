@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 8100,
       "y": 213.2727279663086,
-      "width": 555.0909423828125,
-      "height": 15.272727966308594,
-      "x1": 0,
-      "y1": 0,
-      "x2": 555.0909423828125,
-      "y2": 15.272727966308594,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "500",
+      "y1": 0,
+      "width": 555.0909423828125,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 8100,
+      "x1": 0,
+      "y2": 15.272727966308594,
       "fills": [
         {
           "fillColor": "#8a5a00",
           "fillOpacity": 1
         }
       ],
+      "x2": 555.0909423828125,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.272727966308594,
       "text": "Saving changes the interface at once. Every profile issued on it stops connecting until it is rerolled."
     }
   ]

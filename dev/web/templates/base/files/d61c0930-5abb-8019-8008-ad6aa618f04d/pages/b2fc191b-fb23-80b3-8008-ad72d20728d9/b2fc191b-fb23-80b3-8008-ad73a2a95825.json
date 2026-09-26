@@ -2,36 +2,36 @@
   "id": "b2fc191b-fb23-80b3-8008-ad73a2a95825",
   "name": "Value",
   "type": "text",
-  "x": 5632,
+  "x": 5580,
   "y": 112,
   "width": 144,
   "height": 17,
   "rotation": 0,
   "selrect": {
-    "x": 5632,
+    "x": 5580,
     "y": 112,
     "width": 144,
     "height": 17,
-    "x1": 5632,
+    "x1": 5580,
     "y1": 112,
-    "x2": 5776,
+    "x2": 5724,
     "y2": 129
   },
   "points": [
     {
-      "x": 5632,
+      "x": 5580,
       "y": 112
     },
     {
-      "x": 5776,
+      "x": 5724,
       "y": 112
     },
     {
-      "x": 5776,
+      "x": 5724,
       "y": 129
     },
     {
-      "x": 5632,
+      "x": 5580,
       "y": 129
     }
   ],
@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "y": 128.80000114440918,
+      "x": 5580,
+      "y": 128.7272732257843,
+      "width": 143.09091186523438,
+      "height": 17.454545974731445,
+      "x1": 0,
+      "y1": -0.7272727489471436,
+      "x2": 143.09091186523438,
+      "y2": 16.7272732257843,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "14px",
       "fontWeight": "400",
-      "y1": 0,
-      "width": 143.08750915527344,
       "textDecoration": "none",
       "letterSpacing": "normal",
-      "x": 5632,
-      "x1": 0,
-      "y2": 16.80000114440918,
       "fills": [
         {
           "fillColor": "#9aa1ac",
           "fillOpacity": 1
         }
       ],
-      "x2": 143.08750915527344,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
-      "height": 16.80000114440918,
       "text": "Search by name or note"
     }
   ]

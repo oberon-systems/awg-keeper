@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 1988,
       "y": 1299.999999284744,
-      "width": 151.227294921875,
-      "height": 24.727272033691406,
-      "x1": 0,
-      "y1": -0.7272727489471436,
-      "x2": 151.227294921875,
-      "y2": 23.999999284744263,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "20px",
       "fontWeight": "700",
+      "y1": -0.7272727489471436,
+      "width": 151.227294921875,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 1988,
+      "x1": 0,
+      "y2": 23.999999284744263,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
+      "x2": 151.227294921875,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 24.727272033691406,
       "text": "Edit dave-phone"
     }
   ]

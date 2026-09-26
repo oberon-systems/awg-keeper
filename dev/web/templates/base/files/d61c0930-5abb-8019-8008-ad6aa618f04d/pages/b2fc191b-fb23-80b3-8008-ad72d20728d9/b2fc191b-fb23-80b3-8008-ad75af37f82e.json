@@ -2,36 +2,36 @@
   "id": "b2fc191b-fb23-80b3-8008-ad75af37f82e",
   "name": "Period switch",
   "type": "frame",
-  "x": 8568,
+  "x": 8526,
   "y": 140,
   "width": 204,
   "height": 34,
   "rotation": 0,
   "selrect": {
-    "x": 8568,
+    "x": 8526,
     "y": 140,
     "width": 204,
     "height": 34,
-    "x1": 8568,
+    "x1": 8526,
     "y1": 140,
-    "x2": 8772,
+    "x2": 8730,
     "y2": 174
   },
   "points": [
     {
-      "x": 8568,
+      "x": 8526,
       "y": 140
     },
     {
-      "x": 8772,
+      "x": 8730,
       "y": 140
     },
     {
-      "x": 8772,
+      "x": 8730,
       "y": 174
     },
     {
-      "x": 8568,
+      "x": 8526,
       "y": 174
     }
   ],
@@ -51,8 +51,8 @@
     "e": 0.0,
     "f": 0.0
   },
-  "parentId": "b2fc191b-fb23-80b3-8008-ad75af130748",
-  "frameId": "b2fc191b-fb23-80b3-8008-ad75af130748",
+  "parentId": "3a56172a-6a42-80dd-8008-b2b0f7054f6d",
+  "frameId": "3a56172a-6a42-80dd-8008-b2b0f7054f6d",
   "flipX": null,
   "flipY": null,
   "hideFillOnExport": false,

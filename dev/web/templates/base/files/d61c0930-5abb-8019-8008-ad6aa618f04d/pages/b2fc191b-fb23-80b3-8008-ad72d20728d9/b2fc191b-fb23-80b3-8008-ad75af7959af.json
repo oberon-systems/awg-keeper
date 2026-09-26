@@ -2,36 +2,36 @@
   "id": "b2fc191b-fb23-80b3-8008-ad75af7959af",
   "name": "Label",
   "type": "text",
-  "x": 8641,
+  "x": 8599,
   "y": 149,
   "width": 38,
   "height": 16,
   "rotation": 0,
   "selrect": {
-    "x": 8641,
+    "x": 8599,
     "y": 149,
     "width": 38,
     "height": 16,
-    "x1": 8641,
+    "x1": 8599,
     "y1": 149,
-    "x2": 8679,
+    "x2": 8637,
     "y2": 165
   },
   "points": [
     {
-      "x": 8641,
+      "x": 8599,
       "y": 149
     },
     {
-      "x": 8679,
+      "x": 8637,
       "y": 149
     },
     {
-      "x": 8679,
+      "x": 8637,
       "y": 165
     },
     {
-      "x": 8641,
+      "x": 8599,
       "y": 165
     }
   ],
@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "y": 164.19999998807907,
+      "x": 8599,
+      "y": 164.2727279663086,
+      "width": 37.7613639831543,
+      "height": 15.272727966308594,
+      "x1": 0,
+      "y1": 0,
+      "x2": 37.7613639831543,
+      "y2": 15.272727966308594,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "600",
-      "y1": -0.800000011920929,
-      "width": 37.79999923706055,
       "textDecoration": "none",
       "letterSpacing": "normal",
-      "x": 8641,
-      "x1": 0,
-      "y2": 15.199999988079071,
       "fills": [
         {
           "fillColor": "#1a1d23",
           "fillOpacity": 1
         }
       ],
-      "x2": 37.79999923706055,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
-      "height": 16,
       "text": "7 days"
     }
   ]

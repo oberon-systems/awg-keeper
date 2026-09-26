@@ -121,78 +121,78 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 8248,
       "y": 569.2727279663086,
-      "width": 258.31817626953125,
-      "height": 15.272727966308594,
-      "x1": 0,
-      "y1": 0,
-      "x2": 258.31817626953125,
-      "y2": 15.272727966308594,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "400",
+      "y1": 0,
+      "width": 258.31817626953125,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 8248,
+      "x1": 0,
+      "y2": 15.272727966308594,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 258.31817626953125,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.272727966308594,
       "text": "Save the obfuscation of awg1 on ams-1. The 6 "
     },
     {
-      "x": 8248,
       "y": 584.863639831543,
-      "width": 276.94317626953125,
-      "height": 15.27272891998291,
-      "x1": 0,
-      "y1": 15.590910911560059,
-      "x2": 276.94317626953125,
-      "y2": 30.86363983154297,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "400",
+      "y1": 15.590910911560059,
+      "width": 276.94317626953125,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 8248,
+      "x1": 0,
+      "y2": 30.86363983154297,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 276.94317626953125,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.27272891998291,
       "text": "profiles issued on it stop connecting until they are "
     },
     {
-      "x": 8248,
       "y": 600.4545478820801,
-      "width": 41.25,
-      "height": 15.272726058959961,
-      "x1": 0,
-      "y1": 31.181821823120117,
-      "x2": 41.25,
-      "y2": 46.45454788208008,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "400",
+      "y1": 31.181821823120117,
+      "width": 41.25,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 8248,
+      "x1": 0,
+      "y2": 46.45454788208008,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 41.25,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.272726058959961,
       "text": "rerolled"
     }
   ]

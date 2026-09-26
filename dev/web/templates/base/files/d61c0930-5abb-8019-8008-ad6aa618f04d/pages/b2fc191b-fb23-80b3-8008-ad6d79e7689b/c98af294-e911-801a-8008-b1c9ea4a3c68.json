@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 8242,
       "y": 895.7727279663086,
-      "width": 172.0454559326172,
-      "height": 15.272727966308594,
-      "x1": 0,
-      "y1": 0,
-      "x2": 172.0454559326172,
-      "y2": 15.272727966308594,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "500",
+      "y1": 0,
+      "width": 172.0454559326172,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 8242,
+      "x1": 0,
+      "y2": 15.272727966308594,
       "fills": [
         {
           "fillColor": "#8a5a00",
           "fillOpacity": 1
         }
       ],
+      "x2": 172.0454559326172,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.272727966308594,
       "text": "latency 812 ms, above 500 ms"
     }
   ]

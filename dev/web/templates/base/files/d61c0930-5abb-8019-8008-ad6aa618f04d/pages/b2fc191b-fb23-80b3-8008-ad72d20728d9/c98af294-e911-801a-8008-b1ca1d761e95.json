@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 2034,
       "y": 1807.818182229996,
-      "width": 249.4431915283203,
-      "height": 14.545454978942871,
-      "x1": 0,
-      "y1": -0.7272727489471436,
-      "x2": 249.4431915283203,
-      "y2": 13.818182229995728,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "12px",
       "fontWeight": "400",
+      "y1": -0.7272727489471436,
+      "width": 249.4431915283203,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 2034,
+      "x1": 0,
+      "y2": 13.818182229995728,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 249.4431915283203,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 14.545454978942871,
       "text": "Unchecking removes the peer from the interface"
     }
   ]

@@ -119,28 +119,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 7752,
       "y": 238.2727279663086,
-      "width": 32.625,
-      "height": 15.272727966308594,
-      "x1": 0,
-      "y1": 0,
-      "x2": 32.625,
-      "y2": 15.272727966308594,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "500",
+      "y1": 0,
+      "width": 32.625,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 7752,
+      "x1": 0,
+      "y2": 15.272727966308594,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 32.625,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.272727966308594,
       "text": "Peers"
     }
   ]

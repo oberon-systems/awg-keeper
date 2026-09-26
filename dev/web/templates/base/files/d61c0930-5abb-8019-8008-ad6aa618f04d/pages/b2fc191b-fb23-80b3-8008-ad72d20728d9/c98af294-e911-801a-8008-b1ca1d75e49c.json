@@ -119,53 +119,53 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 2002,
       "y": 2100.2727279663086,
-      "width": 515.5454711914062,
-      "height": 15.272727966308594,
-      "x1": 0,
-      "y1": 0,
-      "x2": 515.5454711914062,
-      "y2": 15.272727966308594,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "500",
+      "y1": 0,
+      "width": 515.5454711914062,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 2002,
+      "x1": 0,
+      "y2": 15.272727966308594,
       "fills": [
         {
           "fillColor": "#8a5a00",
           "fillOpacity": 1
         }
       ],
+      "x2": 515.5454711914062,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.272727966308594,
       "text": "Name and note are saved at once. Added access shows its config once, after saving. DNS, "
     },
     {
-      "x": 2002,
       "y": 2115.863639831543,
-      "width": 317.2840881347656,
-      "height": 15.27272891998291,
-      "x1": 0,
-      "y1": 15.590910911560059,
-      "x2": 317.2840881347656,
-      "y2": 30.86363983154297,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "500",
+      "y1": 15.590910911560059,
+      "width": 317.2840881347656,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 2002,
+      "x1": 0,
+      "y2": 30.86363983154297,
       "fills": [
         {
           "fillColor": "#8a5a00",
           "fillOpacity": 1
         }
       ],
+      "x2": 317.2840881347656,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 15.27272891998291,
       "text": "MTU and allowed IPs reach the device only after a reroll."
     }
   ]
