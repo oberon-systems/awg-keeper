@@ -186,3 +186,11 @@ def test_a_rename_onto_a_taken_tag_is_refused(settings: Settings) -> None:
 def test_a_rename_of_an_unknown_client_is_refused(settings: Settings) -> None:
     with pytest.raises(xray.UnknownUser):
         xray.rename_user(settings, "vless-in", "nobody@node", "two@node")
+
+
+def test_the_26_label_of_the_public_key_is_read(
+    settings: Settings, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    answer = "PrivateKey: x\nPassword (PublicKey): derived\nHash32: y\n"
+    monkeypatch.setattr(xray, "run", lambda *args, **kwargs: answer)
+    assert xray.health(settings)[0].public_key == "derived"

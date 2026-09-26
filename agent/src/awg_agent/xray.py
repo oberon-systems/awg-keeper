@@ -118,8 +118,9 @@ def _public_key(settings: Settings, private: str | None) -> str | None:
         found = None
         for line in answer.splitlines():
             name, _, value = line.partition(":")
-            # "Public key" up to 24.x, "Password" from 25.x on.
-            if name.strip().lower().replace(" ", "") in ("publickey", "password"):
+            # "Public key" to 24.x, "Password" in 25.x, "Password (PublicKey)" in 26.x.
+            label = name.strip().lower().replace(" ", "")
+            if "publickey" in label or label.startswith("password"):
                 found = value.strip() or None
         _PUBLIC_KEYS[private] = found
     return _PUBLIC_KEYS[private]
