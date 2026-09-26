@@ -185,8 +185,30 @@ elif argv[:2] == ["api", "adu"]:
         payload = handle.read()
     with open(os.environ["FAKE_XRAY_PAYLOAD"], "w", encoding="utf-8") as handle:
         handle.write(payload)
+    # Like Xray 26: a bad inbound or a refused user is printed, and it exits 0.
+    added = 0
+    for inbound in json.loads(payload)["inbounds"]:
+        print("processing inbound: %s" % inbound.get("tag"))
+        settings = inbound.get("settings", {})
+        if not inbound.get("port"):
+            print("failed to build config: infra/conf: Listen on AnyIP but no "
+                  "Port(s) set in InboundDetour.")
+        elif inbound.get("protocol") == "vless" and "decryption" not in settings:
+            print("failed to build config: infra/conf: VLESS settings: "
+                  "please add/set decryption to none")
+        else:
+            for client in settings.get("clients", []):
+                if client.get("email") == os.environ.get("FAKE_XRAY_REFUSE"):
+                    print("failed to add user: %s" % client["email"])
+                else:
+                    added += 1
+    print("Added %d user(s) in total." % added)
 elif argv[:2] == ["api", "rmu"]:
-    pass
+    if argv[-1] == os.environ.get("FAKE_XRAY_REFUSE"):
+        print("failed to remove user: User %s not found." % argv[-1])
+        print("Removed 0 user(s) in total.")
+    else:
+        print("Removed 1 user(s) in total.")
 elif argv[:2] in (["api", "statsquery"], ["api", "statsonlineiplist"]):
     path = os.environ.get("FAKE_XRAY_STATS", "")
     if not os.path.exists(path):
@@ -301,7 +323,10 @@ def host(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
                 "listen": "0.0.0.0",
                 "port": 443,
                 "protocol": "vless",
-                "settings": {"clients": [{"id": UUID_A, "email": "one@node"}]},
+                "settings": {
+                    "clients": [{"id": UUID_A, "email": "one@node"}],
+                    "decryption": "none",
+                },
                 "streamSettings": {
                     "network": "tcp",
                     "security": "reality",

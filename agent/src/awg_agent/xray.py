@@ -262,7 +262,7 @@ def add_user(
     if any(item.get("email") == client["email"] for item in clients):
         raise DuplicateUser(client["email"])
 
-    _call_add(settings, name, inbound.get("protocol", ""), client)
+    _call_add(settings, inbound, client)
     clients.append(client)
     try:
         _write(settings, document)
@@ -312,12 +312,11 @@ def rename_user(settings: Settings, tag: str, address: str, renamed: str) -> Xra
     if any(item.get("email") == fresh for item in clients):
         raise DuplicateUser(fresh)
 
-    protocol = inbound.get("protocol", "")
     _call_remove(settings, name, wanted)
     try:
-        _call_add(settings, name, protocol, {**client, "email": fresh})
+        _call_add(settings, inbound, {**client, "email": fresh})
     except CommandError:
-        _call_add(settings, name, protocol, client)
+        _call_add(settings, inbound, client)
         raise
     client["email"] = fresh
     try:
@@ -329,38 +328,44 @@ def rename_user(settings: Settings, tag: str, address: str, renamed: str) -> Xra
 
 def _call_add(
     settings: Settings,
-    tag: str,
-    protocol: str,
+    inbound: dict[str, Any],
     client: dict[str, Any],
 ) -> None:
-    # `api adu` reads whole inbound objects out of a config file, so the
-    # payload is a config fragment naming the tag, the protocol and one client.
-    payload = {
-        "inbounds": [
-            {"tag": tag, "protocol": protocol, "settings": {"clients": [client]}}
-        ]
-    }
+    # `api adu` builds a whole inbound out of the file, port and stream included,
+    # so it gets the inbound as configured with this one client in it.
+    body = {**inbound.get("settings", {}), "clients": [client]}
+    staged = {**inbound, "settings": body}
     handle, staging = tempfile.mkstemp(prefix="awg-keeper-adu-", suffix=".json")
     try:
         with os.fdopen(handle, "w", encoding="utf-8") as stream:
-            json.dump(payload, stream)
-        run(
-            [settings.xray_bin, "api", "adu", f"--server={settings.xray_api}", staging],
-            settings.command_timeout,
-        )
+            json.dump({"inbounds": [staged]}, stream)
+        argv = [
+            settings.xray_bin,
+            "api",
+            "adu",
+            f"--server={settings.xray_api}",
+            staging,
+        ]
+        _confirm(argv, run(argv, settings.command_timeout), "Added 1 user(s)")
     finally:
         Path(staging).unlink(missing_ok=True)
 
 
 def _call_remove(settings: Settings, tag: str, address: str) -> None:
-    run(
-        [
-            settings.xray_bin,
-            "api",
-            "rmu",
-            f"--server={settings.xray_api}",
-            f"-tag={tag}",
-            address,
-        ],
-        settings.command_timeout,
-    )
+    argv = [
+        settings.xray_bin,
+        "api",
+        "rmu",
+        f"--server={settings.xray_api}",
+        f"-tag={tag}",
+        address,
+    ]
+    _confirm(argv, run(argv, settings.command_timeout), "Removed 1 user(s)")
+
+
+def _confirm(argv: list[str], output: str, summary: str) -> None:
+    # adu and rmu exit 0 even when they changed nothing; only stdout tells.
+    if summary in output and "failed" not in output.lower():
+        return
+    LOG.error("%s %s did not apply: %s", argv[0], argv[2], output.strip())
+    raise CommandError(argv, f"{argv[2]} did not apply", output.strip())

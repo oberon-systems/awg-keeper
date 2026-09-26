@@ -10,6 +10,7 @@ import pytest
 from conftest import REALITY_KEY, UUID_A, UUID_B, argv_log
 
 from awg_agent import xray
+from awg_agent.commands import CommandError
 from awg_agent.config import Settings
 
 
@@ -112,11 +113,17 @@ def test_add_user_calls_adu_and_writes_the_config(
     called = argv_log(host, "xray")[-1]
     assert called[:3] == ["api", "adu", "--server=127.0.0.1:10085"]
 
-    # The payload is a config fragment: adu reads whole inbound objects.
+    # adu builds the whole inbound, so it gets the one configured, one client in.
     payload = json.loads((host / "adu.json").read_text(encoding="utf-8"))
     inbound = payload["inbounds"][0]
-    assert inbound["tag"] == "vless-in"
-    assert inbound["protocol"] == "vless"
+    assert (inbound["tag"], inbound["protocol"], inbound["port"]) == (
+        "vless-in",
+        "vless",
+        443,
+    )
+    assert inbound["listen"] == "0.0.0.0"
+    assert inbound["streamSettings"]["security"] == "reality"
+    assert inbound["settings"]["decryption"] == "none"
     assert inbound["settings"]["clients"] == [
         {"id": UUID_B, "email": "two@node", "level": 0, "flow": "xtls-rprx-vision"}
     ]
@@ -175,6 +182,59 @@ def test_a_rename_keeps_the_id_and_moves_the_tag(
     assert calls == ["rmu", "adu"]
     payload = json.loads((host / "adu.json").read_text(encoding="utf-8"))
     assert payload["inbounds"][0]["settings"]["clients"][0]["id"] == UUID_A
+
+
+def test_a_refused_add_raises_and_leaves_the_config(
+    settings: Settings,
+) -> None:
+    document = json.loads(settings.xray_config.read_text(encoding="utf-8"))
+    del document["inbounds"][0]["settings"]["decryption"]
+    settings.xray_config.write_text(json.dumps(document), encoding="utf-8")
+    before = settings.xray_config.read_text(encoding="utf-8")
+
+    with pytest.raises(CommandError, match="adu did not apply"):
+        xray.add_user(settings, "vless-in", UUID_B, "two@node")
+    assert settings.xray_config.read_text(encoding="utf-8") == before
+
+
+def test_an_inbound_without_a_port_is_refused_by_adu(settings: Settings) -> None:
+    document = json.loads(settings.xray_config.read_text(encoding="utf-8"))
+    del document["inbounds"][0]["port"]
+    settings.xray_config.write_text(json.dumps(document), encoding="utf-8")
+
+    with pytest.raises(CommandError):
+        xray.add_user(settings, "vless-in", UUID_B, "two@node")
+
+
+def test_a_refused_remove_raises_and_leaves_the_config(
+    settings: Settings,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("FAKE_XRAY_REFUSE", "one@node")
+    before = settings.xray_config.read_text(encoding="utf-8")
+
+    with pytest.raises(CommandError, match="rmu did not apply"):
+        xray.remove_user(settings, "vless-in", "one@node")
+    assert settings.xray_config.read_text(encoding="utf-8") == before
+
+
+def test_a_refused_rename_puts_the_old_tag_back(
+    settings: Settings,
+    host: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("FAKE_XRAY_REFUSE", "two@node")
+    before = settings.xray_config.read_text(encoding="utf-8")
+
+    with pytest.raises(CommandError):
+        xray.rename_user(settings, "vless-in", "one@node", "two@node")
+    calls = [argv[1] for argv in argv_log(host, "xray") if argv[0] == "api"]
+    assert calls == ["rmu", "adu", "adu"]
+    payload = json.loads((host / "adu.json").read_text(encoding="utf-8"))
+    assert payload["inbounds"][0]["settings"]["clients"] == [
+        {"id": UUID_A, "email": "one@node"}
+    ]
+    assert settings.xray_config.read_text(encoding="utf-8") == before
 
 
 def test_a_rename_onto_a_taken_tag_is_refused(settings: Settings) -> None:

@@ -105,6 +105,21 @@ def test_xray_users(client: TestClient, settings: Settings) -> None:
     assert emails == ["one@node"]
 
 
+def test_an_xray_user_the_instance_refused_is_not_201(
+    client: TestClient,
+    settings: Settings,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("FAKE_XRAY_REFUSE", "two@node")
+    before = settings.xray_config.read_text(encoding="utf-8")
+
+    answer = client.post(
+        "/v1/xray/vless-in/users", json={"id": UUID_B, "email": "two@node"}
+    )
+    assert answer.status_code == 502
+    assert settings.xray_config.read_text(encoding="utf-8") == before
+
+
 def test_an_unknown_inbound_is_404(client: TestClient) -> None:
     assert client.get("/v1/xray/absent/users").status_code == 404
 
