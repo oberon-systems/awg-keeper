@@ -22,6 +22,16 @@ export function generateKeyPair(): KeyPair {
   return { privateKey: toBase64(secret), publicKey: toBase64(publicKey) };
 }
 
+// crypto.randomUUID exists only in secure contexts; a panel served over plain
+// HTTP has getRandomValues alone.
+export function newUuid(): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = [...bytes].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+  return hex.replace(/^(.{8})(.{4})(.{4})(.{4})/, "$1-$2-$3-$4-");
+}
+
 export const PLACEHOLDER = "__PRIVATE_KEY__";
 
 export function fillConfig(template: string, privateKey: string): string {

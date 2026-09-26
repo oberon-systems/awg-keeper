@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api, type Profile } from "../api";
 import { day, shortKey } from "../format";
 import { describe, type Problem } from "../problem";
-import { Banner, Pill, Stat, counted, type Part } from "../tiles";
+import { Banner, Pill, Refresh, Stat, counted, type Part } from "../tiles";
 import { IssuedConfig, type Issue } from "./IssuedConfig";
 import { ProfileDelete } from "./ProfileDelete";
 import { ProfileEdit } from "./ProfileEdit";
@@ -34,14 +34,18 @@ export function Profiles() {
   const [editing, setEditing] = useState<Profile | null>(null);
   const [switching, setSwitching] = useState<number | null>(null);
   const [inspected, setInspected] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const reload = useCallback(async () => {
+    setLoading(true);
     try {
       setProfiles(await api.profiles());
       setProblem(null);
       setDetailShown(false);
     } catch (error) {
       setProblem(describe(error, "Could not load the profiles"));
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -95,6 +99,7 @@ export function Profiles() {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
+          <Refresh busy={loading} label="Reload the profiles" onClick={() => void reload()} />
           <button type="button" className="action" onClick={() => setCreating(true)}>
             + New profile
           </button>

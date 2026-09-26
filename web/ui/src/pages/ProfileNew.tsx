@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { api, type Agent, type Inbound, type Interface, type ProfileCreate } from "../api";
 import { Choice, Field } from "../fields";
-import { generateKeyPair } from "../keys";
+import { generateKeyPair, newUuid } from "../keys";
 import { describe, type Problem } from "../problem";
 import { Banner } from "../tiles";
 import { type Issue, issueOf } from "./IssuedConfig";
@@ -20,7 +20,7 @@ export function Option({
   checked: boolean;
   disabled: boolean;
   onToggle: (checked: boolean) => void;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   return (
     <div className={checked ? "option chosen" : "option"}>
@@ -118,7 +118,7 @@ export function ProfileNew({
       body.awg = { interface_id: Number(interfaceId), public_key: pair.publicKey };
     }
     if (xray) {
-      body.xray = { inbound_id: Number(inboundId), id: crypto.randomUUID() };
+      body.xray = { inbound_id: Number(inboundId), id: newUuid() };
     }
     try {
       const answer = await api.createProfile(body);

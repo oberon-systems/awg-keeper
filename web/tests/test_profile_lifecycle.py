@@ -154,6 +154,26 @@ def test_reissuing_both_halves_renews_the_link(
     ]
 
 
+def test_reissuing_one_half_keeps_the_other(
+    inbound: TestClient,
+    stub: StubAgent,
+) -> None:
+    _create(
+        inbound,
+        awg={"interface_id": 1, "public_key": KEY},
+        xray={"inbound_id": 1, "id": UUID},
+    )
+    calls = len(stub.calls)
+
+    answer = inbound.post("/api/v1/profiles/1/reissue", json={"xray": {"id": NEW_UUID}})
+    assert answer.status_code == 200
+    body = answer.json()
+    assert body["link"].startswith(f"vless://{NEW_UUID}@")
+    assert body["config_template"] is None
+    assert body["profile"]["peer"]["public_key"] == KEY
+    assert [call[0] for call in stub.calls[calls:]] == ["remove_user", "add_user"]
+
+
 @pytest.mark.parametrize(
     "body",
     [
@@ -162,7 +182,7 @@ def test_reissuing_both_halves_renews_the_link(
         {"awg": {"public_key": NEW}, "xray": {"id": NEW_UUID}},
     ],
 )
-def test_reissuing_needs_exactly_the_halves_owned(
+def test_reissuing_needs_a_half_the_profile_owns(
     signed_in: TestClient,
     body: dict,
 ) -> None:

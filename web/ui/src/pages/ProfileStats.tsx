@@ -4,7 +4,7 @@ import { api, type Period, type Profile, type ProfileStats as Stats } from "../a
 import { Chart, PERIODS, PROTOCOLS, Tile } from "../charts";
 import { age, bytes, day, duration, stamp } from "../format";
 import { describe, type Problem } from "../problem";
-import { Banner, Pill } from "../tiles";
+import { Banner, Pill, Refresh } from "../tiles";
 
 function seen(protocol: string): string {
   return protocol === "awg" ? "handshake" : "traffic";
@@ -16,9 +16,12 @@ export function ProfileStats({ profile, onClose }: { profile: Profile; onClose: 
   const [problem, setProblem] = useState<Problem | null>(null);
   const [detailShown, setDetailShown] = useState(false);
   const [now, setNow] = useState(() => Date.now());
+  const [round, setRound] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let live = true;
+    setLoading(true);
     api
       .profileStats(profile.id, period)
       .then((found) => {
@@ -32,11 +35,16 @@ export function ProfileStats({ profile, onClose }: { profile: Profile; onClose: 
         if (live) {
           setProblem(describe(error, "Could not load the profile stats"));
         }
+      })
+      .finally(() => {
+        if (live) {
+          setLoading(false);
+        }
       });
     return () => {
       live = false;
     };
-  }, [profile.id, period]);
+  }, [profile.id, period, round]);
 
   const span = PERIODS.find(([key]) => key === period)?.[1] ?? period;
   const latest = stats?.protocols
@@ -70,19 +78,26 @@ export function ProfileStats({ profile, onClose }: { profile: Profile; onClose: 
               {stats?.last_seen_at ? ` \u00b7 seen ${age(stats.last_seen_at, now)}` : ""}
             </Pill>
           )}
-          <div className="segmented" role="tablist">
-            {PERIODS.map(([key, label]) => (
-              <button
-                key={key}
-                type="button"
-                role="tab"
-                aria-selected={key === period}
-                className={key === period ? "active" : undefined}
-                onClick={() => setPeriod(key)}
-              >
-                {label}
-              </button>
-            ))}
+          <div className="controls-end">
+            <div className="segmented" role="tablist">
+              {PERIODS.map(([key, label]) => (
+                <button
+                  key={key}
+                  type="button"
+                  role="tab"
+                  aria-selected={key === period}
+                  className={key === period ? "active" : undefined}
+                  onClick={() => setPeriod(key)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <Refresh
+              busy={loading}
+              label="Reload the stats"
+              onClick={() => setRound((value) => value + 1)}
+            />
           </div>
         </div>
 
@@ -176,7 +191,9 @@ export function ProfileStats({ profile, onClose }: { profile: Profile; onClose: 
                         </td>
                         <td>{duration(Math.round(length))}</td>
                         <td>{PROTOCOLS[item.protocol] ?? item.protocol}</td>
-                        <td className="key">{item.source ?? "-"}</td>
+                        <td className="key" title={item.source ?? undefined}>
+                          {item.source ?? "-"}
+                        </td>
                         <td className="cell-name">{bytes(item.traffic)}</td>
                       </tr>
                     );

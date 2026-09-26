@@ -10,7 +10,7 @@ import {
 } from "../api";
 import { day } from "../format";
 import { Choice, Field } from "../fields";
-import { generateKeyPair } from "../keys";
+import { generateKeyPair, newUuid } from "../keys";
 import { describe, type Problem } from "../problem";
 import { Banner } from "../tiles";
 import { type Issue, issueOf } from "./IssuedConfig";
@@ -75,25 +75,25 @@ export function ProfileEdit({
     setBusy(true);
     setProblem(null);
     setDetailShown(false);
-    const pair = awg && !profile.peer ? generateKeyPair() : null;
-    const body: Edit = {
-      name: name.trim(),
-      note: note.trim() || null,
-      dns: dns.trim() || null,
-      mtu: mtu.trim() ? Number(mtu) : null,
-      allowed_ips: allowed.trim() || null,
-    };
-    if (profile.peer && !awg) {
-      body.awg = null;
-    } else if (pair) {
-      body.awg = { interface_id: Number(interfaceId), public_key: pair.publicKey };
-    }
-    if (profile.xray && !xray) {
-      body.xray = null;
-    } else if (xray && !profile.xray) {
-      body.xray = { inbound_id: Number(inboundId), id: crypto.randomUUID() };
-    }
     try {
+      const pair = awg && !profile.peer ? generateKeyPair() : null;
+      const body: Edit = {
+        name: name.trim(),
+        note: note.trim() || null,
+        dns: dns.trim() || null,
+        mtu: mtu.trim() ? Number(mtu) : null,
+        allowed_ips: allowed.trim() || null,
+      };
+      if (profile.peer && !awg) {
+        body.awg = null;
+      } else if (pair) {
+        body.awg = { interface_id: Number(interfaceId), public_key: pair.publicKey };
+      }
+      if (profile.xray && !xray) {
+        body.xray = null;
+      } else if (xray && !profile.xray) {
+        body.xray = { inbound_id: Number(inboundId), id: newUuid() };
+      }
       const answer = await api.editProfile(profile.id, body);
       const added = answer.config_template || answer.link;
       onSaved(added ? await issueOf(answer, pair) : null);

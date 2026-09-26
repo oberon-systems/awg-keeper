@@ -1,10 +1,11 @@
 import { useState } from "react";
 
 import { api, type Profile, type ProfileReissue } from "../api";
-import { generateKeyPair } from "../keys";
+import { generateKeyPair, newUuid } from "../keys";
 import { describe, type Problem } from "../problem";
 import { Banner } from "../tiles";
 import { type Issue, issueOf } from "./IssuedConfig";
+import { Option } from "./ProfileNew";
 
 export function ProfileReroll({
   profile,
@@ -15,6 +16,8 @@ export function ProfileReroll({
   onClose: () => void;
   onIssued: (issue: Issue) => void;
 }) {
+  const [awg, setAwg] = useState(profile.peer !== null);
+  const [xray, setXray] = useState(profile.xray !== null && profile.peer === null);
   const [problem, setProblem] = useState<Problem | null>(null);
   const [detailShown, setDetailShown] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -23,16 +26,16 @@ export function ProfileReroll({
     setBusy(true);
     setProblem(null);
     setDetailShown(false);
-    // New keys for every half the profile owns, generated here like the first ones.
-    const pair = profile.peer ? generateKeyPair() : null;
-    const body: ProfileReissue = {};
-    if (pair) {
-      body.awg = { public_key: pair.publicKey };
-    }
-    if (profile.xray) {
-      body.xray = { id: crypto.randomUUID() };
-    }
     try {
+      // New keys for the chosen halves, generated here like the first ones.
+      const pair = awg ? generateKeyPair() : null;
+      const body: ProfileReissue = {};
+      if (pair) {
+        body.awg = { public_key: pair.publicKey };
+      }
+      if (xray) {
+        body.xray = { id: newUuid() };
+      }
       const answer = await api.reissueProfile(profile.id, body);
       onIssued(await issueOf(answer, pair));
     } catch (error) {
@@ -55,9 +58,31 @@ export function ProfileReroll({
           </button>
         </div>
         <p className="modal-text">
-          A new configuration will be issued. The current one stops working; the name, the
-          address and the stats are kept.
+          Pick what to reissue. The chosen config stops working; the name, the address and
+          the stats are kept.
         </p>
+        <Option
+          title="AmneziaWG"
+          hint={
+            profile.peer
+              ? "New key pair; the .conf and the Amnezia key are shown once"
+              : "The profile has no AmneziaWG peer"
+          }
+          checked={awg}
+          disabled={!profile.peer}
+          onToggle={setAwg}
+        />
+        <Option
+          title="Xray (VLESS + Reality)"
+          hint={
+            profile.xray
+              ? "New UUID; the vless link is shown once"
+              : "The profile has no Xray client"
+          }
+          checked={xray}
+          disabled={!profile.xray}
+          onToggle={setXray}
+        />
         <Banner
           problem={problem}
           shown={detailShown}
@@ -70,7 +95,7 @@ export function ProfileReroll({
           <button
             type="button"
             className="action wide"
-            disabled={busy}
+            disabled={busy || !(awg || xray)}
             onClick={() => void reroll()}
           >
             Yes

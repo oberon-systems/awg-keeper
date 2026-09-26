@@ -372,12 +372,16 @@ def reissue_profile(
     profile_id: int,
     body: ProfileReissue,
 ) -> ProfileIssued:
-    """Replace the keys of a profile; its name, address and stats are kept."""
+    """Replace the keys of the halves asked for; name, address and stats are kept."""
     profile = profile_of(session, profile_id)
     peer = _peer_of(session, profile)
     client = _client_of(session, profile)
-    if (peer is None) != (body.awg is None) or (client is None) != (body.xray is None):
-        raise ValueError(f"{profile.name} needs a new key for each half it owns")
+    if body.awg is None and body.xray is None:
+        raise ValueError(f"{profile.name}: pick AmneziaWG, Xray or both to reroll")
+    stray_awg = body.awg is not None and peer is None
+    stray_xray = body.xray is not None and client is None
+    if stray_awg or stray_xray:
+        raise ValueError(f"{profile.name} can reroll only the halves it owns")
 
     if peer is not None and body.awg is not None:
         existing = session.exec(
@@ -428,7 +432,7 @@ def reissue_profile(
     session.commit()
     session.refresh(profile)
     LOG.info("profile %s reissued", profile.name)
-    return _issued(session, profile, peer, link)
+    return _issued(session, profile, peer if body.awg is not None else None, link)
 
 
 def _name_for_xray(session: Session, name: str, own: XrayClient | None) -> None:
