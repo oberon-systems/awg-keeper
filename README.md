@@ -15,10 +15,10 @@ through the interfaces' control sockets.
 
 ## Demo
 
-[![awg-keeper demo](https://img.youtube.com/vi/_-wSG0xLLyo/maxresdefault.jpg)](https://youtu.be/_-wSG0xLLyo)
+[![awg-keeper demo](https://img.youtube.com/vi/8Ikblmssln0/maxresdefault.jpg)](https://youtu.be/8Ikblmssln0)
 
-The dashboard, issuing a profile with its QR codes, turning access off, reroll
-and the stats.
+The agent page, AmneziaWG 3.1 obfuscation, editing a profile, rerolling it by
+halves, the new configs with their QR codes and the stats.
 
 ## Features
 
