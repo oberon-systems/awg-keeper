@@ -113,6 +113,8 @@ def _mount_spa(app: FastAPI, static: Path) -> None:
     @app.get("/{path:path}", include_in_schema=False)
     def spa(path: str) -> FileResponse:
         """Hand every unmatched path to the single page application."""
+        if path == "stats":
+            return FileResponse(static / "stats.html")
         candidate = static / path
         if path and candidate.is_file():
             return FileResponse(candidate)
