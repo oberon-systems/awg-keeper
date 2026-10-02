@@ -42,7 +42,7 @@ jobs:
           echo "version=${tag#awg-keeper-agent-v}" >>"$GITHUB_OUTPUT"
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       # One cache scope per distribution: the two images share no layers, and a
       # shared scope would have them evict each other on every run.
