@@ -1,3 +1,20 @@
+## awg-keeper-web-v0.7.3 (2026-10-02)
+
+### Bug Fixes
+
+- **web**: serve the clients' stats page as its own entry
+
+### Build
+
+- **deps**: fit typescript-eslint and noble curves 2
+- **deps**: Bump the pip group across 3 directories with 4 updates
+- **deps**: Bump node from 25-alpine to 26-alpine in /web
+- **deps**: Bump globals from 15.15.0 to 17.12.0 in /web/ui
+- **deps**: Bump typescript from 5.9.3 to 7.0.2 in /web/ui
+- **deps**: Bump @types/node from 20.19.43 to 26.6.3 in /web/ui
+- **deps**: Bump @noble/curves from 1.9.7 to 2.4.0 in /web/ui
+- **deps**: Bump the npm group in /web/ui with 3 updates
+
 ## awg-keeper-web-v0.7.2 (2026-09-26)
 
 ### Bug Fixes
