@@ -2,10 +2,10 @@
 # and an unpinned rebuild of the same tag would not be the same image.
 alembic==1.20.0
 argon2-cffi==25.1.0
-fastapi==0.142.2
+fastapi==0.150.0
 httpx==0.28.1
 itsdangerous==2.2.0
-pydantic==2.13.5
-pydantic-settings==2.15.0
-sqlmodel==0.0.47
+pydantic==2.14.1
+pydantic-settings==2.16.0
+sqlmodel==0.0.48
 uvicorn==0.54.0
