@@ -15,7 +15,7 @@ VERSION := $(if $(VERSION),$(VERSION),0.0.0)
 
 .DEFAULT_GOAL := help
 
-.PHONY: help lint test run secrets bump ui image clean
+.PHONY: help lint test run secrets ui image clean
 
 help:  ## Show the available targets
 	@echo "awg-keeper panel $(VERSION)"
@@ -37,15 +37,6 @@ test:  ## Run the unit tests against a stub agent and a temporary database
 		$(VENV)/bin/pytest -q; \
 	else \
 		$(PYTHON) -m pytest -q; \
-	fi
-
-# scripts/bump.sh reads only the commits that touched web/ and reads
-# web/.cz.yaml, so the version and the tag it writes are the panel's alone.
-bump:  ## Bump the panel version from the panel commits and tag it
-	@if [ -x $(VENV)/bin/cz ]; then \
-		CZ=$(VENV)/bin/cz scripts/bump.sh; \
-	else \
-		CZ="$(PYTHON) -m commitizen" scripts/bump.sh; \
 	fi
 
 ui:  ## Build the single page application into ui/dist

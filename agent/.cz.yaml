@@ -2,9 +2,6 @@
 # this directory picks this file up instead of the one at the root, so `cz bump`
 # moves the agent alone and tags it with the sub-project prefix the release
 # workflow triggers on.
-# Reach it through `make -C agent bump`: commitizen cannot filter commits by
-# path, so scripts/bump.sh derives the increment from the agent's commits alone
-# and passes it in.
 commitizen:
   name: wyld_cz
 
