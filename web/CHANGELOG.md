@@ -1,3 +1,17 @@
+## awg-keeper-web-v0.7.4 (2026-10-25)
+
+### Build
+
+- **make**: drop leftover bump targets
+- **deps**: Update uv-build requirement in /web
+- **deps**: Bump the pip group across 1 directory with 8 updates
+- **deps**: Bump the npm group across 1 directory with 8 updates
+- **deps**: Bump the npm group in /web/ui with 6 updates
+- **deps**: Bump the pip group across 3 directories with 2 updates
+- **deps**: Bump react-router from 7.18.3 to 8.4.0 in /web/ui
+- **deps**: Bump typescript from 5.9.3 to 6.0.3 in /web/ui
+- **deps**: Bump the pip group across 3 directories with 1 update
+
 ## awg-keeper-web-v0.7.3 (2026-10-02)
 
 ### Bug Fixes
