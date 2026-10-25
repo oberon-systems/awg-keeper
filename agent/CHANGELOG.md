@@ -1,3 +1,14 @@
+## awg-keeper-agent-v0.5.4 (2026-10-25)
+
+### Build
+
+- **make**: drop leftover bump targets
+- **deps**: Update uv-build requirement in /agent
+- **deps**: Bump the pip group across 1 directory with 8 updates
+- **deps**: Bump the pip group across 3 directories with 2 updates
+- **deps**: Bump the pip group across 3 directories with 1 update
+- **deps**: Bump the pip group across 3 directories with 4 updates
+
 ## awg-keeper-agent-v0.5.3 (2026-09-26)
 
 ### Bug Fixes
