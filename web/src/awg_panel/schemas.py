@@ -394,6 +394,53 @@ class ObfuscationUpdate(BaseModel):
     obfuscation: dict[str, bool | int | str]
 
 
+class ConfigDraft(BaseModel):
+    """A config to preview: a version by number, or changes to the current one."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    version: int | None = None
+    obfuscation: dict[str, bool | int | str] | None = None
+    dns: str | None = None
+    mtu: int | None = Field(default=None, ge=576, le=65535)
+    client_allowed_ips: str | None = None
+    keepalive: int | None = Field(default=None, ge=0, le=65535)
+
+
+class ConfigChange(BaseModel):
+    """One setting of a preview; an absent value is one nobody set."""
+
+    field: str
+    before: Any = None
+    after: Any = None
+    changed: bool
+
+
+class ConfigPreview(BaseModel):
+    """What applying a config would do, to the interface and to issued profiles."""
+
+    version: int | None
+    target: int | None
+    changes: list[ConfigChange]
+    # Set on the interface and absent from the config: awg cannot take them back.
+    blocked: list[str]
+    current: int
+    stale: int
+
+
+class ConfigVersionRead(BaseModel):
+    """One applied version of an interface's portable config."""
+
+    version: int
+    current: bool
+    source: str
+    rolled_back_from: int | None
+    author: str | None
+    created_at: datetime
+    digest: str
+    config: dict[str, Any]
+
+
 class InboundUpdate(BaseModel):
     """What the operator sets on a discovered inbound. Absent keys are kept."""
 

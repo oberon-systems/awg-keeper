@@ -18,6 +18,9 @@ from awg_panel.models import AwgPeer, Inbound, Interface, Node
 from awg_panel.schemas import (
     AgentRead,
     CheckRead,
+    ConfigDraft,
+    ConfigPreview,
+    ConfigVersionRead,
     Drift,
     Identity,
     InboundRead,
@@ -243,10 +246,11 @@ def update_interface(
     interface_id: int,
     body: InterfaceUpdate,
     session: SessionDep,
+    user: UserDep,
 ) -> AgentRead:
     """Configure a discovered interface and enable or disable it."""
     return service.update_interface(
-        session, auth.settings_of(request), interface_id, body
+        session, auth.settings_of(request), interface_id, body, user
     )
 
 
@@ -256,10 +260,11 @@ def set_interface_obfuscation(
     interface_id: int,
     body: ObfuscationUpdate,
     session: SessionDep,
+    user: UserDep,
 ) -> AgentRead:
     """Change the obfuscation on the live interface, through its agent."""
     return service.set_interface_obfuscation(
-        session, auth.settings_of(request), interface_id, body
+        session, auth.settings_of(request), interface_id, body, user
     )
 
 
@@ -268,10 +273,41 @@ def import_interface_obfuscation(
     request: Request,
     interface_id: int,
     session: SessionDep,
+    user: UserDep,
 ) -> AgentRead:
     """Take the live obfuscation as the panel's own, for an interface without it."""
     return service.import_interface_obfuscation(
-        session, auth.settings_of(request), interface_id
+        session, auth.settings_of(request), interface_id, user
+    )
+
+
+@private.get("/interfaces/{interface_id}/config/versions")
+def list_config_versions(
+    interface_id: int, session: SessionDep
+) -> list[ConfigVersionRead]:
+    """List the config history of an interface, newest first."""
+    return service.list_versions(session, interface_id)
+
+
+@private.post("/interfaces/{interface_id}/config/preview")
+def preview_config(
+    interface_id: int, body: ConfigDraft, session: SessionDep
+) -> ConfigPreview:
+    """Say what applying a version or an edit would change; apply nothing."""
+    return service.preview_config(session, interface_id, body)
+
+
+@private.post("/interfaces/{interface_id}/config/versions/{version}/apply")
+def apply_config_version(
+    request: Request,
+    interface_id: int,
+    version: int,
+    session: SessionDep,
+    user: UserDep,
+) -> AgentRead:
+    """Roll an interface back to one of its config versions, through its agent."""
+    return service.apply_version(
+        session, auth.settings_of(request), interface_id, version, user
     )
 
 

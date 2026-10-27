@@ -8,6 +8,7 @@ address goes back in the pool.
 from __future__ import annotations
 
 import hashlib
+import json
 import logging
 import re
 import time
@@ -25,6 +26,7 @@ from awg_panel.models import (
     AwgPeer,
     Inbound,
     Interface,
+    InterfaceConfig,
     Node,
     PeerCounter,
     Profile,
@@ -37,6 +39,10 @@ from awg_panel.schemas import (
     AgentInterface,
     AgentRead,
     CheckRead,
+    ConfigChange,
+    ConfigDraft,
+    ConfigPreview,
+    ConfigVersionRead,
     InboundUpdate,
     InterfaceUpdate,
     ObfuscationUpdate,
@@ -62,6 +68,10 @@ class UnknownInterface(LookupError):
 
 class UnknownNode(LookupError):
     """No node with that id."""
+
+
+class UnknownVersion(LookupError):
+    """No config version with that number for that interface."""
 
 
 class UnknownInbound(LookupError):
@@ -682,6 +692,28 @@ OBFUSCATION_NAMES = {
     "disable-cookies": "DisableCookies",
 }
 AGENT_NAMES = {name: field for field, name in OBFUSCATION_NAMES.items()}
+# What awg shows for a value nobody set; the agent leaves these out, and setting
+# one is how a value is taken back. I1-I5 and the key cannot be taken back.
+UNSET: dict[str, Any] = {
+    **dict.fromkeys(("Jc", "Jmin", "Jmax", "S1", "S2", "S3", "S4"), 0),
+    **{f"H{index}": index for index in range(1, 5)},
+    **dict.fromkeys(
+        (
+            "ContentPaddingAddition",
+            "RekeyAfterTime",
+            "RekeyTimeout",
+            "RejectAfterTime",
+            "KeepaliveTimeout",
+            "MaxHandshakeAttempts",
+        ),
+        0,
+    ),
+    "RandomTrailers": "off",
+    "DisableCookies": "off",
+}
+# The interface settings a config version carries besides the obfuscation; the
+# rest belongs to the server the interface is on.
+PORTABLE = ("dns", "mtu", "client_allowed_ips", "keepalive")
 REQUIRED_TO_ENABLE = ("address", "pool", "endpoint_host", "obfuscation")
 # A vless:// link without any of these looks right and never connects.
 INBOUND_REQUIRED = ("endpoint_host", "public_key", "server_names", "short_id")
@@ -765,28 +797,82 @@ def _live_obfuscation(
         return None
 
 
+def _value(value: bool | int | str) -> int | str:
+    if isinstance(value, bool):
+        return "on" if value else "off"
+    text = str(value).strip()
+    return int(text) if text.isdigit() else text
+
+
+def _canonical(obfuscation: dict[str, Any]) -> dict[str, Any]:
+    """Return obfuscation in awg-quick's order, without the values nobody set."""
+    found = {name: _value(value) for name, value in obfuscation.items()}
+    order = {name: index for index, name in enumerate(clientconf.OBFUSCATION_ORDER)}
+    return {
+        name: found[name]
+        for name in sorted(found, key=lambda name: order.get(name, len(order)))
+        if UNSET.get(name) != found[name]
+    }
+
+
+def _delta(
+    have: dict[str, Any], want: dict[str, Any]
+) -> tuple[dict[str, str], list[str]]:
+    """Return the agent values turning have into want, and what awg cannot unset."""
+    have, want = _canonical(have), _canonical(want)
+    values: dict[str, str] = {}
+    blocked: list[str] = []
+    for name in [*want, *(name for name in have if name not in want)]:
+        wanted = want.get(name, UNSET.get(name))
+        if have.get(name, UNSET.get(name)) == wanted:
+            continue
+        if wanted is None:
+            blocked.append(name)
+        else:
+            values[AGENT_NAMES[name]] = str(wanted)
+    return values, blocked
+
+
+def _push(
+    settings: Settings, node: Node, row: Interface, obfuscation: dict[str, Any]
+) -> None:
+    """Apply obfuscation through the agent; raise unless it took every value."""
+    values, blocked = _delta(row.obfuscation, obfuscation)
+    if blocked:
+        raise ValueError(f"awg cannot unset {', '.join(blocked)} on {row.name}")
+    if not values:
+        return
+    try:
+        applied = agent.set_obfuscation(settings, node, row.name, values)
+    except agent.AgentError as exc:
+        if exc.status == 422:
+            raise ValueError(exc.reason) from exc
+        raise
+    left, _ = _delta(_obfuscation(applied), obfuscation)
+    wrong = sorted(OBFUSCATION_NAMES[field] for field in left if field in values)
+    if wrong:
+        raise agent.AgentError(
+            f"{node.name} applied {', '.join(wrong)} on {row.name} other than asked"
+        )
+
+
 def _restore(
     settings: Settings, node: Node, row: Interface, live: dict[str, Any]
 ) -> dict[str, Any]:
     """Push the panel's obfuscation over a live interface that drifted from it."""
-    changed = sorted(
-        name for name, value in row.obfuscation.items() if live.get(name) != value
-    )
-    extra = sorted(name for name in live if name not in row.obfuscation)
+    values, blocked = _delta(live, row.obfuscation)
+    changed = sorted(OBFUSCATION_NAMES[field] for field in values)
     error = None
-    if changed:
-        values = {AGENT_NAMES[name]: str(row.obfuscation[name]) for name in changed}
+    if values:
         try:
             agent.set_obfuscation(settings, node, row.name, values)
         except agent.AgentError as exc:
             error = exc.reason
-    if extra and error is None:
-        error = f"awg cannot unset {', '.join(extra)}; restart the interface"
-    fields = ", ".join([*changed, *extra])
+    if blocked and error is None:
+        error = f"awg cannot unset {', '.join(blocked)}; restart the interface"
+    fields = ", ".join([*changed, *blocked])
     if not changed:
-        LOG.debug(
-            "agent %s: %s has %s besides the panel's", node.name, row.name, fields
-        )
+        LOG.debug("agent %s: %s also has %s", node.name, row.name, fields)
     elif error:
         LOG.error("agent %s: %s drifted (%s): %s", node.name, row.name, fields, error)
     else:
@@ -796,7 +882,7 @@ def _restore(
             row.name,
             fields,
         )
-    return {"fields": [*changed, *extra], "error": error}
+    return {"fields": [*changed, *blocked], "error": error}
 
 
 def _discover(
@@ -834,7 +920,7 @@ def _discover(
         row.server_public_key = item["public_key"]
         row.listen_port = int(item.get("listen_port") or 0)
         live = _live_obfuscation(settings, node, row.name) if row.obfuscation else None
-        if live is not None and live != row.obfuscation:
+        if live is not None and _canonical(live) != _canonical(row.obfuscation):
             item["drift"] = _restore(settings, node, row, live)
         # An agent before 0.3.3 reports no address; what the operator typed stays.
         address = _address(item.get("addresses") or [])
@@ -1174,6 +1260,7 @@ def update_interface(
     settings: Settings,
     interface_id: int,
     body: InterfaceUpdate,
+    author: str | None = None,
 ) -> AgentRead:
     """Apply what the operator set, refusing an enabled interface that cannot issue."""
     row = session.get(Interface, interface_id)
@@ -1207,6 +1294,8 @@ def update_interface(
         )
 
     session.add(row)
+    if row.obfuscation:
+        _record(session, row, "edit", author)
     session.commit()
     LOG.info(
         "agent %s: interface %s %s",
@@ -1222,45 +1311,18 @@ def set_interface_obfuscation(
     settings: Settings,
     interface_id: int,
     body: ObfuscationUpdate,
+    author: str | None = None,
 ) -> AgentRead:
     """Apply an obfuscation change through the agent, and keep it only once applied."""
-    row = session.get(Interface, interface_id)
-    if row is None:
-        raise UnknownInterface(str(interface_id))
+    row = interface_of(session, interface_id)
     node = node_of(session, row.node_id)
     if not row.obfuscation:
         raise ValueError(f"{row.name} has no obfuscation yet; import it first")
 
-    values = {}
-    wanted = dict(row.obfuscation)
-    for name, value in body.obfuscation.items():
-        field = AGENT_NAMES.get(name)
-        if field is None:
-            raise ValueError(f"{name} is not an obfuscation parameter")
-        if isinstance(value, bool):
-            value = "on" if value else "off"
-        values[field] = str(value).strip()
-        wanted[name] = _obfuscation({field: values[field]})[name]
-    try:
-        applied = _obfuscation(agent.set_obfuscation(settings, node, row.name, values))
-    except agent.AgentError as exc:
-        if exc.status == 422:
-            raise ValueError(exc.reason) from exc
-        raise
-
-    for name in body.obfuscation:
-        # The agent leaves out what equals awg's own default, as `awg show` does.
-        if name not in applied and wanted[name] in (0, "off"):
-            del wanted[name]
-    wrong = sorted(
-        name for name in body.obfuscation if applied.get(name) != wanted.get(name)
-    )
-    if wrong:
-        raise agent.AgentError(
-            f"{node.name} applied {', '.join(wrong)} on {row.name} other than asked"
-        )
+    wanted = _merged(row, body.obfuscation)
+    _push(settings, node, row, wanted)
     row.obfuscation = wanted
-    session.add(row)
+    _record(session, row, "edit", author)
     session.commit()
     LOG.warning(
         "agent %s: obfuscation of %s changed: %s",
@@ -1275,22 +1337,237 @@ def import_interface_obfuscation(
     session: Session,
     settings: Settings,
     interface_id: int,
+    author: str | None = None,
 ) -> AgentRead:
     """Take the live obfuscation as the panel's own, for an interface without one."""
-    row = session.get(Interface, interface_id)
-    if row is None:
-        raise UnknownInterface(str(interface_id))
+    row = interface_of(session, interface_id)
     node = node_of(session, row.node_id)
     if row.obfuscation:
         raise ValueError(f"{row.name} has its obfuscation in the panel already")
 
-    live = _obfuscation(agent.obfuscation(settings, node, row.name))
+    live = _canonical(_obfuscation(agent.obfuscation(settings, node, row.name)))
     if not live:
         raise ValueError(f"{row.name} reports no obfuscation to import")
     row.obfuscation = live
-    session.add(row)
+    _record(session, row, "import", author)
     session.commit()
     LOG.warning("agent %s: obfuscation of %s imported", node.name, row.name)
+    return next(item for item in list_agents(session, settings) if item.id == node.id)
+
+
+def interface_of(session: Session, interface_id: int) -> Interface:
+    """Return one interface, or raise UnknownInterface."""
+    row = session.get(Interface, interface_id)
+    if row is None:
+        raise UnknownInterface(str(interface_id))
+    return row
+
+
+def _merged(row: Interface, changes: dict[str, Any]) -> dict[str, Any]:
+    wanted = dict(row.obfuscation)
+    for name, value in changes.items():
+        if name not in AGENT_NAMES:
+            raise ValueError(f"{name} is not an obfuscation parameter")
+        wanted[name] = value
+    return _canonical(wanted)
+
+
+def _portable(row: Interface) -> dict[str, Any]:
+    config = {field: getattr(row, field) for field in PORTABLE}
+    return {"obfuscation": _canonical(row.obfuscation), **config}
+
+
+def _assign(row: Interface, config: dict[str, Any]) -> None:
+    row.obfuscation = _canonical(config.get("obfuscation") or {})
+    for field in PORTABLE:
+        setattr(row, field, config.get(field))
+    row.client_allowed_ips = row.client_allowed_ips or "0.0.0.0/0"
+
+
+def _config_digest(config: dict[str, Any]) -> str:
+    text = json.dumps(config, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def _versions(session: Session, interface_id: int) -> list[InterfaceConfig]:
+    query = (
+        select(InterfaceConfig)
+        .where(InterfaceConfig.interface_id == interface_id)
+        .order_by(col(InterfaceConfig.version).desc())
+    )
+    return list(session.exec(query).all())
+
+
+def _record(
+    session: Session,
+    row: Interface,
+    source: str,
+    author: str | None,
+    rolled_back_from: int | None = None,
+) -> InterfaceConfig | None:
+    """Add the row's portable config as its newest version, unless it is that."""
+    config = _portable(row)
+    digest = _config_digest(config)
+    versions = _versions(session, int(row.id or 0))
+    if versions and versions[0].digest == digest:
+        return None
+    version = InterfaceConfig(
+        interface_id=int(row.id or 0),
+        version=versions[0].version + 1 if versions else 1,
+        config=config,
+        digest=digest,
+        source=source,
+        rolled_back_from=rolled_back_from,
+        author=author,
+    )
+    session.add(row)
+    session.add(version)
+    return version
+
+
+def record_baselines(session: Session) -> None:
+    """Record the config every interface has as its first version, where none is.
+
+    Run at start, so an upgrade begins the history from what the panel holds.
+    """
+    recorded = 0
+    for row in session.exec(select(Interface)).all():
+        if row.obfuscation and not _versions(session, int(row.id or 0)):
+            _record(session, row, "baseline", None)
+            recorded += 1
+    if recorded:
+        LOG.info("%d interface configs recorded as version 1", recorded)
+    session.commit()
+
+
+def list_versions(session: Session, interface_id: int) -> list[ConfigVersionRead]:
+    """Return the config history of an interface, newest first."""
+    interface_of(session, interface_id)
+    versions = _versions(session, interface_id)
+    return [
+        ConfigVersionRead(
+            version=item.version,
+            current=index == 0,
+            source=item.source,
+            rolled_back_from=item.rolled_back_from,
+            author=item.author,
+            created_at=_utc(item.created_at) or item.created_at,
+            digest=item.digest,
+            config=item.config,
+        )
+        for index, item in enumerate(versions)
+    ]
+
+
+def _version_of(session: Session, interface_id: int, version: int) -> InterfaceConfig:
+    found = session.exec(
+        select(InterfaceConfig).where(
+            InterfaceConfig.interface_id == interface_id,
+            InterfaceConfig.version == version,
+        )
+    ).first()
+    if found is None:
+        raise UnknownVersion(f"interface {interface_id} has no version {version}")
+    return found
+
+
+def _draft(session: Session, row: Interface, body: ConfigDraft) -> dict[str, Any]:
+    if body.version is not None:
+        return dict(_version_of(session, int(row.id or 0), body.version).config)
+    config = _portable(row)
+    if body.obfuscation:
+        config["obfuscation"] = _merged(row, body.obfuscation)
+    for field in body.model_fields_set & set(PORTABLE):
+        value = getattr(body, field)
+        config[field] = _clean(value) if isinstance(value, str) else value
+    config["client_allowed_ips"] = config["client_allowed_ips"] or "0.0.0.0/0"
+    return config
+
+
+def _impact(
+    session: Session, row: Interface, config: dict[str, Any]
+) -> tuple[int, int]:
+    """Count the issued configs that would match after the change, and the rest."""
+    candidate = Interface(**row.model_dump())
+    _assign(candidate, config)
+    current = stale = 0
+    peers = session.exec(select(AwgPeer).where(AwgPeer.interface_id == row.id))
+    for peer in peers.all():
+        profile = session.get(Profile, peer.profile_id)
+        if profile is None or not peer.issued_digest:
+            continue
+        if peer.issued_digest == _digest(candidate, peer, profile):
+            current += 1
+        else:
+            stale += 1
+    return current, stale
+
+
+def preview_config(
+    session: Session, interface_id: int, body: ConfigDraft
+) -> ConfigPreview:
+    """Say what applying a version or an edit would change, before anything is."""
+    row = interface_of(session, interface_id)
+    before = _portable(row)
+    after = _draft(session, row, body)
+    old, new = before["obfuscation"], _canonical(after.get("obfuscation") or {})
+    names = [*new, *(name for name in old if name not in new)]
+    order = {name: index for index, name in enumerate(clientconf.OBFUSCATION_ORDER)}
+    changes = [
+        ConfigChange(
+            field=name,
+            before=old.get(name),
+            after=new.get(name),
+            changed=old.get(name, UNSET.get(name)) != new.get(name, UNSET.get(name)),
+        )
+        for name in sorted(names, key=lambda name: order.get(name, len(order)))
+    ]
+    changes += [
+        ConfigChange(
+            field=field,
+            before=before.get(field),
+            after=after.get(field),
+            changed=before.get(field) != after.get(field),
+        )
+        for field in PORTABLE
+    ]
+    _, blocked = _delta(old, new)
+    current, stale = _impact(session, row, after)
+    versions = _versions(session, interface_id)
+    return ConfigPreview(
+        version=versions[0].version if versions else None,
+        target=body.version,
+        changes=changes,
+        blocked=blocked,
+        current=current,
+        stale=stale,
+    )
+
+
+def apply_version(
+    session: Session,
+    settings: Settings,
+    interface_id: int,
+    version: int,
+    author: str | None = None,
+) -> AgentRead:
+    """Roll an interface back to one of its versions, through the agent first."""
+    row = interface_of(session, interface_id)
+    node = node_of(session, row.node_id)
+    target = _version_of(session, interface_id, version)
+    if target.digest == _config_digest(_portable(row)):
+        raise ValueError(f"version {version} is the config {row.name} has already")
+
+    _push(settings, node, row, target.config.get("obfuscation") or {})
+    _assign(row, target.config)
+    _record(session, row, "rollback", author, version)
+    session.commit()
+    LOG.warning(
+        "agent %s: config of %s rolled back to version %d",
+        node.name,
+        row.name,
+        version,
+    )
     return next(item for item in list_agents(session, settings) if item.id == node.id)
 
 

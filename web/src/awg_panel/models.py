@@ -9,7 +9,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Any
 
-from sqlalchemy import JSON, Column
+from sqlalchemy import JSON, Column, UniqueConstraint
 from sqlmodel import Field, SQLModel
 
 
@@ -205,3 +205,25 @@ class ReleasedIp(SQLModel, table=True):
     interface_id: int = Field(foreign_key="interface.id", index=True)
     address: str = Field(index=True)
     released_at: datetime = Field(default_factory=_now)
+
+
+class InterfaceConfig(SQLModel, table=True):
+    """One applied version of an interface's portable config; the newest is current.
+
+    Only what holds on any server: obfuscation and the client-side settings.
+    """
+
+    __tablename__ = "interface_config"
+    __table_args__ = (UniqueConstraint("interface_id", "version"),)
+
+    id: int | None = Field(default=None, primary_key=True)
+    # A plain value, no foreign key: the history outlives what it points at.
+    interface_id: int = Field(index=True)
+    version: int
+    config: dict[str, Any] = Field(default_factory=dict, sa_column=Column(JSON))
+    digest: str
+    # baseline, import, edit or rollback.
+    source: str
+    rolled_back_from: int | None = None
+    author: str | None = None
+    created_at: datetime = Field(default_factory=_now, index=True)
