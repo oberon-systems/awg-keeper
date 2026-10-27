@@ -94,6 +94,7 @@ def status(request: Request) -> Status:
         interfaces=interfaces,
         inbounds=inbounds,
         error=error,
+        conf_error=awg.conf_writable(settings),
     )
 
 

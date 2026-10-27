@@ -105,13 +105,17 @@ def test_persist_keeps_what_awg_quick_needs(settings: Settings) -> None:
     assert KEY_B in written
 
 
-def test_a_failed_persist_does_not_fail_the_apply(settings: Settings) -> None:
+def test_a_failed_persist_takes_the_peer_back_off(
+    settings: Settings, host: Path
+) -> None:
     (settings.awg_conf_dir / "awg0.conf").mkdir()
-    peer = awg.add_peer(settings, "awg0", KEY_B, ["10.8.0.5"])
-    assert peer.public_key == KEY_B
+    with pytest.raises(awg.PersistError, match="the live change was reverted"):
+        awg.add_peer(settings, "awg0", KEY_B, ["10.8.0.5"])
+    assert [peer.public_key for peer in awg.list_peers(settings, "awg0")] == [KEY_A]
+    assert ["set", "awg0", "peer", KEY_B, "remove"] in argv_log(host)
 
 
-def test_an_unreachable_conf_dir_does_not_fail_the_apply(
+def test_an_unreachable_conf_dir_fails_the_apply(
     settings: Settings,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -119,9 +123,46 @@ def test_an_unreachable_conf_dir_does_not_fail_the_apply(
         raise PermissionError(13, "Permission denied", str(self))
 
     monkeypatch.setattr(Path, "is_dir", denied)
-    peer = awg.add_peer(settings, "awg0", KEY_B, ["10.8.0.5"])
-    assert peer.public_key == KEY_B
-    assert awg.persist(settings, "awg0") is None
+    with pytest.raises(awg.PersistError, match="Permission denied"):
+        awg.add_peer(settings, "awg0", KEY_B, ["10.8.0.5"])
+    assert [peer.public_key for peer in awg.list_peers(settings, "awg0")] == [KEY_A]
+
+
+def test_a_missing_conf_dir_fails_the_persist(settings: Settings) -> None:
+    settings.awg_conf_dir.rmdir()
+    with pytest.raises(awg.PersistError, match="is not a directory"):
+        awg.persist(settings, "awg0")
+
+
+def test_a_failed_persist_puts_a_removed_peer_back(settings: Settings) -> None:
+    (settings.awg_conf_dir / "awg0.conf").mkdir()
+    with pytest.raises(awg.PersistError):
+        awg.remove_peer(settings, "awg0", KEY_A)
+    peers = awg.list_peers(settings, "awg0")
+    assert [peer.public_key for peer in peers] == [KEY_A]
+    assert peers[0].allowed_ips == ["10.8.0.2/32"]
+
+
+def test_a_failed_revert_says_the_change_stays(
+    settings: Settings, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    (settings.awg_conf_dir / "awg0.conf").mkdir()
+    real = awg.run
+
+    def refusing(argv: list[str], *args: object, **kwargs: object) -> str:
+        if argv[-1:] == ["remove"]:
+            raise CommandError(argv, "exited 1", "Operation not permitted")
+        return real(argv, *args, **kwargs)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(awg, "run", refusing)
+    with pytest.raises(awg.PersistError, match="revert failed"):
+        awg.add_peer(settings, "awg0", KEY_B, ["10.8.0.5"])
+
+
+def test_conf_writable(settings: Settings) -> None:
+    assert awg.conf_writable(settings) is None
+    settings.awg_conf_dir.rmdir()
+    assert "is not a directory" in (awg.conf_writable(settings) or "")
 
 
 def test_a_duplicate_peer_is_refused(settings: Settings) -> None:
@@ -191,6 +232,23 @@ def test_the_key_goes_through_stdin_never_argv(settings: Settings, host: Path) -
     assert len(sets) == 1
     assert sets[0][-2:] == ["header-protection-key", "/dev/stdin"]
     assert HEADER_KEY not in "\t".join(sets[0])
+
+
+def test_a_failed_persist_puts_the_obfuscation_back(settings: Settings) -> None:
+    (settings.awg_conf_dir / "awg0.conf").mkdir()
+    headers = {name: V31[name] for name in ("h1", "h2", "h3", "h4")}
+    with pytest.raises(awg.PersistError, match="the live change was reverted"):
+        awg.set_obfuscation(settings, "awg0", {"jc": "7", "s1": "40", **headers})
+    assert awg.obfuscation(settings, "awg0") == OBFUSCATION
+
+
+def test_a_value_awg_cannot_unset_is_named(settings: Settings) -> None:
+    (settings.awg_conf_dir / "awg0.conf").mkdir()
+    with pytest.raises(awg.PersistError, match="reverted except header-protection-key"):
+        awg.set_obfuscation(settings, "awg0", V31)
+    found = awg.obfuscation(settings, "awg0")
+    assert "s1" not in found
+    assert found["h1"] == OBFUSCATION["h1"]
 
 
 def test_an_unchanged_set_touches_nothing(settings: Settings, host: Path) -> None:

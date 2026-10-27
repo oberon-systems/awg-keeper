@@ -87,6 +87,26 @@ def test_a_failing_tool_is_502(
     assert "Operation not permitted" not in answer.text
 
 
+def test_a_failed_persist_is_500_with_the_reason(
+    client: TestClient, settings: Settings
+) -> None:
+    (settings.awg_conf_dir / "awg0.conf").mkdir()
+    body = {"jc": 7, "h1": "100000", "h2": "200000", "h3": "300000", "h4": "400000"}
+    answer = client.patch("/v1/awg/awg0/obfuscation", json=body)
+    assert answer.status_code == 500
+    assert "not persisted" in answer.json()["detail"]
+    assert "reverted" in answer.json()["detail"]
+    assert client.get("/v1/awg/awg0/obfuscation").json()["jc"] == OBFUSCATION["jc"]
+
+
+def test_status_reports_an_unwritable_conf_dir(
+    client: TestClient, settings: Settings
+) -> None:
+    assert client.get("/v1/status").json()["conf_error"] is None
+    settings.awg_conf_dir.rmdir()
+    assert "is not a directory" in client.get("/v1/status").json()["conf_error"]
+
+
 def test_xray_users(client: TestClient, settings: Settings) -> None:
     listed = client.get("/v1/xray/vless-in/users").json()
     assert [user["email"] for user in listed] == ["one@node"]

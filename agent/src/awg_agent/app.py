@@ -8,7 +8,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from awg_agent import __version__, api, awg, logs, xray
-from awg_agent.awg import DuplicatePeer
+from awg_agent.awg import DuplicatePeer, PersistError
 from awg_agent.commands import CommandError
 from awg_agent.config import Settings
 from awg_agent.xray import DuplicateUser
@@ -39,6 +39,10 @@ def _on_command(request: Request, exc: Exception) -> JSONResponse:
     return _problem(502, "the host tool failed; see the agent log")
 
 
+def _on_unpersisted(request: Request, exc: Exception) -> JSONResponse:
+    return _problem(500, str(exc))
+
+
 def _on_unexpected(request: Request, exc: Exception) -> JSONResponse:
     LOG.exception("unhandled error on %s %s", request.method, request.url.path)
     return _problem(500, "internal error; see the agent log")
@@ -60,6 +64,10 @@ def _check_host(settings: Settings) -> dict[str, str]:
         LOG.warning(
             "xray at %s is not usable: no xray user can be managed", settings.xray_bin
         )
+
+    unwritable = awg.conf_writable(settings)
+    if unwritable:
+        LOG.error("%s: no change to an interface can be persisted", unwritable)
 
     interfaces, error = awg.probe(settings)
     return awg.log_probe(interfaces, error, None)
@@ -98,6 +106,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_exception_handler(LookupError, _on_missing)
     app.add_exception_handler(ValueError, _on_invalid)
     app.add_exception_handler(CommandError, _on_command)
+    app.add_exception_handler(PersistError, _on_unpersisted)
     app.add_exception_handler(Exception, _on_unexpected)
 
     app.include_router(api.public)

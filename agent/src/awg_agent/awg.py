@@ -9,7 +9,9 @@ from __future__ import annotations
 import json
 import logging
 import os
+from collections.abc import Callable
 from pathlib import Path
+from typing import NoReturn
 
 from awg_agent import validate
 from awg_agent.commands import CommandError, run
@@ -54,6 +56,10 @@ class UnknownPeer(LookupError):
 
 class DuplicatePeer(ValueError):
     """A peer with that public key is already configured."""
+
+
+class PersistError(RuntimeError):
+    """The interface file could not be written, so a restart would lose the change."""
 
 
 def _text(value: str) -> str | None:
@@ -167,17 +173,59 @@ def set_obfuscation(
     if not changed:
         return current
 
+    _set_obfuscation(settings, name, changed)
+    try:
+        persist(settings, name)
+    except PersistError as exc:
+        previous, lost = _previous(current, changed)
+        _undo(exc, lambda: _set_obfuscation(settings, name, previous), lost)
+    return obfuscation(settings, name)
+
+
+def _set_obfuscation(settings: Settings, name: str, values: dict[str, str]) -> None:
     argv = [settings.awg_bin, "set", name]
-    secret = changed.pop(validate.HEADER_PROTECTION, None)
-    for field, value in changed.items():
+    values = dict(values)
+    secret = values.pop(validate.HEADER_PROTECTION, None)
+    for field, value in values.items():
         argv += [field, value]
     if secret:
         # awg reads the key from a file, as it does the private one.
         argv += [validate.HEADER_PROTECTION, "/dev/stdin"]
     run(argv, settings.command_timeout, stdin=f"{secret}\n" if secret else None)
 
-    persist(settings, name)
-    return obfuscation(settings, name)
+
+def _previous(
+    current: dict[str, str], changed: dict[str, str]
+) -> tuple[dict[str, str], list[str]]:
+    """Return what puts the changed fields back, and what `awg set` cannot unset."""
+    previous: dict[str, str] = {}
+    lost: list[str] = []
+    for field in changed:
+        if field in current:
+            previous[field] = current[field]
+        elif field in DEFAULTS:
+            previous[field] = DEFAULTS[field]
+        elif field in (*validate.UINT16, *validate.RANGES):
+            previous[field] = "0"
+        else:
+            lost.append(field)
+    return previous, lost
+
+
+def _undo(
+    failed: PersistError, revert: Callable[[], object], lost: list[str]
+) -> NoReturn:
+    """Put the live interface back as the file has it, and fail the request."""
+    try:
+        revert()
+    except CommandError as exc:
+        LOG.critical("%s; the live change stays, revert failed: %s", failed, exc)
+        raise PersistError(f"{failed}; revert failed: {_reason(exc)}") from failed
+    if lost:
+        LOG.critical("%s; reverted except %s", failed, ", ".join(lost))
+        raise PersistError(f"{failed}; reverted except {', '.join(lost)}") from failed
+    LOG.error("%s; the live change was reverted", failed)
+    raise PersistError(f"{failed}; the live change was reverted") from failed
 
 
 def _addresses(settings: Settings, name: str) -> list[str]:
@@ -340,7 +388,11 @@ def add_peer(
         argv += ["persistent-keepalive", str(keepalive)]
     run(argv, settings.command_timeout)
 
-    persist(settings, name)
+    try:
+        persist(settings, name)
+    except PersistError as exc:
+        removal = [settings.awg_bin, "set", name, "peer", key, "remove"]
+        _undo(exc, lambda: run(removal, settings.command_timeout), [])
     return show_peer(settings, name, key)
 
 
@@ -349,14 +401,20 @@ def remove_peer(settings: Settings, iface: str, public_key: str) -> None:
     name = validate.interface(iface, settings.interfaces)
     key = validate.public_key(public_key)
 
-    if not any(peer.public_key == key for peer in list_peers(settings, name)):
-        raise UnknownPeer(key)
+    peer = show_peer(settings, name, key)
 
     run(
         [settings.awg_bin, "set", name, "peer", key, "remove"],
         settings.command_timeout,
     )
-    persist(settings, name)
+    try:
+        persist(settings, name)
+    except PersistError as exc:
+        argv = [settings.awg_bin, "set", name, "peer", key]
+        argv += ["allowed-ips", ",".join(peer.allowed_ips)]
+        if peer.persistent_keepalive:
+            argv += ["persistent-keepalive", str(peer.persistent_keepalive)]
+        _undo(exc, lambda: run(argv, settings.command_timeout), [])
 
 
 def _key(line: str) -> str:
@@ -381,7 +439,7 @@ def _split(config: str) -> tuple[str, str]:
     return config, ""
 
 
-def persist(settings: Settings, iface: str) -> Path | None:
+def persist(settings: Settings, iface: str) -> Path:
     """Write the peers awg shows into the interface file, so they survive a reboot.
 
     The file's own [Interface] section is kept: `awg showconf` knows nothing of
@@ -396,8 +454,7 @@ def persist(settings: Settings, iface: str) -> Path | None:
     staging = directory / f".{name}.conf.tmp"
     try:
         if not directory.is_dir():
-            LOG.warning("not persisting %s: %s is not a directory", name, directory)
-            return None
+            raise PersistError(f"{name} not persisted: {directory} is not a directory")
         shown = run([settings.awg_bin, "showconf", name], settings.command_timeout)
         head, peers = _split(shown)
         if target.exists():
@@ -408,6 +465,18 @@ def persist(settings: Settings, iface: str) -> Path | None:
         os.chmod(staging, 0o600)
         os.replace(staging, target)
     except (CommandError, OSError) as exc:
-        LOG.error("%s is applied but not persisted to %s: %s", name, target, exc)
-        return None
+        raise PersistError(f"{name} not persisted to {target}: {exc}") from exc
     return target
+
+
+def conf_writable(settings: Settings) -> str | None:
+    """Say why persist() would fail, or None when the config dir takes a write."""
+    directory = settings.awg_conf_dir
+    try:
+        if not directory.is_dir():
+            return f"{directory} is not a directory"
+    except OSError as exc:
+        return f"{directory}: {exc}"
+    if not os.access(directory, os.W_OK | os.X_OK):
+        return f"{directory} is not writable by the agent"
+    return None

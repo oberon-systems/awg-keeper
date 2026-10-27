@@ -9,6 +9,8 @@ Type=exec
 User=awgkeeper
 Group=awgkeeper
 EnvironmentFile=/etc/awg-keeper/agent.env
+# An rpm upgrade of amneziawg-tools chmods the config dir and empties the ACL mask.
+ExecStartPre=+/usr/bin/systemd-tmpfiles --create /usr/lib/tmpfiles.d/awg-keeper.conf
 ExecStartPre=+/usr/libexec/awg-keeper/proxies
 ExecStart=/usr/bin/awg-keeper-agent
 Restart=on-failure

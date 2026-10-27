@@ -166,3 +166,5 @@ class Status(Health):
     interfaces: list[InterfaceHealth] = []
     inbounds: list[InboundHealth] = []
     error: str | None = None
+    # Set when the interface configs cannot be written: every change would fail.
+    conf_error: str | None = None
