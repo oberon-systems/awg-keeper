@@ -300,6 +300,9 @@ class AgentInterface(BaseModel):
     client_allowed_ips: str | None = None
     keepalive: int | None = None
     obfuscation: dict[str, Any] = {}
+    # What the live interface had other than the panel at the last check.
+    drift: list[str] = []
+    drift_error: str | None = None
     addresses: list[str] = []
     missing: list[str] = []
 

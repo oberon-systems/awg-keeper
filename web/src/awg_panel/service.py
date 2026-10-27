@@ -682,7 +682,7 @@ OBFUSCATION_NAMES = {
     "disable-cookies": "DisableCookies",
 }
 AGENT_NAMES = {name: field for field, name in OBFUSCATION_NAMES.items()}
-REQUIRED_TO_ENABLE = ("address", "pool", "endpoint_host")
+REQUIRED_TO_ENABLE = ("address", "pool", "endpoint_host", "obfuscation")
 # A vless:// link without any of these looks right and never connects.
 INBOUND_REQUIRED = ("endpoint_host", "public_key", "server_names", "short_id")
 FLOWS = ("xtls-rprx-vision",)
@@ -753,18 +753,50 @@ def _address(reported: list[str]) -> str | None:
     return str((ipv4 or found)[0]) if found else None
 
 
-def _full_obfuscation(
-    settings: Settings, node: Node, item: dict[str, Any], kept: dict[str, Any]
-) -> dict[str, Any]:
+def _live_obfuscation(
+    settings: Settings, node: Node, name: str
+) -> dict[str, Any] | None:
     # Status leaves the header protection key out; this read carries it.
     try:
-        return _obfuscation(agent.obfuscation(settings, node, item["name"]))
+        return _obfuscation(agent.obfuscation(settings, node, name))
     except agent.AgentError as exc:
-        if exc.status == 404:
-            return _obfuscation(item.get("obfuscation") or {})
-        name = item["name"]
-        LOG.warning("agent %s: obfuscation of %s kept: %s", node.name, name, exc)
-        return kept
+        if exc.status != 404:
+            LOG.warning("agent %s: obfuscation of %s unread: %s", node.name, name, exc)
+        return None
+
+
+def _restore(
+    settings: Settings, node: Node, row: Interface, live: dict[str, Any]
+) -> dict[str, Any]:
+    """Push the panel's obfuscation over a live interface that drifted from it."""
+    changed = sorted(
+        name for name, value in row.obfuscation.items() if live.get(name) != value
+    )
+    extra = sorted(name for name in live if name not in row.obfuscation)
+    error = None
+    if changed:
+        values = {AGENT_NAMES[name]: str(row.obfuscation[name]) for name in changed}
+        try:
+            agent.set_obfuscation(settings, node, row.name, values)
+        except agent.AgentError as exc:
+            error = exc.reason
+    if extra and error is None:
+        error = f"awg cannot unset {', '.join(extra)}; restart the interface"
+    fields = ", ".join([*changed, *extra])
+    if not changed:
+        LOG.debug(
+            "agent %s: %s has %s besides the panel's", node.name, row.name, fields
+        )
+    elif error:
+        LOG.error("agent %s: %s drifted (%s): %s", node.name, row.name, fields, error)
+    else:
+        LOG.warning(
+            "agent %s: %s drifted (%s); the panel's config is back",
+            node.name,
+            row.name,
+            fields,
+        )
+    return {"fields": [*changed, *extra], "error": error}
 
 
 def _discover(
@@ -801,8 +833,9 @@ def _discover(
             )
         row.server_public_key = item["public_key"]
         row.listen_port = int(item.get("listen_port") or 0)
-        kept = row.obfuscation or {}
-        row.obfuscation = _full_obfuscation(settings, node, item, kept)
+        live = _live_obfuscation(settings, node, row.name) if row.obfuscation else None
+        if live is not None and live != row.obfuscation:
+            item["drift"] = _restore(settings, node, row, live)
         # An agent before 0.3.3 reports no address; what the operator typed stays.
         address = _address(item.get("addresses") or [])
         if address is not None:
@@ -928,12 +961,19 @@ def _probe(
     else:
         interfaces = list(answer.get("interfaces") or [])
         inbounds = list(answer.get("inbounds") or [])
-        failing = answer.get("error") or any(item.get("error") for item in interfaces)
+        _discover(session, settings, node, interfaces)
+        _discover_inbounds(session, node, inbounds)
+        errors = [answer.get("error"), answer.get("conf_error")]
+        error = "; ".join(item for item in errors if item) or None
+        failing = error or any(
+            item.get("error") or (item.get("drift") or {}).get("error")
+            for item in interfaces
+        )
         check = AgentCheck(
             node_id=int(node.id or 0),
             status="degraded" if failing else "up",
             latency_ms=(time.monotonic() - started) * 1000,
-            error=answer.get("error"),
+            error=error,
             version=answer.get("version"),
             awg=answer.get("awg"),
             xray=answer.get("xray"),
@@ -941,8 +981,6 @@ def _probe(
             inbounds=inbounds,
         )
         node.last_seen = check.checked_at
-        _discover(session, settings, node, interfaces)
-        _discover_inbounds(session, node, inbounds)
 
     _log_check(node, previous, check, announce)
     node.status = check.status
@@ -1022,6 +1060,8 @@ def _agent_interfaces(
                 client_allowed_ips=row.client_allowed_ips if row else None,
                 keepalive=row.keepalive if row else None,
                 obfuscation=row.obfuscation if row else {},
+                drift=list(((item or {}).get("drift") or {}).get("fields") or []),
+                drift_error=((item or {}).get("drift") or {}).get("error"),
                 addresses=list((item or {}).get("addresses") or []),
                 missing=[
                     field for field in REQUIRED_TO_ENABLE if not getattr(row, field)
@@ -1183,13 +1223,16 @@ def set_interface_obfuscation(
     interface_id: int,
     body: ObfuscationUpdate,
 ) -> AgentRead:
-    """Change the obfuscation on the live interface; every issued profile goes stale."""
+    """Apply an obfuscation change through the agent, and keep it only once applied."""
     row = session.get(Interface, interface_id)
     if row is None:
         raise UnknownInterface(str(interface_id))
     node = node_of(session, row.node_id)
+    if not row.obfuscation:
+        raise ValueError(f"{row.name} has no obfuscation yet; import it first")
 
     values = {}
+    wanted = dict(row.obfuscation)
     for name, value in body.obfuscation.items():
         field = AGENT_NAMES.get(name)
         if field is None:
@@ -1197,21 +1240,57 @@ def set_interface_obfuscation(
         if isinstance(value, bool):
             value = "on" if value else "off"
         values[field] = str(value).strip()
+        wanted[name] = _obfuscation({field: values[field]})[name]
     try:
-        applied = agent.set_obfuscation(settings, node, row.name, values)
+        applied = _obfuscation(agent.set_obfuscation(settings, node, row.name, values))
     except agent.AgentError as exc:
         if exc.status == 422:
             raise ValueError(exc.reason) from exc
         raise
 
-    row.obfuscation = _obfuscation(applied)
+    for name in body.obfuscation:
+        # The agent leaves out what equals awg's own default, as `awg show` does.
+        if name not in applied and wanted[name] in (0, "off"):
+            del wanted[name]
+    wrong = sorted(
+        name for name in body.obfuscation if applied.get(name) != wanted.get(name)
+    )
+    if wrong:
+        raise agent.AgentError(
+            f"{node.name} applied {', '.join(wrong)} on {row.name} other than asked"
+        )
+    row.obfuscation = wanted
     session.add(row)
     session.commit()
     LOG.warning(
-        "agent %s: obfuscation of %s changed; profiles issued on it need a reroll",
+        "agent %s: obfuscation of %s changed: %s",
         node.name,
         row.name,
+        ", ".join(sorted(body.obfuscation)),
     )
+    return next(item for item in list_agents(session, settings) if item.id == node.id)
+
+
+def import_interface_obfuscation(
+    session: Session,
+    settings: Settings,
+    interface_id: int,
+) -> AgentRead:
+    """Take the live obfuscation as the panel's own, for an interface without one."""
+    row = session.get(Interface, interface_id)
+    if row is None:
+        raise UnknownInterface(str(interface_id))
+    node = node_of(session, row.node_id)
+    if row.obfuscation:
+        raise ValueError(f"{row.name} has its obfuscation in the panel already")
+
+    live = _obfuscation(agent.obfuscation(settings, node, row.name))
+    if not live:
+        raise ValueError(f"{row.name} reports no obfuscation to import")
+    row.obfuscation = live
+    session.add(row)
+    session.commit()
+    LOG.warning("agent %s: obfuscation of %s imported", node.name, row.name)
     return next(item for item in list_agents(session, settings) if item.id == node.id)
 
 

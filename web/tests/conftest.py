@@ -73,6 +73,8 @@ class StubAgent:
         self.xray_counts: dict[str, dict[str, Any]] = {}
         # What GET /awg/{iface}/obfuscation answers; absent is an agent before it.
         self.obfuscations: dict[str, dict[str, str]] = {}
+        self.fail_obfuscation = False
+        self.conf_error: str | None = None
 
     def add_peer(
         self,
@@ -133,6 +135,7 @@ class StubAgent:
             ],
             "inbounds": self.inbounds,
             "error": None,
+            "conf_error": self.conf_error,
         }
 
     def state(
@@ -194,6 +197,8 @@ class StubAgent:
         """Stand in for PATCH /v1/awg/{iface}/obfuscation."""
         if self.fail:
             raise agent.AgentError("the agent is unreachable")
+        if self.fail_obfuscation:
+            raise agent.AgentError("gateway answered 500: not persisted", 500)
         self.calls.append(("set_obfuscation", node.name, interface, dict(values)))
         merged = {**self.obfuscations.get(interface, {}), **values}
         self.obfuscations[interface] = merged

@@ -263,6 +263,18 @@ def set_interface_obfuscation(
     )
 
 
+@private.post("/interfaces/{interface_id}/obfuscation/import")
+def import_interface_obfuscation(
+    request: Request,
+    interface_id: int,
+    session: SessionDep,
+) -> AgentRead:
+    """Take the live obfuscation as the panel's own, for an interface without it."""
+    return service.import_interface_obfuscation(
+        session, auth.settings_of(request), interface_id
+    )
+
+
 @private.get("/inbounds")
 def list_inbounds(session: SessionDep) -> list[InboundRead]:
     """List the enabled inbounds, the ones an Xray client can be issued on."""

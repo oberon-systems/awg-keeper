@@ -7,7 +7,7 @@ from datetime import UTC, datetime, timedelta
 
 import httpx
 import pytest
-from conftest import API_INBOUND, INBOUND, SOURCE, StubAgent
+from conftest import API_INBOUND, INBOUND, OBFUSCATION, SOURCE, StubAgent
 from fastapi.testclient import TestClient
 from sqlmodel import Session, SQLModel, select
 
@@ -206,24 +206,29 @@ def test_a_reported_interface_is_discovered_disabled(
             "listen_port": 51821,
         }
     )
+    stub.obfuscations["awg-new"] = {"jc": "3"}
     found = signed_in.post("/api/v1/agents/probe").json()
     new = next(item for item in found[0]["interfaces"] if item["name"] == "awg-new")
     assert new["enabled"] is False
     assert new["id"] is not None
-    assert new["missing"] == ["address", "pool", "endpoint_host"]
+    assert new["obfuscation"] == {}
+    assert new["missing"] == ["address", "pool", "endpoint_host", "obfuscation"]
     assert [item["name"] for item in signed_in.get("/api/v1/interfaces").json()] == [
         "awg-mgmt"
     ]
 
     refused = signed_in.patch(f"/api/v1/interfaces/{new['id']}", json={"enabled": True})
     assert refused.status_code == 422
-    assert "address, pool, endpoint_host" in refused.json()["detail"]
+    assert "address, pool, endpoint_host, obfuscation" in refused.json()["detail"]
 
     outside = signed_in.patch(
         f"/api/v1/interfaces/{new['id']}",
         json={"address": "10.9.0.1/24", "pool": "10.10.0.0/24"},
     )
     assert outside.status_code == 422
+
+    imported = signed_in.post(f"/api/v1/interfaces/{new['id']}/obfuscation/import")
+    assert imported.status_code == 200
 
     enabled = signed_in.patch(
         f"/api/v1/interfaces/{new['id']}",
@@ -261,7 +266,10 @@ def test_a_reported_address_sets_address_and_pool(
     new = next(item for item in found[0]["interfaces"] if item["name"] == "awg-guests")
     assert new["address"] == "10.20.0.1/24"
     assert new["pool"] == "10.20.0.0/24"
-    assert new["missing"] == ["endpoint_host"]
+    assert new["missing"] == ["endpoint_host", "obfuscation"]
+
+    stub.obfuscations["awg-guests"] = {"jc": "3"}
+    signed_in.post(f"/api/v1/interfaces/{new['id']}/obfuscation/import")
 
     enabled = signed_in.patch(
         f"/api/v1/interfaces/{new['id']}",
@@ -355,7 +363,7 @@ def test_discovery_keeps_what_the_operator_set(
         assert row is not None
         assert row.address == "10.8.0.1/24"
         assert row.enabled is True
-        assert row.obfuscation == {"Jc": 4, "Jmin": 50, "H1": 1077035230}
+        assert row.obfuscation == OBFUSCATION
 
 
 def test_a_disabled_interface_issues_nothing(
