@@ -1,0 +1,75 @@
+{
+  "id": "ce59d6ac-5015-8033-8008-dbf1906fd1d5",
+  "name": "Divider",
+  "type": "rect",
+  "x": 1908,
+  "y": 5868,
+  "width": 704,
+  "height": 1,
+  "rotation": 0,
+  "selrect": {
+    "x": 1908,
+    "y": 5868,
+    "width": 704,
+    "height": 1,
+    "x1": 1908,
+    "y1": 5868,
+    "x2": 2612,
+    "y2": 5869
+  },
+  "points": [
+    {
+      "x": 1908,
+      "y": 5868
+    },
+    {
+      "x": 2612,
+      "y": 5868
+    },
+    {
+      "x": 2612,
+      "y": 5869
+    },
+    {
+      "x": 1908,
+      "y": 5869
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "ce59d6ac-5015-8033-8008-dbf1906fd1ba",
+  "frameId": "ce59d6ac-5015-8033-8008-dbf1906fd1ba",
+  "flipX": null,
+  "flipY": null,
+  "r2": 0,
+  "layoutItemHSizing": "fill",
+  "proportionLock": false,
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "r3": 0,
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "strokes": [],
+  "proportion": 1,
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#eef0f3",
+      "fillOpacity": 1
+    }
+  ]
+}

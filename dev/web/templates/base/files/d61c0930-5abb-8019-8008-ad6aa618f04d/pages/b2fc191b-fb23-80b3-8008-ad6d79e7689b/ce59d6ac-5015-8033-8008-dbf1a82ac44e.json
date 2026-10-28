@@ -1,0 +1,147 @@
+{
+  "id": "ce59d6ac-5015-8033-8008-dbf1a82ac44e",
+  "name": "Rule",
+  "type": "text",
+  "x": 5002,
+  "y": 5638,
+  "width": 249,
+  "height": 17,
+  "rotation": 0,
+  "selrect": {
+    "x": 5002,
+    "y": 5638,
+    "width": 249,
+    "height": 17,
+    "x1": 5002,
+    "y1": 5638,
+    "x2": 5251,
+    "y2": 5655
+  },
+  "points": [
+    {
+      "x": 5002,
+      "y": 5638
+    },
+    {
+      "x": 5251,
+      "y": 5638
+    },
+    {
+      "x": 5251,
+      "y": 5655
+    },
+    {
+      "x": 5002,
+      "y": 5655
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "ce59d6ac-5015-8033-8008-dbf1a82ac3ec",
+  "frameId": "ce59d6ac-5015-8033-8008-dbf1a82ac3ec",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-width",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "14",
+                "fontWeight": "600",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "600",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#1a1d23",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": "On the 1st of every month at 03:00 UTC"
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-inter-tight",
+            "fontSize": "14",
+            "fontWeight": "600",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "600",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#1a1d23",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Inter Tight"
+          }
+        ]
+      }
+    ]
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 5002,
+      "y": 5654.800001144409,
+      "width": 248.5749969482422,
+      "height": 16.80000114440918,
+      "x1": 0,
+      "y1": 0,
+      "x2": 248.5749969482422,
+      "y2": 16.80000114440918,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "14px",
+      "fontWeight": "600",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#1a1d23",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "On the 1st of every month at 03:00 UTC"
+    }
+  ]
+}

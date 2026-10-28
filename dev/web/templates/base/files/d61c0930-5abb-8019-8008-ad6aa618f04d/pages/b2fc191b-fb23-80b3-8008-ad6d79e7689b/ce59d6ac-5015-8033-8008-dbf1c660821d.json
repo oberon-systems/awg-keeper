@@ -1,0 +1,125 @@
+{
+  "id": "ce59d6ac-5015-8033-8008-dbf1c660821d",
+  "name": "Backups modal",
+  "type": "frame",
+  "x": 6500,
+  "y": 5296,
+  "width": 760,
+  "height": 796,
+  "rotation": 0,
+  "selrect": {
+    "x": 6500,
+    "y": 5296,
+    "width": 760,
+    "height": 796,
+    "x1": 6500,
+    "y1": 5296,
+    "x2": 7260,
+    "y2": 6092
+  },
+  "points": [
+    {
+      "x": 6500,
+      "y": 5296
+    },
+    {
+      "x": 7260,
+      "y": 5296
+    },
+    {
+      "x": 7260,
+      "y": 6092
+    },
+    {
+      "x": 6500,
+      "y": 6092
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "ce59d6ac-5015-8033-8008-dbf1c660821c",
+  "frameId": "ce59d6ac-5015-8033-8008-dbf1c660821c",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "layoutItemAbsolute": true,
+  "layoutGapType": "multiple",
+  "layoutPadding": {
+    "p1": 28,
+    "p2": 28,
+    "p3": 28,
+    "p4": 28
+  },
+  "layoutWrapType": "nowrap",
+  "layout": "flex",
+  "hideInViewer": true,
+  "layoutAlignItems": "start",
+  "layoutPaddingType": "simple",
+  "r2": 14,
+  "layoutItemHSizing": "fix",
+  "proportionLock": false,
+  "layoutGap": {
+    "rowGap": 20,
+    "columnGap": 0
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "layoutItemVSizing": "auto",
+  "r3": 14,
+  "layoutJustifyContent": "start",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 14,
+  "layoutFlexDir": "column",
+  "layoutAlignContent": "stretch",
+  "strokes": [],
+  "proportion": 1,
+  "shadow": [
+    {
+      "id": "46010db4-1c0d-8067-8008-aec897c78ff0",
+      "style": "drop-shadow",
+      "color": {
+        "opacity": 0.25,
+        "color": "#0f1115"
+      },
+      "offsetX": 0,
+      "offsetY": 20,
+      "blur": 48,
+      "spread": 0,
+      "hidden": false
+    }
+  ],
+  "r4": 14,
+  "fills": [
+    {
+      "fillColor": "#ffffff",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "ce59d6ac-5015-8033-8008-dbf1c6608222",
+    "ce59d6ac-5015-8033-8008-dbf1c6608223",
+    "ce59d6ac-5015-8033-8008-dbf1c6608224",
+    "ce59d6ac-5015-8033-8008-dbf1c6608225",
+    "ce59d6ac-5015-8033-8008-dbf1c6608226",
+    "ce59d6ac-5015-8033-8008-dbf1c6608227",
+    "ce59d6ac-5015-8033-8008-dbf1c6608228",
+    "ce59d6ac-5015-8033-8008-dbf1c6608229",
+    "ce59d6ac-5015-8033-8008-dbf1c660822a",
+    "ce59d6ac-5015-8033-8008-dbf1c660822b",
+    "ce59d6ac-5015-8033-8008-dbf1c660822c"
+  ]
+}

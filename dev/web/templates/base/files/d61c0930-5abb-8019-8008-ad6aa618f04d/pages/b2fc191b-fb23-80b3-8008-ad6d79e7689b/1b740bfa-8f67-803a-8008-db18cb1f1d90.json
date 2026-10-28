@@ -120,28 +120,28 @@
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 3124,
       "y": 3528.199999988079,
-      "width": 715.3375244140625,
-      "height": 16,
-      "x1": 0,
-      "y1": -0.800000011920929,
-      "x2": 715.3375244140625,
-      "y2": 15.199999988079071,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "500",
+      "y1": -0.800000011920929,
+      "width": 715.3375244140625,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 3124,
+      "x1": 0,
+      "y2": 15.199999988079071,
       "fills": [
         {
           "fillColor": "#b00020",
           "fillOpacity": 1
         }
       ],
+      "x2": 715.3375244140625,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 16,
       "text": "ams-1 cannot write /etc/amnezia/amneziawg: not writable by the agent. Every change to an interface is refused until it is fixed."
     }
   ]

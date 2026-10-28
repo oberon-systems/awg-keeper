@@ -114,34 +114,34 @@
       }
     ]
   },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 3368,
       "y": 3467.199999988079,
-      "width": 599.8875122070312,
-      "height": 16,
-      "x1": 0,
-      "y1": -0.800000011920929,
-      "x2": 599.8875122070312,
-      "y2": 15.199999988079071,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "400",
+      "y1": -0.800000011920929,
+      "width": 599.8875122070312,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 3368,
+      "x1": 0,
+      "y2": 15.199999988079071,
       "fills": [
         {
           "fillColor": "#6b7280",
           "fillOpacity": 1
         }
       ],
+      "x2": 599.8875122070312,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 16,
       "text": "Obfuscation and client settings, newest first. Key, port and address belong to the host and are not kept here."
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b"
+  ]
 }

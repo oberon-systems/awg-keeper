@@ -114,34 +114,34 @@
       }
     ]
   },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
   "constraintsV": "top",
   "constraintsH": "left",
   "positionData": [
     {
-      "x": 9422,
       "y": 3949.199999988079,
-      "width": 14.65000057220459,
-      "height": 16,
-      "x1": 0,
-      "y1": -0.800000011920929,
-      "x2": 14.65000057220459,
-      "y2": 15.199999988079071,
       "fontStyle": "normal",
       "textTransform": "none",
       "fontSize": "13px",
       "fontWeight": "500",
+      "y1": -0.800000011920929,
+      "width": 14.65000057220459,
       "textDecoration": "none",
       "letterSpacing": "normal",
+      "x": 9422,
+      "x1": 0,
+      "y2": 15.199999988079071,
       "fills": [
         {
           "fillColor": "#127a3e",
           "fillOpacity": 1
         }
       ],
+      "x2": 14.65000057220459,
       "direction": "ltr",
       "fontFamily": "\"Inter Tight\"",
+      "height": 16,
       "text": "up"
     }
-  ],
-  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b"
+  ]
 }
