@@ -242,6 +242,29 @@ export interface ConfigVersion {
   config: PortableConfig;
 }
 
+export interface Backup {
+  name: string;
+  kind: "start" | "scheduled" | "change" | "manual";
+  revision: string;
+  size: number;
+  taken_at: string;
+}
+
+export interface BackupSchedule {
+  cron: string;
+  enabled: boolean;
+  keep: number;
+  next_runs: string[];
+  updated_at: string | null;
+  author: string | null;
+}
+
+export interface BackupScheduleUpdate {
+  cron: string;
+  enabled: boolean;
+  keep: number;
+}
+
 export interface ConfigDraft {
   version?: number;
   obfuscation?: Obfuscation;
@@ -369,4 +392,9 @@ export const api = {
     call<ProfileStats>("GET", `/profiles/${id}/stats?period=${period}`),
   ownStats: (period: Period) => call<OwnStats>("GET", `/stats/me?period=${period}`),
   deleteProfile: (id: number) => call<void>("DELETE", `/profiles/${id}`),
+  backups: () => call<Backup[]>("GET", "/backups"),
+  backUpNow: () => call<Backup>("POST", "/backups"),
+  backupSchedule: () => call<BackupSchedule>("GET", "/backups/schedule"),
+  saveBackupSchedule: (body: BackupScheduleUpdate) =>
+    call<BackupSchedule>("PUT", "/backups/schedule", body),
 };

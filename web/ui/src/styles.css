@@ -2024,3 +2024,138 @@ main.own-centre {
 .diff tr.history-current td {
   background: var(--surface-sunken);
 }
+
+/* Backups: the schedule, the retention and the snapshots */
+
+.page-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal.backups-modal {
+  width: 760px;
+}
+
+.schedule-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.schedule-fields:disabled {
+  opacity: 0.45;
+}
+
+.segmented {
+  display: flex;
+  align-self: flex-start;
+  gap: 2px;
+  padding: 3px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.segmented button,
+.days button {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  background: none;
+  border: 0;
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+
+.segmented button.active,
+.days button.active {
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.days {
+  display: flex;
+  gap: 6px;
+}
+
+.days button {
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+}
+
+.days button.active {
+  border-color: var(--accent);
+}
+
+.field-narrow {
+  flex: none;
+}
+
+.field-narrow .field-input {
+  width: 160px;
+}
+
+.field.field-auto {
+  flex: none;
+}
+
+.schedule-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--surface-sunken);
+  border-radius: 8px;
+}
+
+.schedule-rule {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.schedule-next {
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+.section-heading h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.backups-table th:nth-child(1) { width: 24%; }
+.backups-table th:nth-child(2) { width: 31%; }
+.backups-table th:nth-child(3) { width: 19%; }
+.backups-table th:nth-child(4) { width: 26%; }
+
+.diff td.backups-empty {
+  padding: 28px 16px;
+  text-align: center;
+}
+
+.backups-empty span {
+  display: block;
+}

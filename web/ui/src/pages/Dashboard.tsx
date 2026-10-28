@@ -5,6 +5,7 @@ import { age, ms, when } from "../format";
 import { describe, type Problem } from "../problem";
 import { Banner, Pill, Stat, counted, toneOf, type Part } from "../tiles";
 import { AgentDetail } from "./AgentDetail";
+import { Backups } from "./Backups";
 
 const REFRESH_MS = 30_000;
 
@@ -24,6 +25,7 @@ export function Dashboard() {
   const [detailShown, setDetailShown] = useState(false);
   const [busy, setBusy] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [backingUp, setBackingUp] = useState(false);
   const [now, setNow] = useState(() => Date.now());
 
   const refresh = useCallback(async (probe = false) => {
@@ -87,9 +89,14 @@ export function Dashboard() {
             Refreshed {new Date(now).toLocaleTimeString()}, every {REFRESH_MS / 1000}s
           </p>
         </div>
-        <button type="button" className="action" disabled={busy} onClick={() => void probeNow()}>
-          {busy ? "Probing" : "Probe now"}
-        </button>
+        <div className="page-actions">
+          <button type="button" className="secondary" onClick={() => setBackingUp(true)}>
+            Backups
+          </button>
+          <button type="button" className="action" disabled={busy} onClick={() => void probeNow()}>
+            {busy ? "Probing" : "Probe now"}
+          </button>
+        </div>
       </div>
 
       <Banner
@@ -173,6 +180,8 @@ export function Dashboard() {
           </tbody>
         </table>
       </div>
+
+      {backingUp ? <Backups onClose={() => setBackingUp(false)} /> : null}
     </section>
   );
 }
