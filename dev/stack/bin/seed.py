@@ -2,9 +2,9 @@
 
 kickstart.sh pipes this into python inside the panel container, where it runs
 through the panel's own service layer, so the peers and the client reach the
-fake host exactly as a profile issued from the browser would. awg0 and
-reality-443 are configured and enabled for it; awg1 and reality-8443 stay as
-discovered, so the configure screens still have something to do.
+fake host exactly as a profile issued from the browser would. awg0 has its
+obfuscation imported and is enabled with reality-443; awg1 and reality-8443 stay
+as discovered, so the import and configure screens still have something to do.
 """
 
 from __future__ import annotations
@@ -40,6 +40,7 @@ def main() -> None:
 
         service.probe_agents(session, settings)
         awg0 = session.exec(select(Interface).where(Interface.name == "awg0")).one()
+        service.import_interface_obfuscation(session, settings, int(awg0.id or 0))
         service.update_interface(
             session,
             settings,
