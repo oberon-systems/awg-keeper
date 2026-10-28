@@ -1,0 +1,74 @@
+{
+  "id": "1b740bfa-8f67-803a-8008-db18f29a3928",
+  "name": "GitHub mark",
+  "type": "group",
+  "x": 5294,
+  "y": 4897,
+  "width": 16,
+  "height": 16,
+  "rotation": 0,
+  "selrect": {
+    "x": 5294,
+    "y": 4897,
+    "width": 16,
+    "height": 16,
+    "x1": 5294,
+    "y1": 4897,
+    "x2": 5310,
+    "y2": 4913
+  },
+  "points": [
+    {
+      "x": 5294,
+      "y": 4897
+    },
+    {
+      "x": 5310,
+      "y": 4897
+    },
+    {
+      "x": 5310,
+      "y": 4913
+    },
+    {
+      "x": 5294,
+      "y": 4913
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "1b740bfa-8f67-803a-8008-db18f29a3926",
+  "frameId": "1b740bfa-8f67-803a-8008-db18f29a3926",
+  "flipX": false,
+  "flipY": false,
+  "svgAttrs": {
+    "width": "16",
+    "height": "16"
+  },
+  "proportionLock": false,
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "svgDefs": {},
+  "strokes": [],
+  "proportion": 1,
+  "fills": [],
+  "shapes": [
+    "1b740bfa-8f67-803a-8008-db18f29a3929",
+    "1b740bfa-8f67-803a-8008-db18f29a392a"
+  ]
+}

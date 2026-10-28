@@ -1,0 +1,105 @@
+{
+  "id": "1b740bfa-8f67-803a-8008-db18cd9a7112",
+  "name": "Header row",
+  "type": "frame",
+  "x": 3368,
+  "y": 3488,
+  "width": 864,
+  "height": 34,
+  "rotation": 0,
+  "selrect": {
+    "x": 3368,
+    "y": 3488,
+    "width": 864,
+    "height": 34,
+    "x1": 3368,
+    "y1": 3488,
+    "x2": 4232,
+    "y2": 3522
+  },
+  "points": [
+    {
+      "x": 3368,
+      "y": 3488
+    },
+    {
+      "x": 4232,
+      "y": 3488
+    },
+    {
+      "x": 4232,
+      "y": 3522
+    },
+    {
+      "x": 3368,
+      "y": 3522
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "1b740bfa-8f67-803a-8008-db18cc680095",
+  "frameId": "1b740bfa-8f67-803a-8008-db18cc680095",
+  "flipX": null,
+  "flipY": null,
+  "hideFillOnExport": false,
+  "layoutGapType": "multiple",
+  "layoutPadding": {
+    "p1": 10,
+    "p2": 16,
+    "p3": 10,
+    "p4": 16
+  },
+  "layoutWrapType": "nowrap",
+  "layout": "flex",
+  "hideInViewer": true,
+  "layoutAlignItems": "center",
+  "layoutPaddingType": "simple",
+  "r2": 0,
+  "layoutItemHSizing": "fix",
+  "proportionLock": false,
+  "layoutGap": {
+    "rowGap": 0,
+    "columnGap": 0
+  },
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "layoutItemVSizing": "auto",
+  "r3": 0,
+  "layoutJustifyContent": "start",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "r1": 0,
+  "layoutFlexDir": "row",
+  "layoutAlignContent": "stretch",
+  "strokes": [],
+  "proportion": 1,
+  "r4": 0,
+  "fills": [
+    {
+      "fillColor": "#eef0f3",
+      "fillOpacity": 1
+    }
+  ],
+  "shapes": [
+    "1b740bfa-8f67-803a-8008-db18cd81f051",
+    "1b740bfa-8f67-803a-8008-db18cd5cd023",
+    "1b740bfa-8f67-803a-8008-db18cd2cfe90",
+    "1b740bfa-8f67-803a-8008-db18cd0f7a6e",
+    "1b740bfa-8f67-803a-8008-db18ccea3ff3",
+    "1b740bfa-8f67-803a-8008-db18ccbc513c",
+    "1b740bfa-8f67-803a-8008-db18cc8ec91a"
+  ]
+}

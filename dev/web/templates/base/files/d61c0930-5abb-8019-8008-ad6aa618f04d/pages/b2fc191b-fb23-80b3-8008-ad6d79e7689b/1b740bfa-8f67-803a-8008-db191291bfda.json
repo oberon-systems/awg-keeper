@@ -1,0 +1,148 @@
+{
+  "id": "1b740bfa-8f67-803a-8008-db191291bfda",
+  "name": "Message",
+  "type": "text",
+  "x": 7744,
+  "y": 3513,
+  "width": 716,
+  "height": 16,
+  "rotation": 0,
+  "selrect": {
+    "x": 7744,
+    "y": 3513,
+    "width": 716,
+    "height": 16,
+    "x1": 7744,
+    "y1": 3513,
+    "x2": 8460,
+    "y2": 3529
+  },
+  "points": [
+    {
+      "x": 7744,
+      "y": 3513
+    },
+    {
+      "x": 8460,
+      "y": 3513
+    },
+    {
+      "x": 8460,
+      "y": 3529
+    },
+    {
+      "x": 7744,
+      "y": 3529
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "1b740bfa-8f67-803a-8008-db191291bfd8",
+  "frameId": "1b740bfa-8f67-803a-8008-db191291bfd8",
+  "flipX": null,
+  "flipY": null,
+  "growType": "auto-width",
+  "content": {
+    "type": "root",
+    "children": [
+      {
+        "type": "paragraph-set",
+        "children": [
+          {
+            "lineHeight": "1.2",
+            "fontStyle": "normal",
+            "children": [
+              {
+                "lineHeight": "1.2",
+                "fontStyle": "normal",
+                "typographyRefId": null,
+                "textTransform": "none",
+                "textAlign": "left",
+                "fontId": "gfont-inter-tight",
+                "fontSize": "13",
+                "fontWeight": "500",
+                "typographyRefFile": null,
+                "textDirection": "ltr",
+                "fontVariantId": "500",
+                "textDecoration": "none",
+                "letterSpacing": "0",
+                "fills": [
+                  {
+                    "fillColor": "#b00020",
+                    "fillOpacity": 1
+                  }
+                ],
+                "fontFamily": "Inter Tight",
+                "text": "ams-1 cannot write /etc/amnezia/amneziawg: not writable by the agent. Every change to an interface is refused until it is fixed."
+              }
+            ],
+            "typographyRefId": null,
+            "textTransform": "none",
+            "textAlign": "left",
+            "fontId": "gfont-inter-tight",
+            "fontSize": "13",
+            "fontWeight": "500",
+            "typographyRefFile": null,
+            "textDirection": "ltr",
+            "type": "paragraph",
+            "fontVariantId": "500",
+            "textDecoration": "none",
+            "letterSpacing": "0",
+            "fills": [
+              {
+                "fillColor": "#b00020",
+                "fillOpacity": 1
+              }
+            ],
+            "fontFamily": "Inter Tight"
+          }
+        ]
+      }
+    ]
+  },
+  "layoutItemHSizing": "auto",
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "positionData": [
+    {
+      "x": 7744,
+      "y": 3528.199999988079,
+      "width": 715.3375244140625,
+      "height": 16,
+      "x1": 0,
+      "y1": -0.800000011920929,
+      "x2": 715.3375244140625,
+      "y2": 15.199999988079071,
+      "fontStyle": "normal",
+      "textTransform": "none",
+      "fontSize": "13px",
+      "fontWeight": "500",
+      "textDecoration": "none",
+      "letterSpacing": "normal",
+      "fills": [
+        {
+          "fillColor": "#b00020",
+          "fillOpacity": 1
+        }
+      ],
+      "direction": "ltr",
+      "fontFamily": "\"Inter Tight\"",
+      "text": "ams-1 cannot write /etc/amnezia/amneziawg: not writable by the agent. Every change to an interface is refused until it is fixed."
+    }
+  ]
+}

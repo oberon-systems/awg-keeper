@@ -1,0 +1,70 @@
+{
+  "id": "1b740bfa-8f67-803a-8008-db18cb1ed3d6",
+  "name": "Dot",
+  "type": "circle",
+  "x": 4318,
+  "y": 4317.5,
+  "width": 6,
+  "height": 6,
+  "rotation": 0,
+  "selrect": {
+    "x": 4318,
+    "y": 4317.5,
+    "width": 6,
+    "height": 6,
+    "x1": 4318,
+    "y1": 4317.5,
+    "x2": 4324,
+    "y2": 4323.5
+  },
+  "points": [
+    {
+      "x": 4318,
+      "y": 4317.5
+    },
+    {
+      "x": 4324,
+      "y": 4317.5
+    },
+    {
+      "x": 4324,
+      "y": 4323.5
+    },
+    {
+      "x": 4318,
+      "y": 4323.5
+    }
+  ],
+  "transform": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "transformInverse": {
+    "a": 1.0,
+    "b": 0.0,
+    "c": 0.0,
+    "d": 1.0,
+    "e": 0.0,
+    "f": 0.0
+  },
+  "parentId": "1b740bfa-8f67-803a-8008-db18cb1ed3d1",
+  "frameId": "1b740bfa-8f67-803a-8008-db18cb1ed3d1",
+  "flipX": null,
+  "flipY": null,
+  "proportionLock": false,
+  "pageId": "b2fc191b-fb23-80b3-8008-ad6d79e7689b",
+  "constraintsV": "top",
+  "constraintsH": "left",
+  "strokes": [],
+  "proportion": 1,
+  "fills": [
+    {
+      "fillColor": "#8a5a00",
+      "fillOpacity": 1
+    }
+  ]
+}
