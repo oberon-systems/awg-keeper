@@ -9,6 +9,8 @@ stats page.
 - [Manage profiles](#manage-profiles)
 - [Edit a profile](#edit-a-profile)
 - [Stats](#stats)
+- [Backups](#backups)
+- [Restore a backup](#restore-a-backup)
 
 ## Prepare an interface
 
@@ -118,3 +120,62 @@ Users can see their own stats: `https://<your domain>/stats`, opened while
 their VPN is on. No sign-in is needed; the page recognises them by their
 tunnel address and shows only their own profile. Opened without the VPN, it
 says the connection is not recognised.
+
+## Backups
+
+The Panel's database is the only copy of the obfuscation, the profiles and
+the stats. The Panel copies it into `backups/` next to `panel.sqlite`:
+
+- **on start** - on every container start, before the migrations. If the copy
+  cannot be written, the Panel does not start.
+- **scheduled** - by the schedule, every day at 03:00 UTC unless you change it.
+- **before change** - before an obfuscation change, a config rollback or a
+  profile delete. If the copy cannot be written, the change is refused and
+  nothing is changed.
+- **manual** - when you click **Back up now**.
+
+To change the schedule, click **Backups** on the **Dashboard**, next to
+**Probe now**. Pick how often under **Repeat** and when; times are UTC, and
+the next three runs are shown below. **Keep** is how many copies of each kind
+are kept, the oldest are removed first. Untick **Back up on a schedule** to
+stop the scheduled copies only: the other kinds are still taken.
+
+The same dialog lists the copies, newest first. **Schema** is the migration
+the copy was taken at.
+
+The copies live on the same volume as the database, so a lost disk takes both.
+Copy them off the host regularly, from the directory with
+`docker-compose.yaml`:
+
+```bash
+docker compose cp panel:/var/lib/awg-keeper/backups ./backups
+```
+
+## Restore a backup
+
+Restoring replaces the database with a copy: everything changed after the
+copy was taken is lost. The Panel upgrades a copy made by an older version on
+start, but cannot start on a copy made by a newer one.
+
+1. Open **Backups** on the **Dashboard** and note the name of the copy: hover
+   its row.
+2. On the Panel host, in the directory with `docker-compose.yaml`, stop the
+   Panel, put the copy in place of the database, and start it:
+
+```bash
+docker compose stop panel
+docker compose run --rm --no-deps --entrypoint sh panel -c 'cd /var/lib/awg-keeper && cp backups/<copy name> panel.sqlite && rm -f panel.sqlite-wal panel.sqlite-shm'
+docker compose start panel
+```
+
+Removing `panel.sqlite-wal` and `panel.sqlite-shm` matters: left in place,
+they could be replayed over the restored copy.
+
+To test that it worked, check the start log:
+
+```bash
+docker compose logs panel | grep "backed up"
+```
+
+The last line names a new `panel-start-...` copy, taken from the restored
+database. Sign in and check that the profiles are the ones you expect.
