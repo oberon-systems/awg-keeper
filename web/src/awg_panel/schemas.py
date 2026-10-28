@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from apscheduler.triggers.cron import CronTrigger
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class LoginRequest(BaseModel):
@@ -470,3 +471,44 @@ class Drift(BaseModel):
     detail: str | None = None
     missing_on_node: list[str] = []
     unknown_to_panel: list[str] = []
+
+
+class BackupRead(BaseModel):
+    """One snapshot of the database, as its file name and size describe it."""
+
+    name: str
+    # start, scheduled, change or manual.
+    kind: str
+    revision: str
+    size: int
+    taken_at: datetime
+
+
+class BackupScheduleRead(BaseModel):
+    """The backup schedule, and the next times it fires."""
+
+    cron: str
+    enabled: bool
+    keep: int
+    next_runs: list[datetime]
+    updated_at: datetime | None
+    author: str | None
+
+
+class BackupScheduleUpdate(BaseModel):
+    """The schedule the modal saves: a crontab line in UTC and the copies to keep."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    cron: str
+    enabled: bool
+    keep: int = Field(ge=1, le=1000)
+
+    @field_validator("cron")
+    @classmethod
+    def _crontab(cls, value: str) -> str:
+        try:
+            CronTrigger.from_crontab(value, timezone=UTC)
+        except ValueError as exc:
+            raise ValueError(f"not a crontab line: {value!r}: {exc}") from exc
+        return value

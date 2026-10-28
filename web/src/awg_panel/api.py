@@ -13,10 +13,13 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, Request, Response
 from sqlmodel import Session, col, select
 
-from awg_panel import __version__, agent, auth, db, service, stats
+from awg_panel import __version__, agent, auth, backup, db, service, stats
 from awg_panel.models import AwgPeer, Inbound, Interface, Node
 from awg_panel.schemas import (
     AgentRead,
+    BackupRead,
+    BackupScheduleRead,
+    BackupScheduleUpdate,
     CheckRead,
     ConfigDraft,
     ConfigPreview,
@@ -309,6 +312,43 @@ def apply_config_version(
     return service.apply_version(
         session, auth.settings_of(request), interface_id, version, user
     )
+
+
+@private.get("/backups/schedule")
+def read_backup_schedule(session: SessionDep) -> BackupScheduleRead:
+    """When the database is backed up, how many copies are kept, the next runs."""
+    return backup.read_schedule(session)
+
+
+@private.put("/backups/schedule")
+def save_backup_schedule(
+    request: Request,
+    body: BackupScheduleUpdate,
+    session: SessionDep,
+    user: UserDep,
+) -> BackupScheduleRead:
+    """Store the schedule and reschedule the running job."""
+    scheduler = getattr(request.app.state, "scheduler", None)
+    return backup.save_schedule(session, scheduler, body, user)
+
+
+@private.get("/backups")
+def list_backups(request: Request) -> list[BackupRead]:
+    """Every snapshot of the database on disk, the newest first."""
+    return backup.list_backups(auth.settings_of(request).database_path)
+
+
+@private.post("/backups", status_code=201)
+def take_backup(request: Request, session: SessionDep, user: UserDep) -> BackupRead:
+    """Snapshot the database now."""
+    settings = auth.settings_of(request)
+    taken = backup.snapshot(
+        settings.database_path, "manual", backup.schedule_of(session).keep
+    )
+    if taken is None:
+        raise LookupError(f"no database at {settings.database_path.name}")
+    LOG.warning("backup %s taken by %s", taken.name, user)
+    return taken
 
 
 @private.get("/inbounds")

@@ -1,6 +1,7 @@
 # Runtime dependencies of the panel. Pinned: the artifact is a container image,
 # and an unpinned rebuild of the same tag would not be the same image.
 alembic==1.20.0
+apscheduler==3.11.0
 argon2-cffi==25.1.0
 fastapi==0.150.0
 httpx==0.28.1

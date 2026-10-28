@@ -6,8 +6,10 @@ import asyncio
 import logging
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager, suppress
+from datetime import UTC
 from pathlib import Path
 
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -15,10 +17,11 @@ from sqlalchemy import Engine, func
 from sqlalchemy.exc import SQLAlchemyError
 from sqlmodel import Session, col, select
 
-from awg_panel import __version__, api, db, logs, service
+from awg_panel import __version__, api, backup, db, logs, service
 from awg_panel.agent import AgentError
+from awg_panel.backup import BackupFailed
 from awg_panel.config import Settings
-from awg_panel.models import Interface
+from awg_panel.models import BackupSchedule, Interface
 from awg_panel.pool import PoolExhausted
 from awg_panel.service import DuplicateProfile
 
@@ -48,6 +51,11 @@ def _on_exhausted(request: Request, exc: Exception) -> JSONResponse:
 def _on_agent(request: Request, exc: Exception) -> JSONResponse:
     LOG.error("agent call failed: %s", exc)
     return _problem(502, str(exc))
+
+
+def _on_backup(request: Request, exc: Exception) -> JSONResponse:
+    LOG.error("refused without a backup: %s", exc)
+    return _problem(503, f"{exc}; nothing was changed")
 
 
 def _on_unexpected(request: Request, exc: Exception) -> JSONResponse:
@@ -90,12 +98,38 @@ async def _probe_loop(app: FastAPI) -> None:
         await asyncio.sleep(settings.probe_interval)
 
 
+def _scheduler(app: FastAPI) -> AsyncIOScheduler:
+    settings: Settings = app.state.settings
+    try:
+        with Session(app.state.engine) as session:
+            row = backup.schedule_of(session)
+    except SQLAlchemyError as exc:
+        LOG.error("could not read the backup schedule, using the default: %s", exc)
+        row = BackupSchedule(cron=backup.DEFAULT_CRON, keep=backup.DEFAULT_KEEP)
+    scheduler = AsyncIOScheduler(timezone=UTC)
+    # A next run of None adds the job paused, which is what a disabled schedule is.
+    paused = {} if row.enabled else {"next_run_time": None}
+    scheduler.add_job(
+        backup.scheduled,
+        backup.trigger_of(row.cron),
+        args=[settings.database_path],
+        id=backup.JOB,
+        coalesce=True,
+        max_instances=1,
+        **paused,
+    )
+    return scheduler
+
+
 @asynccontextmanager
 async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
     task = None
     if app.state.settings.probe_interval:
         task = asyncio.create_task(_probe_loop(app))
+    app.state.scheduler = _scheduler(app)
+    app.state.scheduler.start()
     yield
+    app.state.scheduler.shutdown(wait=False)
     if task is not None:
         task.cancel()
         with suppress(asyncio.CancelledError):
@@ -147,6 +181,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_exception_handler(LookupError, _on_missing)
     app.add_exception_handler(ValueError, _on_invalid)
     app.add_exception_handler(AgentError, _on_agent)
+    app.add_exception_handler(BackupFailed, _on_backup)
     app.add_exception_handler(Exception, _on_unexpected)
 
     app.include_router(api.ping)

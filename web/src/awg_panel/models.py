@@ -227,3 +227,20 @@ class InterfaceConfig(SQLModel, table=True):
     rolled_back_from: int | None = None
     author: str | None = None
     created_at: datetime = Field(default_factory=_now, index=True)
+
+
+class BackupSchedule(SQLModel, table=True):
+    """When the database is backed up and how many copies of each kind are kept.
+
+    One row, id 1. Until it is saved the panel backs up daily at 03:00 UTC.
+    """
+
+    __tablename__ = "backup_schedule"
+
+    id: int | None = Field(default=None, primary_key=True)
+    # A five-field crontab line in UTC, built by the modal.
+    cron: str
+    enabled: bool = True
+    keep: int
+    updated_at: datetime | None = None
+    author: str | None = None

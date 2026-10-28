@@ -19,7 +19,7 @@ from typing import Any
 from sqlalchemy import Engine, delete
 from sqlmodel import Session, col, select
 
-from awg_panel import agent, amneziakey, clientconf, clientlink, pool, stats
+from awg_panel import agent, amneziakey, backup, clientconf, clientlink, pool, stats
 from awg_panel.config import Settings
 from awg_panel.models import (
     AgentCheck,
@@ -640,6 +640,7 @@ def _drop_halves(
 def delete_profile(session: Session, settings: Settings, profile_id: int) -> None:
     """Remove the peer and the client from the node, then the rows and the stats."""
     profile = profile_of(session, profile_id)
+    backup.before_change(settings, session)
 
     peer = _peer_of(session, profile)
     if peer is not None:
@@ -1327,6 +1328,7 @@ def set_interface_obfuscation(
         raise ValueError(f"{row.name} has no obfuscation yet; import it first")
 
     wanted = _merged(row, body.obfuscation)
+    backup.before_change(settings, session)
     _push(settings, node, row, wanted)
     row.obfuscation = wanted
     _record(session, row, "edit", author)
@@ -1577,6 +1579,7 @@ def apply_version(
     if target.digest == _config_digest(_portable(row)):
         raise ValueError(f"version {version} is the config {row.name} has already")
 
+    backup.before_change(settings, session)
     _push(settings, node, row, target.config.get("obfuscation") or {})
     _assign(row, target.config)
     _record(session, row, "rollback", author, version)

@@ -8,6 +8,7 @@ authors = [
 ]
 dependencies = [
     "alembic>=1.19",
+    "apscheduler>=3.11,<4",
     "argon2-cffi>=25",
     "fastapi>=0.141",
     "httpx>=0.28",
