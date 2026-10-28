@@ -47,6 +47,7 @@ def test_a_drifted_interface_gets_the_panel_config_back(
     found = agents[0]["interfaces"][0]
     assert found["obfuscation"] == OBFUSCATION
     assert found["drift"] == ["Jc", "HeaderProtectionKey"]
+    assert found["drift_at"] == agents[0]["checked_at"]
     assert "HeaderProtectionKey" in found["drift_error"]
 
 

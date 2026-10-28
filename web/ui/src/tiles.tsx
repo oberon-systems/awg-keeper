@@ -2,7 +2,7 @@ import { Fragment, type ReactNode } from "react";
 
 import type { Problem } from "./problem";
 
-export type Tone = "ok" | "warn" | "down" | "idle";
+export type Tone = "ok" | "warn" | "down" | "idle" | "accent";
 
 export interface Part {
   text: string;

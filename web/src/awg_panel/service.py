@@ -1120,6 +1120,9 @@ def _agent_interfaces(
     for name in names:
         item = reported.get(name)
         row = rows.get(name)
+        drift = (item or {}).get("drift") or {}
+        versions = _versions(session, int(row.id or 0)) if row else []
+        newest = versions[0] if versions else None
         error = None
         if item is not None:
             error = item.get("error")
@@ -1146,8 +1149,12 @@ def _agent_interfaces(
                 client_allowed_ips=row.client_allowed_ips if row else None,
                 keepalive=row.keepalive if row else None,
                 obfuscation=row.obfuscation if row else {},
-                drift=list(((item or {}).get("drift") or {}).get("fields") or []),
-                drift_error=((item or {}).get("drift") or {}).get("error"),
+                drift=list(drift.get("fields") or []),
+                drift_error=drift.get("error"),
+                drift_at=_utc(last.checked_at) if drift and last else None,
+                config_version=newest.version if newest else None,
+                config_changed_at=_utc(newest.created_at) if newest else None,
+                config_author=newest.author if newest else None,
                 addresses=list((item or {}).get("addresses") or []),
                 missing=[
                     field for field in REQUIRED_TO_ENABLE if not getattr(row, field)
@@ -1485,11 +1492,12 @@ def _draft(session: Session, row: Interface, body: ConfigDraft) -> dict[str, Any
 
 
 def _impact(
-    session: Session, row: Interface, config: dict[str, Any]
+    session: Session, row: Interface, config: dict[str, Any], endpoint: str | None
 ) -> tuple[int, int]:
     """Count the issued configs that would match after the change, and the rest."""
     candidate = Interface(**row.model_dump())
     _assign(candidate, config)
+    candidate.endpoint_host = endpoint
     current = stale = 0
     peers = session.exec(select(AwgPeer).where(AwgPeer.interface_id == row.id))
     for peer in peers.all():
@@ -1531,8 +1539,19 @@ def preview_config(
         )
         for field in PORTABLE
     ]
+    endpoint = row.endpoint_host
+    if "endpoint_host" in body.model_fields_set:
+        endpoint = _clean(body.endpoint_host)
+        changes.append(
+            ConfigChange(
+                field="endpoint_host",
+                before=row.endpoint_host,
+                after=endpoint,
+                changed=endpoint != row.endpoint_host,
+            )
+        )
     _, blocked = _delta(old, new)
-    current, stale = _impact(session, row, after)
+    current, stale = _impact(session, row, after, endpoint)
     versions = _versions(session, interface_id)
     return ConfigPreview(
         version=versions[0].version if versions else None,

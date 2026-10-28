@@ -145,6 +145,12 @@ export interface AgentInterface {
   client_allowed_ips: string | null;
   keepalive: number | null;
   obfuscation: Record<string, unknown>;
+  drift: string[];
+  drift_error: string | null;
+  drift_at: string | null;
+  config_version: number | null;
+  config_changed_at: string | null;
+  config_author: string | null;
   addresses: string[];
   missing: string[];
 }
@@ -215,6 +221,52 @@ export interface InterfaceUpdate {
 }
 
 export type Obfuscation = Record<string, string | number | boolean>;
+
+// The part of an interface's settings a version carries; the rest is the host's.
+export interface PortableConfig {
+  obfuscation: Record<string, string | number>;
+  dns: string | null;
+  mtu: number | null;
+  client_allowed_ips: string | null;
+  keepalive: number | null;
+}
+
+export interface ConfigVersion {
+  version: number;
+  current: boolean;
+  source: "baseline" | "import" | "edit" | "rollback";
+  rolled_back_from: number | null;
+  author: string | null;
+  created_at: string;
+  digest: string;
+  config: PortableConfig;
+}
+
+export interface ConfigDraft {
+  version?: number;
+  obfuscation?: Obfuscation;
+  dns?: string | null;
+  mtu?: number | null;
+  client_allowed_ips?: string | null;
+  keepalive?: number | null;
+  endpoint_host?: string | null;
+}
+
+export interface ConfigChange {
+  field: string;
+  before: string | number | null;
+  after: string | number | null;
+  changed: boolean;
+}
+
+export interface ConfigPreview {
+  version: number | null;
+  target: number | null;
+  changes: ConfigChange[];
+  blocked: string[];
+  current: number;
+  stale: number;
+}
 
 export interface InboundUpdate {
   enabled?: boolean;
@@ -294,6 +346,14 @@ export const api = {
     call<Agent>("PATCH", `/interfaces/${id}`, body),
   setObfuscation: (id: number, obfuscation: Obfuscation) =>
     call<Agent>("PATCH", `/interfaces/${id}/obfuscation`, { obfuscation }),
+  importObfuscation: (id: number) =>
+    call<Agent>("POST", `/interfaces/${id}/obfuscation/import`),
+  configVersions: (id: number) =>
+    call<ConfigVersion[]>("GET", `/interfaces/${id}/config/versions`),
+  previewConfig: (id: number, draft: ConfigDraft) =>
+    call<ConfigPreview>("POST", `/interfaces/${id}/config/preview`, draft),
+  applyVersion: (id: number, version: number) =>
+    call<Agent>("POST", `/interfaces/${id}/config/versions/${version}/apply`),
   updateInbound: (id: number, body: InboundUpdate) =>
     call<Agent>("PATCH", `/inbounds/${id}`, body),
   profiles: () => call<Profile[]>("GET", "/profiles"),

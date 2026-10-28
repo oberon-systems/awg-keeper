@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-import { api, type AgentInterface, type Obfuscation } from "../api";
+import { api, type AgentInterface, type ConfigPreview, type Obfuscation } from "../api";
 import { Field } from "../fields";
 import { describe, type Problem } from "../problem";
-import { Banner } from "../tiles";
+import { PreviewDialog } from "./ConfigPreview";
 
 const GROUPS: { title: string; rows: string[][]; hint?: string; mono?: boolean }[] = [
   { title: "Junk packets", rows: [["Jc", "Jmin", "Jmax"]] },
@@ -124,8 +124,8 @@ export function ObfuscationForm({
     Object.fromEntries(SWITCHES.map((key) => [key, original[key] === "on"])),
   );
   const [confirming, setConfirming] = useState(false);
-  const [problem, setProblem] = useState<Problem | null>(null);
-  const [detailShown, setDetailShown] = useState(false);
+  const [preview, setPreview] = useState<ConfigPreview | null>(null);
+  const [saveProblem, setSaveProblem] = useState<Problem | null>(null);
   const [busy, setBusy] = useState(false);
 
   const set = (key: string) => (value: string) =>
@@ -151,7 +151,16 @@ export function ObfuscationForm({
 
   function ask(event: React.FormEvent) {
     event.preventDefault();
+    if (item.id === null) {
+      return;
+    }
     setConfirming(true);
+    setPreview(null);
+    setSaveProblem(null);
+    api
+      .previewConfig(item.id, { obfuscation: changes() })
+      .then(setPreview)
+      .catch((error: unknown) => setSaveProblem(describe(error, "Could not preview it")));
   }
 
   async function save() {
@@ -159,16 +168,15 @@ export function ObfuscationForm({
       return;
     }
     setBusy(true);
-    setProblem(null);
-    setDetailShown(false);
+    setSaveProblem(null);
     try {
       await api.setObfuscation(item.id, changes());
       onSaved();
     } catch (error) {
-      setProblem(describe(error, "Could not save the obfuscation"));
+      const kept = item.config_version ? `; the panel kept version ${item.config_version}` : "";
+      setSaveProblem(describe(error, `${agent} did not take the change${kept}`));
     } finally {
       setBusy(false);
-      setConfirming(false);
     }
   }
 
@@ -186,8 +194,8 @@ export function ObfuscationForm({
         </div>
 
         <p className="notice">
-          Saving changes the interface at once. Every profile issued on it stops connecting
-          until it is rerolled.
+          Saving applies it on the interface first and keeps it only once applied. Profiles
+          whose config it changes need a reroll; the preview counts them.
         </p>
 
         {GROUPS.slice(0, 3).map((group) => (
@@ -279,12 +287,6 @@ export function ObfuscationForm({
           </div>
         </section>
 
-        <Banner
-          problem={problem}
-          shown={detailShown}
-          onToggle={() => setDetailShown((shown) => !shown)}
-        />
-
         <div className="modal-footer">
           <button
             type="button"
@@ -309,40 +311,19 @@ export function ObfuscationForm({
       </form>
 
       {confirming ? (
-        <div className="scrim">
-          <div className="modal narrow" role="alertdialog" aria-modal="true">
-            <div className="modal-header">
-              <div className="modal-heading">
-                <h2>Are you sure?</h2>
-                <p>
-                  Save the obfuscation of {item.name} on {agent}. The {item.peers} profiles
-                  issued on it stop connecting until they are rerolled
-                </p>
-              </div>
-              <button
-                type="button"
-                className="modal-close"
-                aria-label="Close"
-                onClick={() => setConfirming(false)}
-              >
-                &#x2715;
-              </button>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="secondary" onClick={() => setConfirming(false)}>
-                No
-              </button>
-              <button
-                type="button"
-                className="action wide"
-                disabled={busy}
-                onClick={() => void save()}
-              >
-                Yes
-              </button>
-            </div>
-          </div>
-        </div>
+        <PreviewDialog
+          title={`Save the obfuscation of ${item.name}?`}
+          subtitle={`The agent on ${agent} applies it first; it is kept as version ${
+            (item.config_version ?? 0) + 1
+          } only once ${item.name} has it.`}
+          preview={preview}
+          problem={saveProblem}
+          busy={busy}
+          applyLabel="Save"
+          cancelLabel="Back to the form"
+          onApply={() => void save()}
+          onCancel={() => setConfirming(false)}
+        />
       ) : null}
     </div>
   );

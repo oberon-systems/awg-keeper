@@ -303,6 +303,10 @@ class AgentInterface(BaseModel):
     # What the live interface had other than the panel at the last check.
     drift: list[str] = []
     drift_error: str | None = None
+    drift_at: datetime | None = None
+    config_version: int | None = None
+    config_changed_at: datetime | None = None
+    config_author: str | None = None
     addresses: list[str] = []
     missing: list[str] = []
 
@@ -405,6 +409,8 @@ class ConfigDraft(BaseModel):
     mtu: int | None = Field(default=None, ge=576, le=65535)
     client_allowed_ips: str | None = None
     keepalive: int | None = Field(default=None, ge=0, le=65535)
+    # Not versioned, but it is in every client config, so it counts for a reroll.
+    endpoint_host: str | None = None
 
 
 class ConfigChange(BaseModel):

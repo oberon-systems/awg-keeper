@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-import { api, type AgentInterface } from "../api";
+import { api, type AgentInterface, type ConfigPreview } from "../api";
 import { Field } from "../fields";
 import { describe, type Problem } from "../problem";
-import { Banner } from "../tiles";
+import { PreviewDialog } from "./ConfigPreview";
 import { ObfuscationForm, summary } from "./ObfuscationForm";
 
 function text(value: string | number | null): string {
@@ -34,14 +34,31 @@ export function InterfaceForm({
   const [allowed, setAllowed] = useState(text(item.client_allowed_ips ?? "0.0.0.0/0"));
   const [keepalive, setKeepalive] = useState(text(item.keepalive));
   const [confirming, setConfirming] = useState(false);
-  const [problem, setProblem] = useState<Problem | null>(null);
-  const [detailShown, setDetailShown] = useState(false);
+  const [preview, setPreview] = useState<ConfigPreview | null>(null);
+  const [saveProblem, setSaveProblem] = useState<Problem | null>(null);
   const [busy, setBusy] = useState(false);
   const [obfuscating, setObfuscating] = useState(false);
 
+  const client = {
+    endpoint_host: endpointHost,
+    dns,
+    mtu: number(mtu),
+    client_allowed_ips: allowed,
+    keepalive: number(keepalive),
+  };
+
   function ask(event: React.FormEvent) {
     event.preventDefault();
+    if (item.id === null) {
+      return;
+    }
     setConfirming(true);
+    setPreview(null);
+    setSaveProblem(null);
+    api
+      .previewConfig(item.id, client)
+      .then(setPreview)
+      .catch((error: unknown) => setSaveProblem(describe(error, "Could not preview it")));
   }
 
   async function save() {
@@ -49,24 +66,14 @@ export function InterfaceForm({
       return;
     }
     setBusy(true);
-    setProblem(null);
-    setDetailShown(false);
+    setSaveProblem(null);
     try {
-      await api.updateInterface(item.id, {
-        enabled,
-        endpoint_host: endpointHost,
-        label,
-        dns,
-        mtu: number(mtu),
-        client_allowed_ips: allowed,
-        keepalive: number(keepalive),
-      });
+      await api.updateInterface(item.id, { ...client, enabled, label });
       onSaved();
     } catch (error) {
-      setProblem(describe(error, "Could not save the interface"));
+      setSaveProblem(describe(error, "Could not save the interface"));
     } finally {
       setBusy(false);
-      setConfirming(false);
     }
   }
 
@@ -149,12 +156,6 @@ export function InterfaceForm({
           </span>
         </div>
 
-        <Banner
-          problem={problem}
-          shown={detailShown}
-          onToggle={() => setDetailShown((shown) => !shown)}
-        />
-
         <div className="modal-footer">
           <button type="button" className="secondary" onClick={onClose}>
             Cancel
@@ -175,39 +176,17 @@ export function InterfaceForm({
       ) : null}
 
       {confirming ? (
-        <div className="scrim">
-          <div className="modal narrow" role="alertdialog" aria-modal="true">
-            <div className="modal-header">
-              <div className="modal-heading">
-                <h2>Are you sure?</h2>
-                <p>
-                  Save interface {item.name} on {agent}
-                </p>
-              </div>
-              <button
-                type="button"
-                className="modal-close"
-                aria-label="Close"
-                onClick={() => setConfirming(false)}
-              >
-                &#x2715;
-              </button>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="secondary" onClick={() => setConfirming(false)}>
-                No
-              </button>
-              <button
-                type="button"
-                className="action wide"
-                disabled={busy}
-                onClick={() => void save()}
-              >
-                Yes
-              </button>
-            </div>
-          </div>
-        </div>
+        <PreviewDialog
+          title={`Save interface ${item.name}?`}
+          subtitle={`On ${agent}. What goes into client configs is compared below; DNS, MTU, allowed IPs and keepalive are kept as a new version.`}
+          preview={preview}
+          problem={saveProblem}
+          busy={busy}
+          applyLabel="Save"
+          cancelLabel="Back to the form"
+          onApply={() => void save()}
+          onCancel={() => setConfirming(false)}
+        />
       ) : null}
     </div>
   );

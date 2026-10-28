@@ -128,3 +128,25 @@ def test_the_current_version_is_not_applied_again(signed_in: TestClient) -> None
 def test_an_unknown_version_is_404(signed_in: TestClient) -> None:
     assert signed_in.post(f"{VERSIONS}/9/apply").status_code == 404
     assert signed_in.post(PREVIEW, json={"version": 9}).status_code == 404
+
+
+def test_the_agent_view_names_the_current_version(signed_in: TestClient) -> None:
+    _edit(signed_in, Jc=6)
+    found = signed_in.get("/api/v1/agents").json()[0]["interfaces"][0]
+    assert (found["config_version"], found["config_author"]) == (2, USER)
+    assert found["config_changed_at"] is not None
+
+
+def test_a_new_endpoint_counts_for_the_reroll(signed_in: TestClient) -> None:
+    _issue(signed_in)
+    preview = signed_in.post(PREVIEW, json={"endpoint_host": "vpn2.example"}).json()
+    changed = [item for item in preview["changes"] if item["changed"]]
+    assert changed == [
+        {
+            "field": "endpoint_host",
+            "before": "vpn.example",
+            "after": "vpn2.example",
+            "changed": True,
+        }
+    ]
+    assert (preview["current"], preview["stale"]) == (0, 1)

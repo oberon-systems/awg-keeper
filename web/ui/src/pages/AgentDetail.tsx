@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 
 import { api, type Agent, type AgentInterface, type Check } from "../api";
-import { age, ms, summary, when } from "../format";
+import { age, ms, stamp, summary, when } from "../format";
 import { describe, type Problem } from "../problem";
-import { Banner, Pill, Stat, counted, toneOf, type Part } from "../tiles";
+import { Banner, Pill, Stat, counted, toneOf, type Part, type Tone } from "../tiles";
+import { ConfigHistory } from "./ConfigHistory";
 import { InboundForm } from "./InboundForm";
 import { InterfaceForm } from "./InterfaceForm";
 
@@ -18,6 +19,35 @@ function label(status: string): string {
 
 function needs(missing: string[]): string {
   return `needs ${missing.map((field) => field.replace("_", " ")).join(", ")}`;
+}
+
+function configState(item: AgentInterface): [string, Tone] {
+  if (item.drift_error) {
+    return ["drift", "down"];
+  }
+  return item.drift.length ? ["restored from panel", "warn"] : ["in sync", "ok"];
+}
+
+function configNote(item: AgentInterface): string {
+  if (item.drift_error) {
+    return item.drift_error;
+  }
+  if (item.drift.length) {
+    const at = item.drift_at ? ` at ${stamp(item.drift_at)}` : "";
+    return `${item.drift.join(", ")} differed on the host${at}`;
+  }
+  const at = item.config_changed_at ? stamp(item.config_changed_at, true) : "";
+  return `changed ${at} by ${item.config_author ?? "the panel"}`;
+}
+
+function rowKind(item: AgentInterface): string {
+  const kind = [item.id === null ? "" : "clickable"];
+  if (item.drift_error) {
+    kind.push("row-down");
+  } else if (item.drift.length) {
+    kind.push("row-warn");
+  }
+  return kind.filter(Boolean).join(" ");
 }
 
 function peerParts(interfaces: AgentInterface[]): Part[] {
@@ -55,6 +85,8 @@ export function AgentDetail({
   const [checks, setChecks] = useState<Check[]>([]);
   const [editing, setEditing] = useState<string | null>(null);
   const [editingInbound, setEditingInbound] = useState<string | null>(null);
+  const [history, setHistory] = useState<string | null>(null);
+  const [importing, setImporting] = useState<number | null>(null);
   const [problem, setProblem] = useState<Problem | null>(null);
   const [detailShown, setDetailShown] = useState(false);
 
@@ -77,6 +109,73 @@ export function AgentDetail({
       live = false;
     };
   }, [agent.id, agent.checked_at]);
+
+  async function importFrom(item: AgentInterface) {
+    if (item.id === null) {
+      return;
+    }
+    setImporting(item.id);
+    setProblem(null);
+    try {
+      await api.importObfuscation(item.id);
+      onSaved();
+    } catch (error) {
+      setProblem(describe(error, `Could not import the obfuscation of ${item.name}`));
+    } finally {
+      setImporting(null);
+    }
+  }
+
+  function configCell(item: AgentInterface) {
+    if (item.id === null) {
+      return <span className="muted">-</span>;
+    }
+    if (item.config_version === null) {
+      return (
+        <>
+          <div className="cell-line">
+            <Pill tone="warn">not in the panel</Pill>
+            {item.present ? (
+              <button
+                type="button"
+                className="small"
+                disabled={importing === item.id}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  void importFrom(item);
+                }}
+              >
+                Import from host
+              </button>
+            ) : null}
+          </div>
+          <div className="muted">takes the obfuscation {item.name} has now, once</div>
+        </>
+      );
+    }
+    const [state, tone] = configState(item);
+    return (
+      <>
+        <div className="cell-line">
+          <strong>version {item.config_version}</strong>
+          <Pill tone={tone}>{state}</Pill>
+        </div>
+        <div className={item.drift_error ? "muted problem" : "muted"}>
+          {configNote(item)} &middot;{" "}
+          <button
+            type="button"
+            className="link-button"
+            onClick={(event) => {
+              event.stopPropagation();
+              setHistory(item.name);
+            }}
+          >
+            History
+          </button>
+        </div>
+      </>
+    );
+  }
 
   const present = agent.interfaces.filter((item) => item.present).length;
   const peers = agent.interfaces.reduce((total, item) => total + item.peers, 0);
@@ -150,7 +249,7 @@ export function AgentDetail({
         <div className="panel-title">
           <h2>Interfaces</h2>
         </div>
-        <table className="interfaces-table">
+        <table className="interfaces-table with-config">
           <thead>
             <tr>
               <th>Interface</th>
@@ -158,13 +257,14 @@ export function AgentDetail({
               <th>Port</th>
               <th>Public key</th>
               <th>Peers</th>
+              <th>Config</th>
               <th>Profiles</th>
             </tr>
           </thead>
           <tbody>
             {agent.interfaces.length === 0 ? (
               <tr>
-                <td colSpan={6} className="cell-empty">
+                <td colSpan={7} className="cell-empty">
                   The agent reported no interfaces. Check AWG_KEEPER_INTERFACES and the agent log.
                 </td>
               </tr>
@@ -172,7 +272,7 @@ export function AgentDetail({
             {agent.interfaces.map((item) => (
               <tr
                 key={item.name}
-                className={item.id === null ? undefined : "clickable"}
+                className={rowKind(item) || undefined}
                 onClick={() => setEditing(item.id === null ? null : item.name)}
               >
                 <td className="cell-name">{item.name}</td>
@@ -182,6 +282,7 @@ export function AgentDetail({
                 <td>{item.listen_port || "-"}</td>
                 <td className="key">{item.public_key ?? "-"}</td>
                 <td>{item.present ? item.peers : "-"}</td>
+                <td>{configCell(item)}</td>
                 <td>
                   {item.enabled ? (
                     <Pill tone="ok">enabled</Pill>
@@ -203,6 +304,20 @@ export function AgentDetail({
           </tbody>
         </table>
       </div>
+
+      {agent.interfaces
+        .filter((item) => item.name === history)
+        .map((item) => (
+          <ConfigHistory
+            key={`${agent.id}-${item.name}-history`}
+            item={item}
+            onClose={() => setHistory(null)}
+            onSaved={() => {
+              setHistory(null);
+              onSaved();
+            }}
+          />
+        ))}
 
       {agent.interfaces
         .filter((item) => item.name === editing)
