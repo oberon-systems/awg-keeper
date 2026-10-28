@@ -1,3 +1,14 @@
+## awg-keeper-web-v0.7.5 (2026-10-28)
+
+### Bug Fixes
+
+- **web**: fall back when the clipboard api is missing
+- **web**: add the backups modal to the dashboard
+- **web**: back up panel.sqlite on start, on a schedule and before changes
+- **web**: show config versions, drift and a preview before every change
+- **web**: keep a history of interface configs, with preview and rollback
+- **web**: keep obfuscation in the panel, push it back on drift
+
 ## awg-keeper-web-v0.7.4 (2026-10-25)
 
 ### Build

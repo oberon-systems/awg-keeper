@@ -30,7 +30,7 @@ sub-project tag: awg-keeper-agent-v0.5.4
 
 ## web / panel
 
-sub-project tag: awg-keeper-web-v0.7.4
+sub-project tag: awg-keeper-web-v0.7.5
 
 - [x] code basics
   - FastAPI (HTTP)
