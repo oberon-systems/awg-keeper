@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 
 import type { Issued, Profile } from "../api";
@@ -81,6 +81,83 @@ function save(name: string, text: string) {
   URL.revokeObjectURL(url);
 }
 
+function copyBySelection(text: string): boolean {
+  const area = document.createElement("textarea");
+  area.value = text;
+  area.readOnly = true;
+  area.style.position = "fixed";
+  area.style.opacity = "0";
+  document.body.appendChild(area);
+  area.select();
+  try {
+    return document.execCommand("copy");
+  } catch {
+    return false;
+  } finally {
+    area.remove();
+  }
+}
+
+// navigator.clipboard exists only in a secure context, and the panel is
+// served over plain http inside the management VPN.
+async function copy(text: string): Promise<boolean> {
+  if (!window.isSecureContext || !navigator.clipboard) {
+    return copyBySelection(text);
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return copyBySelection(text);
+  }
+}
+
+function selectText(container: HTMLElement | null) {
+  const pre = container?.querySelector("pre");
+  if (pre) {
+    window.getSelection()?.selectAllChildren(pre);
+  }
+}
+
+function CopyButton({
+  text,
+  className,
+  onFail,
+}: {
+  text: string;
+  className: string;
+  onFail: () => void;
+}) {
+  const [outcome, setOutcome] = useState<"copied" | "failed" | null>(null);
+
+  useEffect(() => {
+    if (!outcome) {
+      return;
+    }
+    const timer = setTimeout(() => setOutcome(null), 2000);
+    return () => clearTimeout(timer);
+  }, [outcome]);
+
+  const onClick = async () => {
+    const copied = await copy(text);
+    setOutcome(copied ? "copied" : "failed");
+    if (!copied) {
+      onFail();
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      className={className}
+      title={outcome === "failed" ? "Select the text and copy it by hand" : undefined}
+      onClick={() => void onClick()}
+    >
+      {outcome === "copied" ? "Copied" : outcome === "failed" ? "Copy failed" : "Copy"}
+    </button>
+  );
+}
+
 // The only moment this configuration exists anywhere: the private key was
 // generated in this tab and is not stored by the panel. Closing the dialog
 // loses it, and the only way back is to issue the profile again.
@@ -89,6 +166,24 @@ export function IssuedConfig({ issue, onClose }: { issue: Issue; onClose: () => 
   const [protocol, setProtocol] = useState<Protocol>(config ? "awg" : "xray");
   const [view, setView] = useState<"qr" | "text">("qr");
   const [image, setImage] = useState("");
+  const textView = useRef<HTMLDivElement>(null);
+  const selectPending = useRef(false);
+
+  const onCopyFail = () => {
+    if (view === "text") {
+      selectText(textView.current);
+    } else {
+      selectPending.current = true;
+      setView("text");
+    }
+  };
+
+  useEffect(() => {
+    if (view === "text" && selectPending.current) {
+      selectPending.current = false;
+      selectText(textView.current);
+    }
+  }, [view]);
 
   const texts: Record<Protocol, string | null> = {
     awg: config,
@@ -179,16 +274,10 @@ export function IssuedConfig({ issue, onClose }: { issue: Issue; onClose: () => 
             <span className="key">{details.filter(Boolean).join(" \u00b7 ")}</span>
           </div>
         ) : (
-          <div className="text-view">
+          <div className="text-view" ref={textView}>
             <div className="text-view-bar">
               <span className="key">{file}</span>
-              <button
-                type="button"
-                className="small"
-                onClick={() => void navigator.clipboard.writeText(text)}
-              >
-                Copy
-              </button>
+              <CopyButton text={text} className="small" onFail={onCopyFail} />
             </div>
             {protocol === "amnezia" ? (
               <pre className="text-view-body">{text}</pre>
@@ -205,13 +294,7 @@ export function IssuedConfig({ issue, onClose }: { issue: Issue; onClose: () => 
                 Download .{protocol === "awg" ? "conf" : "txt"}
               </button>
             )}
-            <button
-              type="button"
-              className="secondary"
-              onClick={() => void navigator.clipboard.writeText(text)}
-            >
-              Copy
-            </button>
+            <CopyButton text={text} className="secondary" onFail={onCopyFail} />
           </div>
           <button type="button" className="action" onClick={onClose}>
             Done
