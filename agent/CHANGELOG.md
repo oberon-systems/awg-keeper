@@ -1,3 +1,9 @@
+## awg-keeper-agent-v0.5.5 (2026-10-28)
+
+### Bug Fixes
+
+- **agent**: fail and revert a change the interface file did not take
+
 ## awg-keeper-agent-v0.5.4 (2026-10-25)
 
 ### Build
