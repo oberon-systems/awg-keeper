@@ -2,4 +2,4 @@
 # PATH, so neither the tunnel nor root is the price of running it.
 # fastapi's TestClient is httpx underneath.
 httpx==0.28.1
-pytest==9.1.1
+pytest==9.2.0
