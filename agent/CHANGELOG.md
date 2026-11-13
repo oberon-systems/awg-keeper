@@ -1,3 +1,11 @@
+## awg-keeper-agent-v0.5.6 (2026-11-13)
+
+### Build
+
+- **deps**: Bump the pip group across 3 directories with 3 updates
+- **deps**: Bump the pip group across 3 directories with 3 updates
+- **deps**: Bump the pip group across 3 directories with 5 updates
+
 ## awg-keeper-agent-v0.5.5 (2026-10-28)
 
 ### Bug Fixes
