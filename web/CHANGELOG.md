@@ -1,3 +1,14 @@
+## awg-keeper-web-v0.7.6 (2026-11-13)
+
+### Build
+
+- **deps**: Bump the pip group across 3 directories with 3 updates
+- **deps**: Bump the npm group in /web/ui with 3 updates
+- **deps**: Bump the pip group across 3 directories with 3 updates
+- **deps**: Bump the npm group in /web/ui with 5 updates
+- **deps**: Bump the pip group across 3 directories with 5 updates
+- **deps**: Bump the npm group in /web/ui with 2 updates
+
 ## awg-keeper-web-v0.7.5 (2026-10-28)
 
 ### Bug Fixes
