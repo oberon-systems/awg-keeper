@@ -1,6 +1,6 @@
 # Development tooling only. There is no package to install from this tree yet.
-commitizen==4.19.3
+commitizen==4.20.0
 mkdocs==1.6.1
-penpot-local-stack==0.1.6
+penpot-local-stack==0.1.9
 pre-commit==4.7.0
-wyld-cz==0.4.1
+wyld-cz==0.5.0
